@@ -7,6 +7,19 @@ This file contains all test user credentials for the HRMS application.
 
 ---
 
+## Employee Login (ESS)
+
+Use any employee email below with password **`password123`**. You will be redirected to the **Employee Self Service (ESS)** portal.
+
+| Email | Password |
+|-------|----------|
+| `rajesh.kumar@hrms.com` | `password123` |
+| `priya.sharma@hrms.com` | `password123` |
+| `amit.patel@hrms.com` | `password123` |
+| *(see full list below)* | `password123` |
+
+---
+
 ## Super Admin
 
 | Email | Password | Role | Access |
@@ -17,10 +30,25 @@ This file contains all test user credentials for the HRMS application.
 - Access to Admin Dashboard
 - Full CRUD operations on all modules
 - Employee Management
+- **Employee Tasks** – create and assign tasks for employees (onboarding, training, etc.); URL: `/employee-tasks`
 - Attendance Management
 - Leave Management & Approval
 - Payroll Management
 - All reports and analytics
+
+---
+
+## Who Creates ESS Tasks?
+
+**Employee tasks** (e.g. "Complete onboarding documents", "Attend training session") are created by **HR/Admin** users:
+
+| Role        | Can manage tasks? | Seeded user              |
+|------------|--------------------|---------------------------|
+| Super Admin| Yes                | `admin@hrms.com`         |
+| HR Admin   | Yes                | *(no user seeded by default)* |
+
+- **Login as admin:** `admin@hrms.com` / `password123`
+- **Manage tasks:** After login, go to **Employee Tasks** (`/employee-tasks`) to create, edit, or assign tasks to employees. Tasks appear on the employee’s ESS **Tasks** page (`/ess/tasks`).
 
 ---
 

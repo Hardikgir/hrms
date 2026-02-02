@@ -98,6 +98,54 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a href="{{ route('ess.goals') }}" class="nav-link {{ request()->routeIs('ess.goals') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-bullseye"></i>
+                            <p>Goals (KRA/OKR)</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.reviews') }}" class="nav-link {{ request()->routeIs('ess.reviews') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-chart-line"></i>
+                            <p>Performance Reviews</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.expenses') }}" class="nav-link {{ request()->routeIs('ess.expenses*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-receipt"></i>
+                            <p>Expenses</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.training') }}" class="nav-link {{ request()->routeIs('ess.training') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-graduation-cap"></i>
+                            <p>Training</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.roster') }}" class="nav-link {{ request()->routeIs('ess.roster') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-clock"></i>
+                            <p>My Roster</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.assets') }}" class="nav-link {{ request()->routeIs('ess.assets') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-laptop"></i>
+                            <p>My Assets</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.travel') }}" class="nav-link {{ request()->routeIs('ess.travel*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-plane"></i>
+                            <p>Travel</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('ess.exit') }}" class="nav-link {{ request()->routeIs('ess.exit*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-door-open"></i>
+                            <p>Exit</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ route('ess.payslips') }}" class="nav-link {{ request()->routeIs('ess.payslips*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-money-bill-wave"></i>
                             <p>Payslips</p>

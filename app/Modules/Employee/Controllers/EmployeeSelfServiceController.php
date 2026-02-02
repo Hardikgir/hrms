@@ -7,8 +7,10 @@ use App\Modules\Employee\Models\Employee;
 use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Payroll\Models\Payroll;
+use App\Modules\Performance\Services\PerformanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EmployeeSelfServiceController extends Controller
@@ -139,28 +141,107 @@ class EmployeeSelfServiceController extends Controller
             return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
         }
 
-        // For now, we'll create a simple task system
-        // In a full implementation, you'd have a tasks table
-        $tasks = [
-            [
-                'id' => 1,
-                'title' => 'Complete onboarding documents',
-                'description' => 'Submit all required documents for onboarding',
-                'status' => 'pending',
-                'due_date' => now()->addDays(7),
-                'priority' => 'high',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Attend training session',
-                'description' => 'Complete mandatory training session',
-                'status' => 'in_progress',
-                'due_date' => now()->addDays(3),
-                'priority' => 'medium',
-            ],
-        ];
+        $tasks = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
+            ->orderBy('due_date')
+            ->get();
 
         return view('employee.ess.tasks', compact('employee', 'tasks'));
+    }
+
+    /**
+     * Onboarding documents – list required docs and upload form
+     */
+    public function onboardingDocuments()
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        $requiredDocs = [
+            ['key' => 'aadhar', 'label' => 'Aadhar Card', 'description' => 'Front and back copy'],
+            ['key' => 'pan', 'label' => 'PAN Card', 'description' => 'Clear copy'],
+            ['key' => 'bank_passbook', 'label' => 'Bank Passbook / Cancelled cheque', 'description' => 'For salary credit'],
+            ['key' => 'photo', 'label' => 'Passport size photo', 'description' => 'Recent photograph'],
+        ];
+
+        return view('employee.ess.onboarding-documents', compact('employee', 'requiredDocs'));
+    }
+
+    /**
+     * Submit onboarding documents (file upload)
+     */
+    public function submitOnboardingDocuments(Request $request)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        $request->validate([
+            'document_type' => 'required|in:aadhar,pan,bank_passbook,photo',
+            'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        $path = $request->file('document')->store(
+            'onboarding/' . $employee->id,
+            'local'
+        );
+
+        return redirect()->route('ess.onboarding-documents')
+            ->with('success', 'Document uploaded successfully. You can upload more below.');
+    }
+
+    /**
+     * Training session – details and confirm attendance
+     */
+    public function trainingSession()
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        // Placeholder training details (could come from a training_sessions table later)
+        $training = [
+            'title' => 'Mandatory onboarding training',
+            'description' => 'Company policies, code of conduct, and systems overview.',
+            'scheduled_at' => now()->addDays(2)->setTime(10, 0, 0),
+            'duration' => '2 hours',
+            'mode' => 'In-person',
+            'venue' => 'Conference Room A, Head Office',
+            'agenda' => [
+                'Company overview and values',
+                'HR policies and leave system',
+                'Attendance and payroll (ESS)',
+                'IT systems and security',
+            ],
+            'contact' => 'HR Team (hr@company.com) for any queries.',
+        ];
+
+        return view('employee.ess.training-session', compact('employee', 'training'));
+    }
+
+    /**
+     * Confirm training attendance (placeholder – no DB yet)
+     */
+    public function confirmTrainingAttendance(Request $request)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        // In a full implementation, record attendance in training_attendances table
+        return redirect()->route('ess.tasks')->with('success', 'Training attendance noted. Thank you!');
     }
 
     /**
@@ -214,9 +295,12 @@ class EmployeeSelfServiceController extends Controller
         }
 
         $leaves = $query->paginate(20);
-        $leaveTypes = \App\Modules\Leave\Models\LeaveType::where('is_active', true)->get();
 
-        return view('employee.ess.leaves', compact('employee', 'leaves', 'leaveTypes'));
+        $pendingCount = Leave::where('employee_id', $employee->id)->where('status', 'pending')->count();
+        $approvedCount = Leave::where('employee_id', $employee->id)->where('status', 'approved')->count();
+        $rejectedCount = Leave::where('employee_id', $employee->id)->where('status', 'rejected')->count();
+
+        return view('employee.ess.leaves', compact('employee', 'leaves', 'pendingCount', 'approvedCount', 'rejectedCount'));
     }
 
     /**
@@ -262,6 +346,108 @@ class EmployeeSelfServiceController extends Controller
         $payroll->load(['employee.department', 'employee.designation']);
 
         return view('payroll.show', compact('payroll'));
+    }
+
+    /**
+     * ESS – My Goals (KRA/OKR)
+     */
+    public function goals()
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        $performanceService = app(\App\Modules\Performance\Services\PerformanceService::class);
+        $goals = $performanceService->listGoals($employee->id, null, null);
+        return view('employee.ess.goals', compact('employee', 'goals'));
+    }
+
+    /**
+     * ESS – My Reviews & Reviews to complete (as manager)
+     */
+    public function reviews()
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+
+        $performanceService = app(\App\Modules\Performance\Services\PerformanceService::class);
+        $myReviews = $performanceService->getReviewsForEmployee($employee->id);
+        $reviewsToComplete = $performanceService->getReviewsToCompleteForUser($user->id);
+        return view('employee.ess.reviews', compact('employee', 'myReviews', 'reviewsToComplete'));
+    }
+
+    public function expenses()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $expenseService = app(\App\Modules\Expense\Services\ExpenseService::class);
+        $expenses = $expenseService->list($employee->id, null);
+        return view('employee.ess.expenses', compact('employee', 'expenses'));
+    }
+
+    public function training()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $trainingService = app(\App\Modules\Training\Services\TrainingService::class);
+        $assignments = $trainingService->getAssignmentsForEmployee($employee->id);
+        return view('employee.ess.training', compact('employee', 'assignments'));
+    }
+
+    public function roster()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $shiftService = app(\App\Modules\Shift\Services\ShiftService::class);
+        $weekStart = request()->query('week') ? \Carbon\Carbon::parse(request()->query('week'))->startOfWeek() : now()->startOfWeek();
+        $roster = $shiftService->getRoster($weekStart->copy(), $weekStart->copy()->endOfWeek(), $employee->id);
+        return view('employee.ess.roster', compact('employee', 'roster', 'weekStart'));
+    }
+
+    public function assets()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $assetService = app(\App\Modules\Asset\Services\AssetService::class);
+        $assets = $assetService->list($employee->id, null);
+        return view('employee.ess.assets', compact('employee', 'assets'));
+    }
+
+    public function travel()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $travelService = app(\App\Modules\Travel\Services\TravelService::class);
+        $requests = $travelService->list($employee->id, null);
+        return view('employee.ess.travel', compact('employee', 'requests'));
+    }
+
+    public function exit()
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        $exitService = app(\App\Modules\Exit\Services\ExitService::class);
+        $exits = $exitService->list($employee->id, null);
+        return view('employee.ess.exit', compact('employee', 'exits'));
     }
 }
 

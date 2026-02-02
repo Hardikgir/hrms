@@ -1,10 +1,10 @@
 <div>
-    <div class="mb-2 d-flex justify-content-between align-items-center">
+    <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap">
         <h5 class="mb-0">Leave Balance ({{ $year }})</h5>
-        <div>
-            <button type="button" wire:click="$set('year', {{ $year - 1 }})" class="btn btn-sm btn-outline-secondary">← Prev</button>
-            <span class="mx-2">{{ $year }}</span>
-            <button type="button" wire:click="$set('year', {{ $year + 1 }})" class="btn btn-sm btn-outline-secondary">Next →</button>
+        <div class="btn-group btn-group-sm">
+            <button type="button" wire:click="$set('year', {{ $year - 1 }})" class="btn btn-outline-secondary">← {{ $year - 1 }}</button>
+            <button type="button" class="btn btn-secondary disabled" disabled>{{ $year }}</button>
+            <button type="button" wire:click="$set('year', {{ $year + 1 }})" class="btn btn-outline-secondary">{{ $year + 1 }} →</button>
         </div>
     </div>
 
@@ -14,17 +14,30 @@
                 @php
                     $type = $item['leave_type'];
                     $bal = $item['balance'];
+                    $pct = $bal['allocated'] > 0 ? min(100, round(($bal['used'] / $bal['allocated']) * 100)) : 0;
+                    $isLow = $bal['available'] > 0 && $bal['available'] <= 3;
+                    $isZero = $bal['available'] <= 0;
                 @endphp
-                <div class="col-md-4 col-lg-3 mb-3">
-                    <div class="card h-100 {{ $bal['available'] <= 0 ? 'border-warning' : '' }}">
-                        <div class="card-body py-3">
-                            <h6 class="card-title text-truncate" title="{{ $type->name }}">{{ $type->name }}</h6>
-                            <p class="mb-0 small">
-                                <strong>Available:</strong> {{ $bal['available'] }} days<br>
-                                <span class="text-muted">Used: {{ $bal['used'] }} / Allocated: {{ $bal['allocated'] }}</span>
+                <div class="col-md-4 col-lg-4 mb-3">
+                    <div class="card h-100 shadow-sm {{ $isZero ? 'border-danger' : ($isLow ? 'border-warning' : '') }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="card-title mb-0 font-weight-bold text-dark">{{ $type->name }}</h6>
                                 @if($bal['carry_forward'] > 0)
-                                    <br><span class="text-info">Carry forward: {{ $bal['carry_forward'] }}</span>
+                                    <span class="badge badge-info badge-pill">+{{ $bal['carry_forward'] }} carried</span>
                                 @endif
+                            </div>
+                            <div class="mb-2">
+                                <span class="h2 font-weight-bold mb-0 {{ $isZero ? 'text-danger' : ($isLow ? 'text-warning' : 'text-success') }}">
+                                    {{ $bal['available'] }}
+                                </span>
+                                <span class="text-muted align-middle ml-1">days left</span>
+                            </div>
+                            <div class="progress mb-1" style="height: 6px;">
+                                <div class="progress-bar {{ $isZero ? 'bg-danger' : ($isLow ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ 100 - $pct }}%;" aria-valuenow="{{ $bal['available'] }}" aria-valuemin="0" aria-valuemax="{{ $bal['allocated'] }}"></div>
+                            </div>
+                            <p class="mb-0 small text-muted">
+                                Used {{ $bal['used'] }} of {{ $bal['allocated'] }} days
                             </p>
                         </div>
                     </div>

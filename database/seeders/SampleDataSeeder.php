@@ -16,6 +16,7 @@ use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Models\LeaveType;
 use App\Modules\Payroll\Models\Payroll;
 use App\Modules\Payroll\Models\SalaryStructure;
+use App\Modules\Employee\Models\EmployeeTask;
 use Carbon\Carbon;
 
 class SampleDataSeeder extends Seeder
@@ -287,6 +288,45 @@ class SampleDataSeeder extends Seeder
                         'approved_by' => $manager ? $manager->id : null,
                         'approved_at' => $payPeriodEnd->copy()->addDays(1),
                     ]
+                );
+            }
+        }
+
+        // Seed default ESS tasks for first employee (e.g. onboarding, training)
+        $firstEmployee = Employee::where('employee_id', 'EMP001')->first();
+        $adminUser = User::where('email', 'admin@hrms.com')->first();
+        if ($firstEmployee && $adminUser) {
+            $taskData = [
+                [
+                    'title' => 'Complete onboarding documents',
+                    'description' => 'Submit all required documents for onboarding',
+                    'employee_id' => $firstEmployee->id,
+                    'due_date' => now()->addDays(7),
+                    'priority' => 'high',
+                    'status' => 'pending',
+                    'action_route' => 'ess.onboarding-documents',
+                    'action_label' => 'Submit documents',
+                    'created_by' => $adminUser->id,
+                ],
+                [
+                    'title' => 'Attend training session',
+                    'description' => 'Complete mandatory training session',
+                    'employee_id' => $firstEmployee->id,
+                    'due_date' => now()->addDays(3),
+                    'priority' => 'medium',
+                    'status' => 'in_progress',
+                    'action_route' => 'ess.training-session',
+                    'action_label' => 'View details',
+                    'created_by' => $adminUser->id,
+                ],
+            ];
+            foreach ($taskData as $data) {
+                EmployeeTask::firstOrCreate(
+                    [
+                        'employee_id' => $data['employee_id'],
+                        'title' => $data['title'],
+                    ],
+                    $data
                 );
             }
         }

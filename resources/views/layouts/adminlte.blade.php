@@ -108,6 +108,14 @@
                             <p>Employees</p>
                         </a>
                     </li>
+                    @can('manage tasks')
+                    <li class="nav-item">
+                        <a href="{{ route('employee-tasks.index') }}" class="nav-link {{ request()->routeIs('employee-tasks.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-tasks"></i>
+                            <p>Employee Tasks</p>
+                        </a>
+                    </li>
+                    @endcan
                     <li class="nav-item">
                         <a href="{{ route('attendance.index') }}" class="nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-calendar-check"></i>
@@ -126,6 +134,62 @@
                             <p>Payroll</p>
                         </a>
                     </li>
+                    @can('view performance')
+                    <li class="nav-item">
+                        <a href="{{ route('performance.cycles.index') }}" class="nav-link {{ request()->routeIs('performance.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-chart-line"></i>
+                            <p>Performance</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @if(auth()->user()->can('view expenses') || auth()->user()->employee)
+                    <li class="nav-item">
+                        <a href="{{ route('expenses.index') }}" class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-receipt"></i>
+                            <p>Expenses</p>
+                        </a>
+                    </li>
+                    @endif
+                    @can('view training')
+                    <li class="nav-item">
+                        <a href="{{ route('training.courses.index') }}" class="nav-link {{ request()->routeIs('training.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-graduation-cap"></i>
+                            <p>Training</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view shifts')
+                    <li class="nav-item">
+                        <a href="{{ route('shifts.index') }}" class="nav-link {{ request()->routeIs('shifts.*') || request()->routeIs('roster.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-clock"></i>
+                            <p>Shifts & Roster</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @can('view assets')
+                    <li class="nav-item">
+                        <a href="{{ route('assets.index') }}" class="nav-link {{ request()->routeIs('assets.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-laptop"></i>
+                            <p>Assets</p>
+                        </a>
+                    </li>
+                    @endcan
+                    @if(auth()->user()->can('view travel') || auth()->user()->employee)
+                    <li class="nav-item">
+                        <a href="{{ route('travel.index') }}" class="nav-link {{ request()->routeIs('travel.*') && !request()->routeIs('travel.approve') && !request()->routeIs('travel.reject') && !request()->routeIs('travel.complete') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-plane"></i>
+                            <p>Travel</p>
+                        </a>
+                    </li>
+                    @endif
+                    @if(auth()->user()->can('view exit') || auth()->user()->employee)
+                    <li class="nav-item">
+                        <a href="{{ route('exit.index') }}" class="nav-link {{ request()->routeIs('exit.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-door-open"></i>
+                            <p>Exit</p>
+                        </a>
+                    </li>
+                    @endif
                 </ul>
             </nav>
             <!-- /.sidebar-menu -->

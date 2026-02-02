@@ -28,6 +28,14 @@ class DatabaseSeeder extends Seeder
             'view attendance', 'create attendance', 'update attendance', 'delete attendance',
             'view leaves', 'create leaves', 'update leaves', 'delete leaves', 'approve leaves',
             'view payroll', 'create payroll', 'update payroll', 'delete payroll', 'run payroll',
+            'manage tasks',
+            'view performance', 'manage performance',
+            'view expenses', 'approve expenses', 'process reimbursements',
+            'view training', 'manage training',
+            'view shifts', 'manage shifts',
+            'view assets', 'manage assets',
+            'view travel', 'approve travel',
+            'view exit', 'manage exit',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -41,6 +49,14 @@ class DatabaseSeeder extends Seeder
         $hrAdmin->givePermissionTo([
             'view employees', 'create employees', 'update employees',
             'view attendance', 'view leaves', 'approve leaves',
+            'manage tasks',
+            'view performance', 'manage performance',
+            'view expenses', 'approve expenses',
+            'view training', 'manage training',
+            'view shifts', 'manage shifts',
+            'view assets', 'manage assets',
+            'view travel', 'approve travel',
+            'view exit', 'manage exit',
         ]);
 
         // Create Super Admin User

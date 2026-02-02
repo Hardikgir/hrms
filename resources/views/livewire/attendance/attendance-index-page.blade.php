@@ -93,8 +93,8 @@
                 </tbody>
             </table>
 
-            <div class="mt-3">
-                {{ $attendances->links() }}
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $attendances->links('vendor.pagination.bootstrap-4') }}
             </div>
         </div>
     </div>

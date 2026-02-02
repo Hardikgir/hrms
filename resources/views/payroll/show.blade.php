@@ -3,6 +3,11 @@
 @section('title', 'View Payslip')
 
 @section('content')
+@php
+    $earningsArray = is_array($payroll->earnings) ? $payroll->earnings : (is_string($payroll->earnings) ? json_decode($payroll->earnings, true) ?? [] : []);
+    $deductionsArray = is_array($payroll->deductions) ? $payroll->deductions : (is_string($payroll->deductions) ? json_decode($payroll->deductions, true) ?? [] : []);
+    $statutoryArray = is_array($payroll->statutory) ? $payroll->statutory : (is_string($payroll->statutory) ? json_decode($payroll->statutory, true) ?? [] : []);
+@endphp
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -128,11 +133,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if($payroll->earnings)
-                                                    @foreach($payroll->earnings as $key => $value)
+                                                @if(!empty($earningsArray))
+                                                    @foreach($earningsArray as $key => $value)
                                                         <tr>
                                                             <td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
-                                                            <td class="text-right">{{ number_format($value, 2) }}</td>
+                                                            <td class="text-right">{{ number_format((float) $value, 2) }}</td>
                                                         </tr>
                                                     @endforeach
                                                 @else
@@ -164,11 +169,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if($payroll->deductions)
-                                                    @foreach($payroll->deductions as $key => $value)
+                                                @if(!empty($deductionsArray))
+                                                    @foreach($deductionsArray as $key => $value)
                                                         <tr>
                                                             <td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
-                                                            <td class="text-right">{{ number_format($value, 2) }}</td>
+                                                            <td class="text-right">{{ number_format((float) $value, 2) }}</td>
                                                         </tr>
                                                     @endforeach
                                                 @endif
@@ -211,7 +216,7 @@
                             </div>
                         </div>
 
-                        @if($payroll->statutory)
+                        @if(!empty($statutoryArray))
                         <div class="row mt-4">
                             <div class="col-md-12">
                                 <div class="card card-info">
@@ -220,10 +225,10 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            @foreach($payroll->statutory as $key => $value)
+                                            @foreach($statutoryArray as $key => $value)
                                                 <div class="col-md-3">
                                                     <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong> 
-                                                    ₹{{ number_format($value, 2) }}
+                                                    ₹{{ number_format((float) $value, 2) }}
                                                 </div>
                                             @endforeach
                                         </div>

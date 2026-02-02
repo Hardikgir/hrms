@@ -21,35 +21,46 @@
                         <thead>
                             <tr>
                                 <th width="5%">#</th>
-                                <th width="30%">Task</th>
-                                <th width="40%">Description</th>
-                                <th width="15%">Due Date</th>
+                                <th width="25%">Task</th>
+                                <th width="35%">Description</th>
+                                <th width="12%">Due Date</th>
                                 <th width="10%">Status</th>
+                                <th width="13%">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($tasks as $task)
                                 <tr>
-                                    <td>{{ $task['id'] }}</td>
+                                    <td>{{ $task->id }}</td>
                                     <td>
-                                        <strong>{{ $task['title'] }}</strong>
-                                        @if($task['priority'] === 'high')
+                                        <strong>{{ $task->title }}</strong>
+                                        @if($task->priority === 'high')
                                             <span class="badge badge-danger ml-2">High</span>
-                                        @elseif($task['priority'] === 'medium')
+                                        @elseif($task->priority === 'medium')
                                             <span class="badge badge-warning ml-2">Medium</span>
                                         @else
                                             <span class="badge badge-info ml-2">Low</span>
                                         @endif
                                     </td>
-                                    <td>{{ $task['description'] }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($task['due_date'])->format('d M Y') }}</td>
+                                    <td>{{ $task->description }}</td>
+                                    <td>{{ $task->due_date->format('d M Y') }}</td>
                                     <td>
-                                        @if($task['status'] === 'completed')
+                                        @if($task->status === 'completed')
                                             <span class="badge badge-success">Completed</span>
-                                        @elseif($task['status'] === 'in_progress')
+                                        @elseif($task->status === 'in_progress')
                                             <span class="badge badge-info">In Progress</span>
                                         @else
                                             <span class="badge badge-warning">Pending</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($task->action_route)
+                                            @php
+                                                $actionUrl = str_starts_with($task->action_route, 'http') || str_starts_with($task->action_route, '/') ? $task->action_route : route($task->action_route);
+                                            @endphp
+                                            <a href="{{ $actionUrl }}" class="btn btn-sm btn-primary">{{ $task->action_label ?? 'Submit' }}</a>
+                                        @else
+                                            <span class="text-muted">—</span>
                                         @endif
                                     </td>
                                 </tr>

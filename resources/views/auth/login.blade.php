@@ -78,11 +78,10 @@
                 </div>
             </form>
 
-            <p class="mb-1 mt-3">
-                <small class="text-muted">
-                    Default: admin@hrms.com / password123
-                </small>
-            </p>
+            <div class="mt-3 small text-muted">
+                <p class="mb-1"><strong>Admin:</strong> admin@hrms.com / password123</p>
+                <p class="mb-0"><strong>Employee:</strong> rajesh.kumar@hrms.com / password123</p>
+            </div>
         </div>
         <!-- /.login-card-body -->
     </div>

@@ -83,6 +83,7 @@ app/Modules/{ModuleName}/
 - `leaves`: Leave requests
 - `payrolls`: Monthly payroll records
 - `salary_structures`: Employee salary breakdowns
+- **Performance:** `performance_review_cycles`, `goals` (KRA/OKR), `performance_reviews`, `performance_review_goal_ratings`
 
 ## Security
 

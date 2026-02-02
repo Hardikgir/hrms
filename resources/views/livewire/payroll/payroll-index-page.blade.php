@@ -59,6 +59,18 @@
                             </td>
                             <td>
                                 <a href="{{ route('payroll.show', $payroll) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> View</a>
+                                @if($payroll->status === 'draft' && auth()->user()->can('update payroll'))
+                                    <form action="{{ route('payroll.lock', $payroll) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-lock"></i> Lock</button>
+                                    </form>
+                                @endif
+                                @if(in_array($payroll->status, ['draft', 'processed']) && auth()->user()->can('update payroll'))
+                                    <form action="{{ route('payroll.approve', $payroll) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i> Approve</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty
@@ -69,8 +81,8 @@
                 </tbody>
             </table>
 
-            <div class="mt-3">
-                {{ $payrolls->links() }}
+            <div class="mt-3 d-flex justify-content-center">
+                {{ $payrolls->links('vendor.pagination.bootstrap-4') }}
             </div>
         </div>
     </div>
