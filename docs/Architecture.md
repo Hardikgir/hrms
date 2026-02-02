@@ -2,7 +2,7 @@
 
 ## Overview
 
-The HRMS (Human Resource Management System) is built using Laravel 12 with a modular architecture. The application follows MVC pattern and uses AdminLTE v3 for the frontend interface.
+The HRMS (Human Resource Management System) is built using Laravel 12 with a modular architecture. The application follows MVC pattern, uses **Livewire** for frontend interactivity, and AdminLTE v3 for the UI. Business logic lives in **Service** classes; Livewire components and controllers remain thin.
 
 ## Architecture Pattern
 
@@ -10,11 +10,12 @@ The HRMS (Human Resource Management System) is built using Laravel 12 with a mod
 
 The application is structured in modules, each module containing:
 - **Models**: Database entities
-- **Controllers**: Web and API controllers
+- **Controllers**: Web and API controllers (thin: route, auth, delegate to services)
+- **Services**: Business logic (check-in/out, calculations, workflows)
+- **Livewire**: `app/Livewire/{Module}/` — page and child components (UI state, user interaction, emit events; no business logic)
+- **Policies**: Authorization (Gates/Policies; never in Livewire views)
 - **Resources**: API resource transformers
 - **Requests**: Form request validation
-- **Services**: Business logic
-- **Repositories**: Data access layer (optional)
 - **Routes**: Module-specific routes
 - **Views**: Blade templates
 - **Migrations**: Database schema
@@ -47,6 +48,7 @@ app/Modules/{ModuleName}/
 - **Queue Worker**: Laravel Horizon
 
 ### Frontend
+- **Interactivity**: Livewire 4 (page + child components; no business logic in components)
 - **UI Framework**: AdminLTE v3
 - **CSS Framework**: Bootstrap 4
 - **JavaScript**: jQuery

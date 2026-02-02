@@ -10,13 +10,5 @@
 @endsection
 
 @section('content')
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Run Payroll</h3>
-    </div>
-    <div class="card-body">
-        <p class="text-muted">Payroll processing functionality coming soon...</p>
-    </div>
-</div>
+    @livewire('payroll.payroll-run-page')
 @endsection
-

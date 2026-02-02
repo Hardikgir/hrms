@@ -49,8 +49,10 @@ Route::middleware(['auth'])->group(function () {
     // Payroll Routes - Only admins can access
     Route::prefix('payroll')->name('payroll.')->middleware('can:view payroll')->group(function () {
         Route::get('/', [\App\Modules\Payroll\Controllers\PayrollController::class, 'index'])->name('index');
-        Route::get('/{payroll}', [\App\Modules\Payroll\Controllers\PayrollController::class, 'show'])->name('show');
         Route::get('/run', [\App\Modules\Payroll\Controllers\PayrollController::class, 'run'])->name('run');
+        Route::get('/{payroll}', [\App\Modules\Payroll\Controllers\PayrollController::class, 'show'])->name('show');
+        Route::post('/{payroll}/lock', [\App\Modules\Payroll\Controllers\PayrollController::class, 'lock'])->name('lock');
+        Route::post('/{payroll}/approve', [\App\Modules\Payroll\Controllers\PayrollController::class, 'approve'])->name('approve');
     });
 });
 

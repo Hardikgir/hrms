@@ -11,37 +11,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        @if($todayAttendance && !$todayAttendance->check_out_time)
-            <div class="alert alert-info">
-                <h5><i class="icon fas fa-info"></i> You are currently checked in!</h5>
-                <p>Check-in time: {{ \Carbon\Carbon::parse($todayAttendance->check_in_time)->format('h:i A') }}</p>
-                <form action="{{ route('attendance.check-out') }}" method="POST" class="mt-2">
-                    @csrf
-                    <input type="hidden" name="attendance_id" value="{{ $todayAttendance->id }}">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Check Out
-                    </button>
-                </form>
-            </div>
-        @elseif(!$todayAttendance)
-            <div class="alert alert-warning">
-                <h5><i class="icon fas fa-exclamation-triangle"></i> You haven't checked in today!</h5>
-                <form action="{{ route('attendance.check-in') }}" method="POST" class="mt-2">
-                    @csrf
-                    <input type="hidden" name="employee_id" value="{{ $employee->id }}">
-                    <input type="hidden" name="method" value="web">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-sign-in-alt"></i> Check In
-                    </button>
-                </form>
-            </div>
-        @else
-            <div class="alert alert-success">
-                <h5><i class="icon fas fa-check"></i> You have completed today's attendance!</h5>
-                <p>Check-in: {{ \Carbon\Carbon::parse($todayAttendance->check_in_time)->format('h:i A') }} | 
-                   Check-out: {{ \Carbon\Carbon::parse($todayAttendance->check_out_time)->format('h:i A') }}</p>
-            </div>
-        @endif
+        @livewire('attendance.check-in-out-widget')
 
         <div class="card">
             <div class="card-header">

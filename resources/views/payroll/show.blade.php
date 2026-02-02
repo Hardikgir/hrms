@@ -31,6 +31,18 @@
                             ({{ \Carbon\Carbon::create($payroll->year, $payroll->month, 1)->format('F Y') }})
                         </h3>
                         <div class="card-tools">
+                            @if($payroll->status === 'draft' && auth()->user()->can('update payroll'))
+                                <form action="{{ route('payroll.lock', $payroll) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-warning mr-1"><i class="fas fa-lock"></i> Lock</button>
+                                </form>
+                            @endif
+                            @if(in_array($payroll->status, ['draft', 'processed']) && auth()->user()->can('update payroll'))
+                                <form action="{{ route('payroll.approve', $payroll) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-info mr-1"><i class="fas fa-check"></i> Approve</button>
+                                </form>
+                            @endif
                             <a href="{{ route('payroll.index') }}" class="btn btn-sm btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Back
                             </a>
@@ -230,6 +242,42 @@
                                     </div>
                                     <div class="card-body">
                                         <p>{{ $payroll->notes }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if(isset($auditLogs) && $auditLogs->count() > 0)
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="card card-secondary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Audit Log</h3>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <table class="table table-sm table-striped mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date</th>
+                                                    <th>Action</th>
+                                                    <th>User</th>
+                                                    <th>Old Status</th>
+                                                    <th>New Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($auditLogs as $log)
+                                                    <tr>
+                                                        <td>{{ $log->created_at->format('d M Y H:i') }}</td>
+                                                        <td>{{ ucfirst($log->action) }}</td>
+                                                        <td>{{ $log->user->name ?? '-' }}</td>
+                                                        <td>{{ $log->old_status ?? '-' }}</td>
+                                                        <td>{{ $log->new_status ?? '-' }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>

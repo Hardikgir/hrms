@@ -62,5 +62,10 @@ class Payroll extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function auditLogs()
+    {
+        return $this->hasMany(PayrollAuditLog::class);
+    }
 }
 

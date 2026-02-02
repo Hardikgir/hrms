@@ -20,6 +20,7 @@
     <!-- daterangepicker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     
+    @livewireStyles
     @stack('styles')
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -226,6 +227,7 @@
 
 </script>
 
+@livewireScripts
 @stack('scripts')
 </body>
 </html>

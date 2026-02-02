@@ -11,7 +11,9 @@
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
+        @livewire('leave.leave-balance-dashboard')
+
+        <div class="card mt-3">
             <div class="card-header">
                 <h3 class="card-title">My Leave Requests</h3>
                 <div class="card-tools">
