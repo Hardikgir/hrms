@@ -10,7 +10,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Edit Shift</h3></div>
     <div class="card-body">
-        @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
         <form action="{{ route('shifts.update', $shift) }}" method="POST">
             @csrf
             @method('PUT')

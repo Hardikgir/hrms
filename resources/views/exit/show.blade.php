@@ -7,7 +7,6 @@
     <li class="breadcrumb-item active">View</li>
 @endsection
 @section('content')
-@if(session('success'))<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert">&times;</button>{{ session('success') }}</div>@endif
 <div class="card">
     <div class="card-header"><h3 class="card-title">Exit Request – {{ $exit->employee->full_name ?? '-' }}</h3></div>
     <div class="card-body">

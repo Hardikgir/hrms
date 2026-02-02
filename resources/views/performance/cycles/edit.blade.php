@@ -14,12 +14,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Edit Cycle</h3></div>
     <div class="card-body">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ session('success') }}
-            </div>
-        @endif
         <form action="{{ route('performance.cycles.update', $cycle) }}" method="POST">
             @csrf
             @method('PUT')

@@ -17,7 +17,6 @@
         </div>
     </div>
     <div class="card-body">
-        @if(session('success'))<div class="alert alert-success alert-dismissible"><button type="button" class="close" data-dismiss="alert">&times;</button>{{ session('success') }}</div>@endif
         <table class="table table-bordered table-striped">
             <thead><tr><th>Name</th><th>Start</th><th>End</th><th>Break (min)</th><th>Working Hrs</th><th>Status</th><th>Actions</th></tr></thead>
             <tbody>

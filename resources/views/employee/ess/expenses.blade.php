@@ -14,7 +14,6 @@
         </div>
     </div>
     <div class="card-body p-0">
-        @if(session('success'))<div class="alert alert-success m-2">{{ session('success') }}</div>@endif
         @if($expenses->total() > 0)
         <table class="table table-striped mb-0">
             <thead><tr><th>Amount</th><th>Category</th><th>Description</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>

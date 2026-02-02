@@ -13,12 +13,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">New Performance Review</h3></div>
     <div class="card-body">
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ session('error') }}
-            </div>
-        @endif
         <form action="{{ route('performance.reviews.store') }}" method="POST">
             @csrf
             <div class="form-group">

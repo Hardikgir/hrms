@@ -13,12 +13,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Self Review – {{ $review->cycle->name ?? '' }}</h3></div>
     <div class="card-body">
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                {{ session('error') }}
-            </div>
-        @endif
         <p class="text-muted">Rate yourself (1–5) and add comments. Your manager will then complete their review.</p>
         <form action="{{ route('performance.reviews.self-review.submit', $review) }}" method="POST">
             @csrf

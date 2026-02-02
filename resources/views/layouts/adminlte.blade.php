@@ -220,7 +220,7 @@
         <section class="content">
             <div class="container-fluid">
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show flash-alert" role="alert" data-auto-dismiss="5000">
                         {{ session('success') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -229,7 +229,7 @@
                 @endif
 
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show flash-alert" role="alert" data-auto-dismiss="5000">
                         {{ session('error') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -238,7 +238,7 @@
                 @endif
 
                 @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show flash-alert" role="alert" data-auto-dismiss="5000">
                         <ul class="mb-0">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -289,6 +289,19 @@
         }
     });
 
+    // Auto-dismiss flash alerts after 5 seconds and ensure no duplicate alerts in content
+    $(function() {
+        var dismissMs = 5000;
+        $('.flash-alert[data-auto-dismiss]').each(function() {
+            var el = $(this);
+            var ms = parseInt(el.data('auto-dismiss'), 10) || dismissMs;
+            setTimeout(function() {
+                el.fadeTo(300, 0, function() {
+                    el.alert('close');
+                });
+            }, ms);
+        });
+    });
 </script>
 
 @livewireScripts

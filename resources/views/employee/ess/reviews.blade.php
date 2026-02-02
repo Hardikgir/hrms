@@ -9,13 +9,6 @@
 @endsection
 
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        {{ session('success') }}
-    </div>
-@endif
-
 @if($reviewsToComplete->isNotEmpty())
 <div class="card card-outline card-primary mb-4">
     <div class="card-header">

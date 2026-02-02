@@ -10,7 +10,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Submit Resignation / Exit Request</h3></div>
     <div class="card-body">
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
         <form action="{{ route('exit.store') }}" method="POST">
             @csrf
             <div class="form-group"><label for="resignation_date">Resignation Date *</label><input type="date" class="form-control @error('resignation_date') is-invalid @enderror" id="resignation_date" name="resignation_date" value="{{ old('resignation_date') }}" required>@error('resignation_date')<span class="invalid-feedback">{{ $message }}</span>@enderror</div>

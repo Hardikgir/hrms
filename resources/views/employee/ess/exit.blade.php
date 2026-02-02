@@ -14,8 +14,6 @@
         </div>
     </div>
     <div class="card-body p-0">
-        @if(session('success'))<div class="alert alert-success m-2">{{ session('success') }}</div>@endif
-        @if(session('error'))<div class="alert alert-danger m-2">{{ session('error') }}</div>@endif
         @if($exits->total() > 0)
         <table class="table table-striped mb-0">
             <thead><tr><th>Resignation Date</th><th>Last Working</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>

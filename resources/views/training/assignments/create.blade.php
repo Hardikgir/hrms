@@ -10,7 +10,6 @@
 <div class="card">
     <div class="card-header"><h3 class="card-title">Assign Training</h3></div>
     <div class="card-body">
-        @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
         <form action="{{ route('training.assignments.store') }}" method="POST">
             @csrf
             <div class="form-group"><label for="employee_id">Employee *</label><select class="form-control" id="employee_id" name="employee_id" required>@foreach($employees as $emp)<option value="{{ $emp->id }}" {{ old('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->full_name }}</option>@endforeach</select></div>
