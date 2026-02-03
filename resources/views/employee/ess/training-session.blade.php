@@ -56,11 +56,19 @@
 
                 <hr class="my-4">
 
-                <p class="text-muted mb-2">After attending the session, confirm your attendance below.</p>
-                <form action="{{ route('ess.training-session.confirm') }}" method="POST" class="d-inline">
-                    @csrf
-                    <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> I've attended – confirm</button>
-                </form>
+                @if(!$trainingTask)
+                    <p class="text-muted mb-0">You have no pending training session task, or this task has already been approved.</p>
+                @elseif($trainingTask->status === 'completed')
+                    <div class="alert alert-info mb-0">
+                        <i class="fas fa-info-circle"></i> You've confirmed your attendance. Waiting for manager approval. Once approved, this task will be marked complete.
+                    </div>
+                @else
+                    <p class="text-muted mb-2">After attending the session, confirm your attendance below.</p>
+                    <form action="{{ route('ess.training-session.confirm') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-success"><i class="fas fa-check"></i> I've attended – confirm</button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>

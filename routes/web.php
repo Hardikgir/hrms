@@ -30,18 +30,25 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/training-session/confirm', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'confirmTrainingAttendance'])->name('training-session.confirm');
         Route::get('/attendance', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'attendance'])->name('attendance');
         Route::get('/leaves', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'leaves'])->name('leaves');
+        Route::get('/leaves/create', [\App\Modules\Leave\Controllers\LeaveController::class, 'create'])->name('leaves.create');
+        Route::get('/leaves/{leave}', [\App\Modules\Leave\Controllers\LeaveController::class, 'show'])->name('leaves.show');
+        Route::get('/leaves/{leave}/edit', [\App\Modules\Leave\Controllers\LeaveController::class, 'edit'])->name('leaves.edit');
+        Route::put('/leaves/{leave}', [\App\Modules\Leave\Controllers\LeaveController::class, 'update'])->name('leaves.update');
+        Route::post('/leaves', [\App\Modules\Leave\Controllers\LeaveController::class, 'store'])->name('leaves.store');
         Route::get('/payslips', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'payslips'])->name('payslips');
         Route::get('/payslips/{payroll}', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'viewPayslip'])->name('payslips.show');
         Route::get('/goals', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'goals'])->name('goals');
         Route::get('/reviews', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'reviews'])->name('reviews');
         Route::get('/expenses', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'expenses'])->name('expenses');
         Route::get('/expenses/create', [\App\Modules\Expense\Controllers\ExpenseController::class, 'create'])->name('expenses.create');
+        Route::get('/expenses/{expense}', [\App\Modules\Expense\Controllers\ExpenseController::class, 'show'])->name('expenses.show');
         Route::post('/expenses', [\App\Modules\Expense\Controllers\ExpenseController::class, 'store'])->name('expenses.store');
         Route::get('/training', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'training'])->name('training');
         Route::get('/roster', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'roster'])->name('roster');
         Route::get('/assets', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'assets'])->name('assets');
         Route::get('/travel', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'travel'])->name('travel');
         Route::get('/travel/create', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'create'])->name('travel.create');
+        Route::get('/travel/{travel}', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'show'])->name('travel.show');
         Route::post('/travel', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'store'])->name('travel.store');
         Route::get('/exit', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'exit'])->name('exit');
         Route::get('/exit/create', [\App\Modules\Exit\Controllers\ExitRequestController::class, 'create'])->name('exit.create');
@@ -51,10 +58,12 @@ Route::middleware(['auth'])->group(function () {
     // Admin/HR Routes (only for non-employees or with permissions)
     Route::middleware(['can:view employees'])->group(function () {
         // Employee Routes
+        Route::get('employees/{employee}/documents/{document}/download', [EmployeeController::class, 'downloadDocument'])->name('employees.documents.download');
         Route::resource('employees', EmployeeController::class);
     });
 
     // Employee Tasks (Admin: create/assign tasks for ESS)
+    Route::post('employee-tasks/{employee_task}/approve', [\App\Modules\Employee\Controllers\EmployeeTaskController::class, 'approve'])->name('employee-tasks.approve')->middleware('can:manage tasks');
     Route::resource('employee-tasks', \App\Modules\Employee\Controllers\EmployeeTaskController::class)->except(['show'])->middleware('can:manage tasks');
     
     // Attendance Routes - Admin can view all, employees can check in/out
@@ -77,7 +86,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Expense Management
+    Route::get('expenses/{expense}/receipt', [\App\Modules\Expense\Controllers\ExpenseController::class, 'downloadReceipt'])->name('expenses.receipt');
     Route::resource('expenses', \App\Modules\Expense\Controllers\ExpenseController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('expense-categories', \App\Modules\Expense\Controllers\ExpenseCategoryController::class)->except(['show'])->middleware('can:manage expense categories');
     Route::post('expenses/{expense}/approve', [\App\Modules\Expense\Controllers\ExpenseController::class, 'approve'])->name('expenses.approve');
     Route::post('expenses/{expense}/reject', [\App\Modules\Expense\Controllers\ExpenseController::class, 'reject'])->name('expenses.reject');
     Route::post('expenses/{expense}/reimburse', [\App\Modules\Expense\Controllers\ExpenseController::class, 'reimburse'])->name('expenses.reimburse');

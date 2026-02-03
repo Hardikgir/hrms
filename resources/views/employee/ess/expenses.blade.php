@@ -25,7 +25,7 @@
                     <td>{{ Str::limit($e->description, 40) ?? '-' }}</td>
                     <td>@if($e->status === 'pending')<span class="badge badge-warning">Pending</span>@elseif($e->status === 'approved')<span class="badge badge-info">Approved</span>@elseif($e->status === 'rejected')<span class="badge badge-danger">Rejected</span>@else<span class="badge badge-success">Reimbursed</span>@endif</td>
                     <td>{{ $e->created_at->format('d M Y') }}</td>
-                    <td><a href="{{ route('expenses.show', $e) }}" class="btn btn-sm btn-info">View</a></td>
+                    <td><a href="{{ route('ess.expenses.show', $e) }}" class="btn btn-sm btn-info">View</a></td>
                 </tr>
                 @endforeach
             </tbody>

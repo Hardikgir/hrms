@@ -101,6 +101,11 @@ class Employee extends Model
         return $this->hasOne(\App\Models\User::class);
     }
 
+    public function documents()
+    {
+        return $this->hasMany(\App\Models\Document::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";

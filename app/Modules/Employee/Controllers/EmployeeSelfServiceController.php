@@ -142,6 +142,7 @@ class EmployeeSelfServiceController extends Controller
         }
 
         $tasks = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
+            ->visibleToEmployee()
             ->orderBy('due_date')
             ->get();
 
@@ -171,7 +172,7 @@ class EmployeeSelfServiceController extends Controller
     }
 
     /**
-     * Submit onboarding documents (file upload)
+     * Submit onboarding documents (file upload + document details)
      */
     public function submitOnboardingDocuments(Request $request)
     {
@@ -182,15 +183,52 @@ class EmployeeSelfServiceController extends Controller
             return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
         }
 
-        $request->validate([
+        $rules = [
             'document_type' => 'required|in:aadhar,pan,bank_passbook,photo',
             'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ]);
+        ];
 
-        $path = $request->file('document')->store(
+        $type = $request->input('document_type');
+        if ($type === 'aadhar') {
+            $rules['aadhar_number'] = 'required|digits:12';
+        } elseif ($type === 'pan') {
+            $rules['pan_number'] = 'required|string|size:10|regex:/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/';
+        } elseif ($type === 'bank_passbook') {
+            $rules['bank_account_number'] = 'required|string|max:50';
+            $rules['bank_ifsc'] = 'required|string|size:11|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/';
+            $rules['bank_name'] = 'nullable|string|max:255';
+            $rules['bank_branch'] = 'nullable|string|max:255';
+        }
+
+        $validated = $request->validate($rules);
+
+        $file = $request->file('document');
+        $path = $file->store(
             'onboarding/' . $employee->id,
             'local'
         );
+
+        \App\Models\Document::create([
+            'employee_id' => $employee->id,
+            'document_type' => $request->document_type,
+            'path' => $path,
+            'original_name' => $file->getClientOriginalName(),
+            'disk' => 'local',
+        ]);
+
+        // Update employee KYC/bank details from form
+        if ($type === 'aadhar' && !empty($validated['aadhar_number'])) {
+            $employee->update(['aadhar_number' => $validated['aadhar_number']]);
+        } elseif ($type === 'pan' && !empty($validated['pan_number'])) {
+            $employee->update(['pan_number' => strtoupper($validated['pan_number'])]);
+        } elseif ($type === 'bank_passbook') {
+            $employee->update([
+                'bank_account_number' => $validated['bank_account_number'],
+                'bank_ifsc' => $validated['bank_ifsc'],
+                'bank_name' => $validated['bank_name'] ?? $employee->bank_name,
+                'bank_branch' => $validated['bank_branch'] ?? $employee->bank_branch,
+            ]);
+        }
 
         return redirect()->route('ess.onboarding-documents')
             ->with('success', 'Document uploaded successfully. You can upload more below.');
@@ -207,6 +245,11 @@ class EmployeeSelfServiceController extends Controller
         if (!$employee) {
             return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
         }
+
+        $trainingTask = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
+            ->where('action_route', 'ess.training-session')
+            ->visibleToEmployee()
+            ->first();
 
         // Placeholder training details (could come from a training_sessions table later)
         $training = [
@@ -225,11 +268,11 @@ class EmployeeSelfServiceController extends Controller
             'contact' => 'HR Team (hr@company.com) for any queries.',
         ];
 
-        return view('employee.ess.training-session', compact('employee', 'training'));
+        return view('employee.ess.training-session', compact('employee', 'training', 'trainingTask'));
     }
 
     /**
-     * Confirm training attendance (placeholder – no DB yet)
+     * Confirm training attendance – marks the training-session task as completed.
      */
     public function confirmTrainingAttendance(Request $request)
     {
@@ -240,8 +283,21 @@ class EmployeeSelfServiceController extends Controller
             return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
         }
 
-        // In a full implementation, record attendance in training_attendances table
-        return redirect()->route('ess.tasks')->with('success', 'Training attendance noted. Thank you!');
+        $task = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
+            ->where('action_route', 'ess.training-session')
+            ->whereIn('status', ['pending', 'in_progress'])
+            ->first();
+
+        if (!$task) {
+            return redirect()->route('ess.training-session')->with('error', 'No pending training session task found.');
+        }
+
+        $task->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        return redirect()->route('ess.tasks')->with('success', 'Training attendance confirmed. Your manager will approve it shortly.');
     }
 
     /**
@@ -345,7 +401,7 @@ class EmployeeSelfServiceController extends Controller
 
         $payroll->load(['employee.department', 'employee.designation']);
 
-        return view('payroll.show', compact('payroll'));
+        return view('employee.ess.payslip-show', compact('payroll'));
     }
 
     /**

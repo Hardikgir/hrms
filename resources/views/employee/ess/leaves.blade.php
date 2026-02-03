@@ -24,7 +24,7 @@
         {{-- Quick apply + stats --}}
         <div class="row mb-3">
             <div class="col-md-8">
-                <a href="{{ route('leaves.create') }}" class="btn btn-primary">
+                <a href="{{ route('ess.leaves.create') }}" class="btn btn-primary">
                     <i class="fas fa-plus"></i> Apply for Leave
                 </a>
                 <p class="text-muted small mt-2 mb-0">Submit a new leave request. You can edit or cancel pending requests.</p>
@@ -87,7 +87,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('leaves.show', $leave) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
+                                            <a href="{{ route('ess.leaves.show', $leave) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
                                             @if($leave->status === 'pending')
                                                 <a href="{{ route('leaves.edit', $leave) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>
                                             @endif
@@ -102,7 +102,7 @@
                         <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No leave requests</h5>
                         <p class="text-muted mb-3">You haven't applied for any leave yet.</p>
-                        <a href="{{ route('leaves.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Apply for Leave</a>
+                        <a href="{{ route('ess.leaves.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Apply for Leave</a>
                     </div>
                 @endif
             </div>

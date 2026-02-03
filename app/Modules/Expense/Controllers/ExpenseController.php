@@ -5,8 +5,11 @@ namespace App\Modules\Expense\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Employee\Models\Employee;
 use App\Modules\Expense\Models\Expense;
+use App\Modules\Expense\Models\ExpenseCategory;
 use App\Modules\Expense\Services\ExpenseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ExpenseController extends Controller
 {
@@ -33,7 +36,14 @@ class ExpenseController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
-        return view('expense.create', compact('employee'));
+        $categories = ExpenseCategory::active()->ordered()->get();
+        if ($employee && !request()->routeIs('ess.expenses.*')) {
+            return redirect()->route('ess.expenses.create');
+        }
+        if (request()->routeIs('ess.expenses.*')) {
+            return view('employee.ess.expense-create', compact('employee', 'categories'));
+        }
+        return view('expense.create', compact('employee', 'categories'));
     }
 
     public function store(Request $request)
@@ -45,7 +55,7 @@ class ExpenseController extends Controller
         }
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
+            'category' => ['required', 'string', 'max:100', Rule::in(ExpenseCategory::activeSlugs())],
             'description' => 'nullable|string|max:2000',
             'receipt' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
@@ -69,7 +79,28 @@ class ExpenseController extends Controller
     {
         $this->authorize('view', $expense);
         $expense->load(['employee', 'approvedBy', 'reimbursedBy', 'rejectedBy']);
+        $user = auth()->user();
+        if ($user->employee && $expense->employee_id === $user->employee->id && !request()->routeIs('ess.expenses.*')) {
+            return redirect()->route('ess.expenses.show', $expense);
+        }
+        if (request()->routeIs('ess.expenses.*')) {
+            return view('employee.ess.expense-show', compact('expense'));
+        }
         return view('expense.show', compact('expense'));
+    }
+
+    public function downloadReceipt(Expense $expense)
+    {
+        $this->authorize('view', $expense);
+        if (!$expense->receipt_path) {
+            abort(404, 'No receipt uploaded for this expense.');
+        }
+        if (!Storage::disk('local')->exists($expense->receipt_path)) {
+            abort(404, 'Receipt file not found.');
+        }
+        $ext = pathinfo($expense->receipt_path, PATHINFO_EXTENSION) ?: 'pdf';
+        $downloadName = 'expense-' . $expense->id . '-receipt.' . $ext;
+        return Storage::disk('local')->download($expense->receipt_path, $downloadName);
     }
 
     public function approve(Expense $expense)

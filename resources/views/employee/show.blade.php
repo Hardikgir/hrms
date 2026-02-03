@@ -225,7 +225,7 @@
                                     </tr>
                                     <tr>
                                         <th>Account Number</th>
-                                        <td>{{ $employee->bank_account_number ? '****' . substr($employee->bank_account_number, -4) : '-' }}</td>
+                                        <td>{{ $employee->bank_account_number ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <th>IFSC Code</th>
@@ -247,17 +247,42 @@
                                     </tr>
                                     <tr>
                                         <th>Aadhar Number</th>
-                                        <td>{{ $employee->aadhar_number ? '****' . substr($employee->aadhar_number, -4) : '-' }}</td>
+                                        <td>{{ $employee->aadhar_number ?? '-' }}</td>
                                     </tr>
                                     <tr>
                                         <th>Passport Number</th>
                                         <td>{{ $employee->passport_number ?? '-' }}</td>
                                     </tr>
-                                    <tr>
-                                        <th>Passport Expiry</th>
-                                        <td>{{ $employee->passport_expiry ? \Carbon\Carbon::parse($employee->passport_expiry)->format('d M Y') : '-' }}</td>
-                                    </tr>
                                 </table>
+                                <h5 class="mt-4">Onboarding Documents (Uploaded)</h5>
+                                @if($employee->documents->isNotEmpty())
+                                    <table class="table table-bordered table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Document Type</th>
+                                                <th>Original Name</th>
+                                                <th>Uploaded</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($employee->documents as $doc)
+                                                <tr>
+                                                    <td>{{ $doc->type_label }}</td>
+                                                    <td>{{ $doc->original_name ?? '-' }}</td>
+                                                    <td>{{ $doc->created_at->format('d M Y H:i') }}</td>
+                                                    <td>
+                                                        <a href="{{ route('employees.documents.download', [$employee, $doc]) }}" class="btn btn-sm btn-primary" target="_blank" rel="noopener">
+                                                            <i class="fas fa-download"></i> Download
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                @else
+                                    <p class="text-muted mb-0">No onboarding documents uploaded yet.</p>
+                                @endif
                             </div>
                         </div>
                     </div>

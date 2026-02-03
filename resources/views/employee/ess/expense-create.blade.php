@@ -1,19 +1,24 @@
-@extends('layouts.adminlte')
+@extends('layouts.ess')
 
 @section('title', 'Submit Expense')
 @section('page_title', 'Submit Expense')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('expenses.index') }}">Expenses</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('ess.dashboard') }}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('ess.expenses') }}">Expenses</a></li>
     <li class="breadcrumb-item active">Submit</li>
 @endsection
 
 @section('content')
 <div class="card">
-    <div class="card-header"><h3 class="card-title">Submit Expense</h3></div>
+    <div class="card-header">
+        <h3 class="card-title">Submit Expense</h3>
+        <div class="card-tools">
+            <a href="{{ route('ess.expenses') }}" class="btn btn-sm btn-secondary"><i class="fas fa-arrow-left"></i> Back to Expenses</a>
+        </div>
+    </div>
     <div class="card-body">
-        <form action="{{ request()->routeIs('ess.*') ? route('ess.expenses.store') : route('expenses.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('ess.expenses.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="amount">Amount <span class="text-danger">*</span></label>
@@ -44,7 +49,7 @@
                 @error('receipt')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{{ request()->routeIs('ess.*') ? route('ess.expenses') : route('expenses.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('ess.expenses') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

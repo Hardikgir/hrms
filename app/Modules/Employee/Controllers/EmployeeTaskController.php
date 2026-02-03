@@ -18,7 +18,7 @@ class EmployeeTaskController extends Controller
     {
         $this->authorize('manage tasks');
 
-        $query = EmployeeTask::with(['employee', 'createdBy'])->latest('due_date');
+        $query = EmployeeTask::with(['employee', 'createdBy', 'approvedBy'])->latest('due_date');
 
         if ($request->filled('employee_id')) {
             $query->where(function ($q) use ($request) {
@@ -54,7 +54,7 @@ class EmployeeTaskController extends Controller
             'employee_id' => 'nullable|exists:employees,id',
             'due_date' => 'required|date',
             'priority' => 'required|in:low,medium,high',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,in_progress,completed,approved',
             'action_route' => 'nullable|string|max:100',
             'action_label' => 'nullable|string|max:50',
         ]);
@@ -85,7 +85,7 @@ class EmployeeTaskController extends Controller
             'employee_id' => 'nullable|exists:employees,id',
             'due_date' => 'required|date',
             'priority' => 'required|in:low,medium,high',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,in_progress,completed,approved',
             'action_route' => 'nullable|string|max:100',
             'action_label' => 'nullable|string|max:50',
         ]);
@@ -102,5 +102,22 @@ class EmployeeTaskController extends Controller
         $employee_task->delete();
 
         return redirect()->route('employee-tasks.index')->with('success', 'Task deleted successfully.');
+    }
+
+    public function approve(EmployeeTask $employee_task)
+    {
+        $this->authorize('manage tasks');
+
+        if ($employee_task->status !== 'completed') {
+            return redirect()->route('employee-tasks.index')->with('error', 'Only completed tasks can be approved.');
+        }
+
+        $employee_task->update([
+            'status' => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+        ]);
+
+        return redirect()->route('employee-tasks.index')->with('success', 'Task approved. It will no longer appear in the employee\'s task list.');
     }
 }

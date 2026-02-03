@@ -38,7 +38,8 @@
                         <option value="">All Status</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed (awaiting approval)</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -83,8 +84,16 @@
                         @endif
                     </td>
                     <td>
-                        @if($task->status === 'completed')
+                        @if($task->status === 'approved')
+                            <span class="badge badge-secondary">Approved</span>
+                            @if($task->approved_at)
+                                <br><small class="text-muted">{{ $task->approved_at->format('d M Y') }} by {{ $task->approvedBy->name ?? '-' }}</small>
+                            @endif
+                        @elseif($task->status === 'completed')
                             <span class="badge badge-success">Completed</span>
+                            @if($task->completed_at)
+                                <br><small class="text-muted">{{ $task->completed_at->format('d M Y H:i') }}</small>
+                            @endif
                         @elseif($task->status === 'in_progress')
                             <span class="badge badge-info">In Progress</span>
                         @else
@@ -93,6 +102,14 @@
                     </td>
                     <td>{{ $task->createdBy->name ?? '-' }}</td>
                     <td>
+                        @if($task->status === 'completed')
+                            <form action="{{ route('employee-tasks.approve', $task) }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-success" title="Approve – task will disappear from employee list">
+                                    <i class="fas fa-check"></i> Approve
+                                </button>
+                            </form>
+                        @endif
                         <a href="{{ route('employee-tasks.edit', $task) }}" class="btn btn-sm btn-primary">
                             <i class="fas fa-edit"></i>
                         </a>

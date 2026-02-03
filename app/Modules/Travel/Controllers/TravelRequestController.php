@@ -33,6 +33,12 @@ class TravelRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
+        if ($employee && !request()->routeIs('ess.travel.*')) {
+            return redirect()->route('ess.travel.create');
+        }
+        if (request()->routeIs('ess.travel.*')) {
+            return view('employee.ess.travel-create', compact('employee'));
+        }
         return view('travel.create', compact('employee'));
     }
 
@@ -69,6 +75,13 @@ class TravelRequestController extends Controller
     {
         $this->authorize('view', $travel);
         $travel->load(['employee', 'approvedBy']);
+        $user = auth()->user();
+        if ($user->employee && $travel->employee_id === $user->employee->id && !request()->routeIs('ess.travel.*')) {
+            return redirect()->route('ess.travel.show', $travel);
+        }
+        if (request()->routeIs('ess.travel.*')) {
+            return view('employee.ess.travel-show', compact('travel'));
+        }
         return view('travel.show', compact('travel'));
     }
 

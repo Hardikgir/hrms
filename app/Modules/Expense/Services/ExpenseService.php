@@ -49,15 +49,26 @@ class ExpenseService
         if ($expense->status !== Expense::STATUS_PENDING) {
             throw new \DomainException('Only pending expenses can be approved.');
         }
+        $approvedAt = now();
         $expense->update([
             'status' => Expense::STATUS_APPROVED,
             'approved_by' => $approvedBy,
-            'approved_at' => now(),
+            'approved_at' => $approvedAt,
             'rejected_by' => null,
             'rejected_at' => null,
             'rejection_reason' => null,
         ]);
-        return $expense->fresh();
+        $expense = $expense->fresh();
+
+        // Add approved expense to employee's draft payroll for this month (so it is included in salary)
+        app(\App\Modules\Payroll\Services\PayrollService::class)->addApprovedExpenseToDraftPayroll(
+            $expense->employee_id,
+            (int) $approvedAt->format('Y'),
+            (int) $approvedAt->format('n'),
+            (float) $expense->amount
+        );
+
+        return $expense;
     }
 
     public function reject(int $expenseId, string $reason, ?int $rejectedBy = null): Expense

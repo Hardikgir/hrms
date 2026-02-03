@@ -74,6 +74,7 @@
                             <option value="pending" {{ old('status', $employee_task->status) == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="in_progress" {{ old('status', $employee_task->status) == 'in_progress' ? 'selected' : '' }}>In Progress</option>
                             <option value="completed" {{ old('status', $employee_task->status) == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="approved" {{ old('status', $employee_task->status) == 'approved' ? 'selected' : '' }}>Approved</option>
                         </select>
                         @error('status')
                             <span class="invalid-feedback">{{ $message }}</span>

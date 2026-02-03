@@ -4,6 +4,7 @@ namespace App\Modules\Payroll\Services;
 
 use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Employee\Models\Employee;
+use App\Modules\Expense\Models\Expense;
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Payroll\Models\Payroll;
 use App\Modules\Payroll\Models\PayrollAuditLog;
@@ -61,6 +62,17 @@ class PayrollService
                 $earnings = ['basic' => $basicSalary];
                 $deductions = [];
             }
+
+            // Add approved expenses (approved in this pay month) as expense reimbursement to salary
+            $expenseReimbursement = (float) Expense::where('employee_id', $employee->id)
+                ->where('status', Expense::STATUS_APPROVED)
+                ->whereYear('approved_at', $year)
+                ->whereMonth('approved_at', $month)
+                ->sum('amount');
+            if ($expenseReimbursement > 0) {
+                $earnings['expense_reimbursement'] = round($expenseReimbursement, 2);
+            }
+
             $grossSalary = is_array($earnings) ? array_sum(array_values($earnings)) : $basicSalary;
             $totalDeductions = is_array($deductions) ? array_sum(array_values($deductions)) : 0;
             $netSalary = round($grossSalary - $totalDeductions, 2);
@@ -204,5 +216,38 @@ class PayrollService
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->get();
+    }
+
+    /**
+     * Add an approved expense amount to the employee's draft payroll for the given month.
+     * Called when an expense is approved so it is included in salary without re-running payroll.
+     */
+    public function addApprovedExpenseToDraftPayroll(int $employeeId, int $year, int $month, float $amount): ?Payroll
+    {
+        $payroll = Payroll::where('employee_id', $employeeId)
+            ->where('year', $year)
+            ->where('month', $month)
+            ->where('status', 'draft')
+            ->first();
+
+        if (!$payroll || $amount <= 0) {
+            return $payroll;
+        }
+
+        $earnings = is_array($payroll->earnings) ? $payroll->earnings : [];
+        $currentReimbursement = (float) ($earnings['expense_reimbursement'] ?? 0);
+        $earnings['expense_reimbursement'] = round($currentReimbursement + $amount, 2);
+
+        $grossSalary = round(array_sum(array_values($earnings)), 2);
+        $totalDeductions = (float) $payroll->total_deductions;
+        $netSalary = round($grossSalary - $totalDeductions, 2);
+
+        $payroll->update([
+            'earnings' => $earnings,
+            'gross_salary' => $grossSalary,
+            'net_salary' => $netSalary,
+        ]);
+
+        return $payroll->fresh();
     }
 }

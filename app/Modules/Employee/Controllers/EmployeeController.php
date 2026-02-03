@@ -3,11 +3,13 @@
 namespace App\Modules\Employee\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Document;
 use App\Modules\Employee\Models\Employee;
 use App\Modules\Employee\Models\Department;
 use App\Modules\Employee\Models\Designation;
 use App\Modules\Employee\Models\Location;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EmployeeController extends Controller
@@ -109,9 +111,24 @@ class EmployeeController extends Controller
     {
         $this->authorize('view employees');
 
-        $employee->load(['department', 'designation', 'location', 'manager', 'user']);
+        $employee->load(['department', 'designation', 'location', 'manager', 'user', 'documents']);
 
         return view('employee.show', compact('employee'));
+    }
+
+    public function downloadDocument(Employee $employee, Document $document)
+    {
+        $this->authorize('view employees');
+        if ($document->employee_id !== $employee->id) {
+            abort(404);
+        }
+        if (!Storage::disk($document->disk)->exists($document->path)) {
+            abort(404, 'File not found.');
+        }
+        return Storage::disk($document->disk)->download(
+            $document->path,
+            $document->original_name ?? 'document'
+        );
     }
 
     public function edit(Employee $employee)

@@ -38,7 +38,13 @@
             @endif
         </p>
         @if($expense->rejection_reason)<p><strong>Rejection reason:</strong> {{ $expense->rejection_reason }}</p>@endif
-        @if($expense->receipt_path)<p><strong>Receipt:</strong> Uploaded (stored)</p>@endif
+        @if($expense->receipt_path)
+        <p><strong>Receipt:</strong>
+            <a href="{{ route('expenses.receipt', $expense) }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">
+                <i class="fas fa-download"></i> View / Download receipt
+            </a>
+        </p>
+        @endif
     </div>
 </div>
 <div class="modal fade" id="rejectModal" tabindex="-1">

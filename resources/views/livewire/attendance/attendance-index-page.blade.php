@@ -1,4 +1,37 @@
 <div>
+    @if(session('settings_saved'))
+        <div class="alert alert-success alert-dismissible small">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ session('settings_saved') }}
+        </div>
+    @endif
+
+    @can('view attendance')
+    <div class="card card-outline card-info mb-4">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-cog mr-1"></i> Attendance Settings</h3>
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-2">Check-ins after the time below will be marked as <strong>Late</strong>.</p>
+            <div class="row align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label mb-0">Maximum check-in time (after this = late)</label>
+                    <input type="time" wire:model="maxCheckInTime" class="form-control" step="300">
+                    @error('maxCheckInTime')
+                        <span class="text-danger small">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="col-md-2">
+                    <button type="button" wire:click="saveMaxCheckInTime" wire:loading.attr="disabled" class="btn btn-primary">
+                        <span wire:loading.remove>Save</span>
+                        <span wire:loading>Saving...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endcan
+
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Attendance Records</h3>
@@ -73,7 +106,7 @@
                             <td>{{ $attendance->check_in_time ? $attendance->check_in_time->format('H:i') : '-' }}</td>
                             <td>{{ $attendance->check_out_time ? $attendance->check_out_time->format('H:i') : '-' }}</td>
                             <td>
-                                <span class="badge badge-{{ $attendance->status === 'present' ? 'success' : ($attendance->status === 'absent' ? 'danger' : 'warning') }}">
+                                <span class="badge badge-{{ $attendance->status === 'present' ? 'success' : ($attendance->status === 'late' ? 'warning' : ($attendance->status === 'absent' ? 'danger' : 'secondary')) }}">
                                     {{ ucfirst($attendance->status) }}
                                 </span>
                             </td>

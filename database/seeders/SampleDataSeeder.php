@@ -14,6 +14,7 @@ use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Shift\Models\Shift;
 use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Models\LeaveType;
+use App\Modules\Expense\Models\ExpenseCategory;
 use App\Modules\Payroll\Models\Payroll;
 use App\Modules\Payroll\Models\SalaryStructure;
 use App\Modules\Employee\Models\EmployeeTask;
@@ -61,6 +62,20 @@ class SampleDataSeeder extends Seeder
                     'uuid' => (string) Str::uuid(),
                     'is_active' => true,
                 ])
+            );
+        }
+
+        // Default expense categories (admin can add/edit later)
+        $expenseCategories = [
+            ['name' => 'Travel', 'slug' => 'travel', 'sort_order' => 1],
+            ['name' => 'Meals', 'slug' => 'meals', 'sort_order' => 2],
+            ['name' => 'Supplies', 'slug' => 'supplies', 'sort_order' => 3],
+            ['name' => 'Other', 'slug' => 'other', 'sort_order' => 4],
+        ];
+        foreach ($expenseCategories as $i => $ec) {
+            ExpenseCategory::firstOrCreate(
+                ['slug' => $ec['slug']],
+                ['name' => $ec['name'], 'is_active' => true, 'sort_order' => $ec['sort_order']]
             );
         }
 

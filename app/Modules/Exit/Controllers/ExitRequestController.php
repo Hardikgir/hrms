@@ -33,6 +33,12 @@ class ExitRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
+        if ($employee && !request()->routeIs('ess.exit.*')) {
+            return redirect()->route('ess.exit.create');
+        }
+        if (request()->routeIs('ess.exit.*')) {
+            return view('employee.ess.exit-create', compact('employee'));
+        }
         return view('exit.create', compact('employee'));
     }
 

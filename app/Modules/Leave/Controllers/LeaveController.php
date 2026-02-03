@@ -33,14 +33,21 @@ class LeaveController extends Controller
 
     public function create()
     {
-        $this->authorize('create leaves');
+        $this->authorize('create', Leave::class);
 
+        $user = auth()->user();
+        if ($user->employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.create');
+        }
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-create');
+        }
         return view('leave.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorize('create leaves');
+        $this->authorize('create', Leave::class);
 
         $user = auth()->user();
         $employee = $user->employee;
@@ -86,7 +93,14 @@ class LeaveController extends Controller
         }
         $this->authorize('view', $leave);
 
+        if ($employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.show', $leave);
+        }
+
         $leave->load(['employee', 'leaveType']);
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-show', compact('leave'));
+        }
         return view('leave.show', compact('leave'));
     }
 
@@ -103,6 +117,12 @@ class LeaveController extends Controller
         $leaveTypes = LeaveType::where('is_active', true)->get();
         $employees = $employee ? collect([$employee]) : Employee::where('is_active', true)->get();
 
+        if ($employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.edit', $leave);
+        }
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-edit', compact('leave', 'leaveTypes', 'employees'));
+        }
         return view('leave.edit', compact('leave', 'leaveTypes', 'employees'));
     }
 

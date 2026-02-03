@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Attendance;
 
+use App\Modules\Attendance\Models\AttendanceSetting;
 use App\Modules\Attendance\Services\AttendanceService;
 use App\Modules\Employee\Models\Employee;
 use Illuminate\Contracts\View\View;
@@ -19,6 +20,9 @@ class AttendanceIndexPage extends Component
     /** For admin quick check-in: selected employee to check in */
     public ?string $checkInEmployeeId = null;
 
+    /** Max check-in time (H:i) – after this time check-in counts as late */
+    public string $maxCheckInTime = '';
+
     protected $queryString = [
         'employeeId' => ['except' => ''],
         'status' => ['except' => ''],
@@ -27,7 +31,21 @@ class AttendanceIndexPage extends Component
 
     public function mount(): void
     {
-        // Initialization only; data loaded in render
+        $this->maxCheckInTime = AttendanceSetting::getMaxCheckInTime();
+    }
+
+    public function saveMaxCheckInTime(): void
+    {
+        $this->authorize('view attendance');
+        $this->validate([
+            'maxCheckInTime' => ['required', 'date_format:H:i'],
+        ], [
+            'maxCheckInTime.required' => 'Please set a time.',
+            'maxCheckInTime.date_format' => 'Time must be in HH:MM format (e.g. 09:30).',
+        ]);
+        AttendanceSetting::setMaxCheckInTime($this->maxCheckInTime);
+        $this->dispatch('attendance-updated');
+        session()->flash('settings_saved', 'Max check-in time updated. Check-ins after this time will be marked as late.');
     }
 
     public function getEmployeesProperty()
