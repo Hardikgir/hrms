@@ -66,12 +66,14 @@ class LeaveIndexPage extends Component
 
     public function submitReject(): void
     {
+        $this->validate(['rejectionReason' => 'required|string|min:3|max:500'], ['rejectionReason.required' => 'Rejection reason is required.']);
         $leave = Leave::findOrFail($this->rejectLeaveId);
         $this->authorize('approve', $leave);
-        $this->validate(['rejectionReason' => 'required|string|min:3|max:500'], ['rejectionReason.required' => 'Rejection reason is required.']);
+        $reason = $this->rejectionReason;
         try {
-            app(LeaveService::class)->reject($this->rejectLeaveId, $this->rejectionReason, auth()->id());
+            app(LeaveService::class)->reject($this->rejectLeaveId, $reason, auth()->id());
             $this->closeRejectModal();
+            $this->resetPage();
             $this->dispatch('leave-updated');
         } catch (\DomainException $e) {
             $this->addError('reject', $e->getMessage());

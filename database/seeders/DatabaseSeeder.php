@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'view expenses', 'approve expenses', 'process reimbursements', 'manage expense categories',
             'view training', 'manage training',
             'view shifts', 'manage shifts',
-            'view assets', 'manage assets',
+            'view assets', 'manage assets', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
         ];
@@ -48,13 +48,13 @@ class DatabaseSeeder extends Seeder
         $hrAdmin = Role::findByName('HR Admin');
         $hrAdmin->givePermissionTo([
             'view employees', 'create employees', 'update employees',
-            'view attendance', 'view leaves', 'approve leaves',
+            'view attendance', 'view leaves', 'create leaves', 'update leaves', 'approve leaves',
             'manage tasks',
             'view performance', 'manage performance',
             'view expenses', 'approve expenses', 'manage expense categories',
             'view training', 'manage training',
             'view shifts', 'manage shifts',
-            'view assets', 'manage assets',
+            'view assets', 'manage assets', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
         ]);
@@ -69,6 +69,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $admin->assignRole('Super Admin');
+
+        // Create HR Admin User
+        $hrAdminUser = User::firstOrCreate(
+            ['email' => 'hradmin@hrms.com'],
+            [
+                'name' => 'HR Admin',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $hrAdminUser->assignRole('HR Admin');
 
         // Create Departments
         $departments = [

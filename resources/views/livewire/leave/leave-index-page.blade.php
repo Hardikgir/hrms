@@ -88,7 +88,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="rejectionReason">Rejection reason (required)</label>
-                            <textarea wire:model="rejectionReason" id="rejectionReason" class="form-control @error('rejectionReason') is-invalid @enderror" rows="3" placeholder="Enter reason..."></textarea>
+                            <textarea wire:model.blur="rejectionReason" id="rejectionReason" class="form-control @error('rejectionReason') is-invalid @enderror" rows="3" placeholder="Enter reason..."></textarea>
                             @error('rejectionReason')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror

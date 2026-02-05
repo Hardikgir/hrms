@@ -3,13 +3,14 @@
 namespace App\Modules\Asset\Services;
 
 use App\Modules\Asset\Models\Asset;
+use App\Modules\Asset\Models\AssetReturnRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class AssetService
 {
     public function list(?int $employeeId = null, ?string $status = null): LengthAwarePaginator
     {
-        $query = Asset::with(['employee', 'createdBy'])->latest();
+        $query = Asset::with(['employee', 'createdBy', 'returnRequests'])->latest();
         if ($employeeId !== null) {
             $query->where('employee_id', $employeeId);
         }
@@ -51,5 +52,49 @@ class AssetService
             'status' => Asset::STATUS_AVAILABLE,
         ]);
         return $asset->fresh();
+    }
+
+    public function requestReturn(Asset $asset, int $employeeId): AssetReturnRequest
+    {
+        if ($asset->employee_id != $employeeId) {
+            throw new \DomainException('Only the assigned employee can request return.');
+        }
+        if ($asset->pendingReturnRequest()) {
+            throw new \DomainException('A return request is already pending.');
+        }
+        return AssetReturnRequest::create([
+            'asset_id' => $asset->id,
+            'employee_id' => $employeeId,
+            'status' => AssetReturnRequest::STATUS_PENDING,
+        ]);
+    }
+
+    public function approveReturn(AssetReturnRequest $returnRequest, int $reviewedBy, ?string $adminNote = null): Asset
+    {
+        if (!$returnRequest->isPending()) {
+            throw new \DomainException('Only pending requests can be approved.');
+        }
+        $returnRequest->update([
+            'status' => AssetReturnRequest::STATUS_APPROVED,
+            'reviewed_by' => $reviewedBy,
+            'reviewed_at' => now(),
+            'admin_note' => $adminNote,
+        ]);
+        $this->unassign($returnRequest->asset);
+        return $returnRequest->asset->fresh();
+    }
+
+    public function declineReturn(AssetReturnRequest $returnRequest, string $adminNote, int $reviewedBy): AssetReturnRequest
+    {
+        if (!$returnRequest->isPending()) {
+            throw new \DomainException('Only pending requests can be declined.');
+        }
+        $returnRequest->update([
+            'status' => AssetReturnRequest::STATUS_DECLINED,
+            'reviewed_by' => $reviewedBy,
+            'reviewed_at' => now(),
+            'admin_note' => $adminNote,
+        ]);
+        return $returnRequest->fresh();
     }
 }

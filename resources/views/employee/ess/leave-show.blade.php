@@ -47,6 +47,17 @@
                     </span>
                 </td>
             </tr>
+            @if($leave->status === 'rejected' && ($leave->rejection_reason || $leave->rejected_at))
+            <tr>
+                <th>Rejection reason</th>
+                <td>
+                    {{ $leave->rejection_reason ?? 'No reason provided.' }}
+                    @if($leave->rejected_at)
+                        <div class="text-muted small mt-1">Rejected on {{ $leave->rejected_at->format('d M Y H:i') }}</div>
+                    @endif
+                </td>
+            </tr>
+            @endif
         </table>
 
         @if($leave->status === 'pending')

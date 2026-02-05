@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/training', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'training'])->name('training');
         Route::get('/roster', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'roster'])->name('roster');
         Route::get('/assets', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'assets'])->name('assets');
+        Route::post('/assets/{asset}/request-return', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'requestAssetReturn'])->name('assets.request-return');
         Route::get('/travel', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'travel'])->name('travel');
         Route::get('/travel/create', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'create'])->name('travel.create');
         Route::get('/travel/{travel}', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'show'])->name('travel.show');
@@ -112,6 +113,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('assets', \App\Modules\Asset\Controllers\AssetController::class)->except(['show']);
     Route::post('assets/{asset}/assign', [\App\Modules\Asset\Controllers\AssetController::class, 'assign'])->name('assets.assign');
     Route::post('assets/{asset}/unassign', [\App\Modules\Asset\Controllers\AssetController::class, 'unassign'])->name('assets.unassign');
+    Route::post('assets/return-requests/{asset_return_request}/approve', [\App\Modules\Asset\Controllers\AssetController::class, 'approveReturn'])->name('assets.return-requests.approve');
+    Route::post('assets/return-requests/{asset_return_request}/decline', [\App\Modules\Asset\Controllers\AssetController::class, 'declineReturn'])->name('assets.return-requests.decline');
+    Route::resource('asset-types', \App\Modules\Asset\Controllers\AssetTypeController::class)->except(['show'])->parameters(['asset-types' => 'asset_type'])->middleware('can:manage asset types');
 
     // Travel Management
     Route::resource('travel', \App\Modules\Travel\Controllers\TravelRequestController::class)->only(['index', 'create', 'store', 'show']);

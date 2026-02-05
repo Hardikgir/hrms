@@ -484,6 +484,24 @@ class EmployeeSelfServiceController extends Controller
         return view('employee.ess.assets', compact('employee', 'assets'));
     }
 
+    public function requestAssetReturn(\App\Modules\Asset\Models\Asset $asset)
+    {
+        $employee = Auth::user()->employee;
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+        }
+        if ($asset->employee_id != $employee->id) {
+            abort(403, 'This asset is not assigned to you.');
+        }
+        $assetService = app(\App\Modules\Asset\Services\AssetService::class);
+        try {
+            $assetService->requestReturn($asset, $employee->id);
+        } catch (\DomainException $e) {
+            return redirect()->route('ess.assets')->with('error', $e->getMessage());
+        }
+        return redirect()->route('ess.assets')->with('success', 'Return request submitted. Admin will review it.');
+    }
+
     public function travel()
     {
         $employee = Auth::user()->employee;

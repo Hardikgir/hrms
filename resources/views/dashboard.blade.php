@@ -54,6 +54,7 @@
         </div>
     </div>
     
+    @can('view payroll')
     <div class="col-lg-3 col-6">
         <div class="small-box bg-danger">
             <div class="inner">
@@ -68,6 +69,7 @@
             </a>
         </div>
     </div>
+    @endcan
 </div>
 @endsection
 

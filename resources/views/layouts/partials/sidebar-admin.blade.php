@@ -19,12 +19,14 @@
                         <p>Dashboard</p>
                     </a>
                 </li>
+                @can('view employees')
                 <li class="nav-item">
                     <a href="{{ route('employees.index') }}" class="nav-link {{ request()->routeIs('employees.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Employees</p>
                     </a>
                 </li>
+                @endcan
                 @can('manage tasks')
                 <li class="nav-item">
                     <a href="{{ route('employee-tasks.index') }}" class="nav-link {{ request()->routeIs('employee-tasks.*') ? 'active' : '' }}">
@@ -33,24 +35,30 @@
                     </a>
                 </li>
                 @endcan
+                @can('view attendance')
                 <li class="nav-item">
                     <a href="{{ route('attendance.index') }}" class="nav-link {{ request()->routeIs('attendance.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-check"></i>
                         <p>Attendance</p>
                     </a>
                 </li>
+                @endcan
+                @can('view leaves')
                 <li class="nav-item">
                     <a href="{{ route('leaves.index') }}" class="nav-link {{ request()->routeIs('leaves.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-times"></i>
                         <p>Leaves</p>
                     </a>
                 </li>
+                @endcan
+                @can('view payroll')
                 <li class="nav-item">
                     <a href="{{ route('payroll.index') }}" class="nav-link {{ request()->routeIs('payroll.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-money-bill-wave"></i>
                         <p>Payroll</p>
                     </a>
                 </li>
+                @endcan
                 @can('view performance')
                 <li class="nav-item">
                     <a href="{{ route('performance.cycles.index') }}" class="nav-link {{ request()->routeIs('performance.*') ? 'active' : '' }}">
@@ -93,9 +101,17 @@
                 @endcan
                 @can('view assets')
                 <li class="nav-item">
-                    <a href="{{ route('assets.index') }}" class="nav-link {{ request()->routeIs('assets.*') ? 'active' : '' }}">
+                    <a href="{{ route('assets.index') }}" class="nav-link {{ request()->routeIs('assets.*') && !request()->routeIs('asset-types.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-laptop"></i>
                         <p>Assets</p>
+                    </a>
+                </li>
+                @endcan
+                @can('manage asset types')
+                <li class="nav-item">
+                    <a href="{{ route('asset-types.index') }}" class="nav-link {{ request()->routeIs('asset-types.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-tags"></i>
+                        <p>Asset Types</p>
                     </a>
                 </li>
                 @endcan

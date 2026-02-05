@@ -38,6 +38,31 @@ Use any employee email below with password **`password123`**. You will be redire
 
 ---
 
+## HR Admin
+
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `hradmin@hrms.com` | `password123` | HR Admin | Admin dashboard and HR modules (no Payroll) |
+
+**Features:**
+- Access to Admin Dashboard (same layout as Super Admin)
+- **Employees** – view, create, update (no delete)
+- **Employee Tasks** – create and assign tasks; URL: `/employee-tasks`
+- **Attendance** – view attendance
+- **Leaves** – view, create, update, approve leave requests
+- **Expenses** – view and approve expenses; manage expense categories
+- **Training** – view and manage training
+- **Shifts & Roster** – view and manage shifts
+- **Assets** – view, create, edit, assign/unassign; manage asset types; approve/decline asset returns
+- **Travel** – view and approve travel requests
+- **Exit** – view and manage exit requests
+- **Performance** – view and manage performance
+- **No Payroll** – Payroll menu and dashboard box are hidden for HR Admin
+
+**Quick login:** `hradmin@hrms.com` / `password123` → Admin Dashboard
+
+---
+
 ## Who Creates ESS Tasks?
 
 **Employee tasks** (e.g. "Complete onboarding documents", "Attend training session") are created by **HR/Admin** users:
@@ -45,7 +70,7 @@ Use any employee email below with password **`password123`**. You will be redire
 | Role        | Can manage tasks? | Seeded user              |
 |------------|--------------------|---------------------------|
 | Super Admin| Yes                | `admin@hrms.com`         |
-| HR Admin   | Yes                | *(no user seeded by default)* |
+| HR Admin   | Yes                | `hradmin@hrms.com`       |
 
 - **Login as admin:** `admin@hrms.com` / `password123`
 - **Manage tasks:** After login, go to **Employee Tasks** (`/employee-tasks`) to create, edit, or assign tasks to employees. Tasks appear on the employee’s ESS **Tasks** page (`/ess/tasks`).
@@ -85,9 +110,9 @@ All employees are redirected to the Employee Self Service (ESS) portal after log
 
 ### For Testing Admin Features:
 1. Go to: `http://localhost/login` (or your app URL)
-2. Email: `admin@hrms.com`
-3. Password: `password123`
-4. You'll be redirected to the Admin Dashboard
+2. **Super Admin:** Email: `admin@hrms.com` / Password: `password123`
+3. **HR Admin:** Email: `hradmin@hrms.com` / Password: `password123`
+4. You'll be redirected to the Admin Dashboard (Payroll menu hidden for HR Admin)
 
 ### For Testing Employee Features:
 1. Go to: `http://localhost/login` (or your app URL)
@@ -145,6 +170,10 @@ To change a user's password, you can:
 3. Check `.env` file database configuration
 4. Clear cache: `php artisan cache:clear && php artisan config:clear`
 
+### If HR Admin user does not exist:
+1. Run: `php artisan db:seed --class=DatabaseSeeder` (uses `firstOrCreate`, safe to re-run)
+2. HR Admin login: `hradmin@hrms.com` / `password123`
+
 ### If employee can't see ESS portal:
 1. Verify user has 'Employee' role: `php artisan tinker` → `User::find(1)->roles`
 2. Verify employee record exists: `User::find(1)->employee`
@@ -154,16 +183,16 @@ To change a user's password, you can:
 
 ## Additional Roles (Available but not seeded)
 
-The following roles exist in the system but don't have seeded users:
-- **HR Admin** - Can manage employees and approve leaves
-- **Manager** - Can view team attendance and approve leaves
-- **Finance** - Can manage payroll
-- **Recruiter** - Can manage recruitment
+The following roles exist in the system; **HR Admin** has a seeded user (`hradmin@hrms.com`). Others do not:
+- **HR Admin** – Seeded: `hradmin@hrms.com` (see HR Admin section above)
+- **Manager** – Can view team attendance and approve leaves
+- **Finance** – Can manage payroll
+- **Recruiter** – Can manage recruitment
 
 To create users with these roles, use:
 ```php
 $user = User::create([...]);
-$user->assignRole('HR Admin'); // or 'Manager', 'Finance', 'Recruiter'
+$user->assignRole('Manager'); // or 'Finance', 'Recruiter'
 ```
 
 
