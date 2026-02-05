@@ -75,14 +75,6 @@
                     </a>
                 </li>
                 @endcan
-                @can('manage expense categories')
-                <li class="nav-item">
-                    <a href="{{ route('expense-categories.index') }}" class="nav-link {{ request()->routeIs('expense-categories.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tags"></i>
-                        <p>Expense Categories</p>
-                    </a>
-                </li>
-                @endcan
                 @can('view training')
                 <li class="nav-item">
                     <a href="{{ route('training.courses.index') }}" class="nav-link {{ request()->routeIs('training.*') ? 'active' : '' }}">
@@ -101,20 +93,20 @@
                 @endcan
                 @can('view assets')
                 <li class="nav-item">
-                    <a href="{{ route('assets.index') }}" class="nav-link {{ request()->routeIs('assets.*') && !request()->routeIs('asset-types.*') ? 'active' : '' }}">
+                    <a href="{{ route('assets.index') }}" class="nav-link {{ request()->routeIs('assets.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-laptop"></i>
                         <p>Assets</p>
                     </a>
                 </li>
                 @endcan
-                @can('manage asset types')
+                @if(auth()->user()->can('manage expense categories') || auth()->user()->can('manage asset types'))
                 <li class="nav-item">
-                    <a href="{{ route('asset-types.index') }}" class="nav-link {{ request()->routeIs('asset-types.*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-tags"></i>
-                        <p>Asset Types</p>
+                    <a href="{{ route('settings.index') }}" class="nav-link {{ request()->routeIs('settings.*') || request()->routeIs('expense-categories.*') || request()->routeIs('asset-types.*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>Settings</p>
                     </a>
                 </li>
-                @endcan
+                @endif
                 @can('view exit')
                 <li class="nav-item">
                     <a href="{{ route('exit.index') }}" class="nav-link {{ request()->routeIs('exit.*') ? 'active' : '' }}">

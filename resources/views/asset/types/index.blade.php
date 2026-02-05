@@ -5,8 +5,8 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('assets.index') }}">Assets</a></li>
-    <li class="breadcrumb-item active">Types</li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
+    <li class="breadcrumb-item active">Asset Types</li>
 @endsection
 
 @section('content')
@@ -44,7 +44,7 @@
                             <span class="badge badge-secondary">Inactive</span>
                         @endif
                     </td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('asset-types.edit', $type) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         <form action="{{ route('asset-types.destroy', $type) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this asset type?');">
                             @csrf

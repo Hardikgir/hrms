@@ -58,7 +58,7 @@
                         @endif
                     </td>
                     <td>{{ $cycle->reviews()->count() }}</td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('performance.cycles.show', $cycle) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                         @can('update', $cycle)
                         <a href="{{ route('performance.cycles.edit', $cycle) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>

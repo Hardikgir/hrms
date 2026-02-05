@@ -62,7 +62,7 @@
                         @else<span class="badge badge-success">Completed</span>
                         @endif
                     </td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('performance.reviews.show', $review) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                     </td>
                 </tr>

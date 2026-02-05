@@ -33,7 +33,7 @@ class DatabaseSeeder extends Seeder
             'view expenses', 'approve expenses', 'process reimbursements', 'manage expense categories',
             'view training', 'manage training',
             'view shifts', 'manage shifts',
-            'view assets', 'manage assets', 'manage asset types',
+            'view assets', 'manage assets', 'approve asset returns', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
         ];
@@ -58,6 +58,7 @@ class DatabaseSeeder extends Seeder
             'view travel', 'approve travel',
             'view exit', 'manage exit',
         ]);
+        // HR Admin does NOT get 'approve asset returns' – they can see/manage assets but not approve/decline return requests
 
         // Create Super Admin User
         $admin = User::firstOrCreate(

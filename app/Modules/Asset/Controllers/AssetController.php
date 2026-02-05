@@ -86,7 +86,7 @@ class AssetController extends Controller
         $this->authorize('update', $asset);
         $validated = $request->validate(['employee_id' => 'required|exists:employees,id']);
         try {
-            $this->assetService->assign($asset, (int) $validated['employee_id']);
+            $this->assetService->assign($asset, (int) $validated['employee_id'], auth()->id());
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -96,13 +96,13 @@ class AssetController extends Controller
     public function unassign(Asset $asset)
     {
         $this->authorize('update', $asset);
-        $this->assetService->unassign($asset);
+        $this->assetService->unassign($asset, auth()->id());
         return back()->with('success', 'Asset unassigned.');
     }
 
     public function approveReturn(Request $request, AssetReturnRequest $asset_return_request)
     {
-        $this->authorize('update', $asset_return_request->asset);
+        $this->authorize('approveReturn', $asset_return_request->asset);
         $note = $request->input('admin_note');
         try {
             $this->assetService->approveReturn($asset_return_request, auth()->id(), $note);
@@ -112,9 +112,16 @@ class AssetController extends Controller
         return back()->with('success', 'Return approved. Asset is now available.');
     }
 
+    public function history(Asset $asset)
+    {
+        $this->authorize('view', $asset);
+        $asset->load(['assignmentHistories.employee', 'assignmentHistories.assignedByUser', 'assignmentHistories.returnedByUser', 'assetType']);
+        return view('asset.history', compact('asset'));
+    }
+
     public function declineReturn(Request $request, AssetReturnRequest $asset_return_request)
     {
-        $this->authorize('update', $asset_return_request->asset);
+        $this->authorize('approveReturn', $asset_return_request->asset);
         $validated = $request->validate(['admin_note' => 'required|string|max:2000']);
         try {
             $this->assetService->declineReturn($asset_return_request, $validated['admin_note'], auth()->id());

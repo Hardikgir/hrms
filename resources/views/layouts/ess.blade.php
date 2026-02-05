@@ -13,6 +13,18 @@
     <!-- AdminLTE -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
 
+    <style>
+    /* Consistent spacing: action buttons and card toolbar */
+    .card-tools > *:not(:first-child) { margin-left: 0.5rem; }
+    .action-buttons .btn,
+    .action-buttons form.d-inline,
+    .action-buttons a.btn { margin-right: 0.35rem; margin-bottom: 0.25rem; }
+    .action-buttons .form-control-sm.d-inline-block { margin-right: 0.35rem; }
+    .filter-form .form-control,
+    .filter-form .btn { margin-bottom: 0.5rem; }
+    .filter-form .btn + .btn { margin-left: 0.5rem; }
+    </style>
+
     @livewireStyles
     @stack('styles')
 </head>

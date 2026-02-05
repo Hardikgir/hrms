@@ -86,7 +86,7 @@
                                                 <span class="badge badge-warning">Pending</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="action-buttons">
                                             <a href="{{ route('ess.leaves.show', $leave) }}" class="btn btn-sm btn-outline-info" title="View"><i class="fas fa-eye"></i></a>
                                             @if($leave->status === 'pending')
                                                 <a href="{{ route('leaves.edit', $leave) }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="fas fa-edit"></i></a>

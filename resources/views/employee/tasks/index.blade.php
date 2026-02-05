@@ -101,7 +101,7 @@
                         @endif
                     </td>
                     <td>{{ $task->createdBy->name ?? '-' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @if($task->status === 'completed')
                             <form action="{{ route('employee-tasks.approve', $task) }}" method="POST" class="d-inline">
                                 @csrf

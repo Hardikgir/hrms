@@ -55,7 +55,7 @@
                                     {{ ucfirst($leave->status) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="action-buttons">
                                 <a href="{{ route('leaves.show', $leave) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                                 @if($leave->status === 'pending' && auth()->user()->can('approve', $leave))
                                     <button type="button" wire:click="approve({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Approve</button>

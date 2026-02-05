@@ -28,7 +28,7 @@
                     <td>{{ $s->break_duration }}</td>
                     <td>{{ $s->working_hours }}</td>
                     <td>{{ $s->is_active ? 'Active' : 'Inactive' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @can('update', $s)
                         <a href="{{ route('shifts.edit', $s) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         @endcan

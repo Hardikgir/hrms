@@ -3,6 +3,7 @@
 namespace App\Modules\Asset\Services;
 
 use App\Modules\Asset\Models\Asset;
+use App\Modules\Asset\Models\AssetAssignmentHistory;
 use App\Modules\Asset\Models\AssetReturnRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -33,7 +34,7 @@ class AssetService
         return $asset->fresh();
     }
 
-    public function assign(Asset $asset, int $employeeId): Asset
+    public function assign(Asset $asset, int $employeeId, ?int $assignedBy = null): Asset
     {
         if ($asset->status !== Asset::STATUS_AVAILABLE) {
             throw new \DomainException('Only available assets can be assigned.');
@@ -42,11 +43,24 @@ class AssetService
             'employee_id' => $employeeId,
             'status' => Asset::STATUS_ASSIGNED,
         ]);
+        AssetAssignmentHistory::create([
+            'asset_id' => $asset->id,
+            'employee_id' => $employeeId,
+            'assigned_at' => now(),
+            'assigned_by' => $assignedBy,
+        ]);
         return $asset->fresh();
     }
 
-    public function unassign(Asset $asset): Asset
+    public function unassign(Asset $asset, ?int $returnedBy = null): Asset
     {
+        $open = AssetAssignmentHistory::where('asset_id', $asset->id)->whereNull('returned_at')->first();
+        if ($open) {
+            $open->update([
+                'returned_at' => now(),
+                'returned_by' => $returnedBy,
+            ]);
+        }
         $asset->update([
             'employee_id' => null,
             'status' => Asset::STATUS_AVAILABLE,
@@ -80,7 +94,7 @@ class AssetService
             'reviewed_at' => now(),
             'admin_note' => $adminNote,
         ]);
-        $this->unassign($returnRequest->asset);
+        $this->unassign($returnRequest->asset, $reviewedBy);
         return $returnRequest->asset->fresh();
     }
 

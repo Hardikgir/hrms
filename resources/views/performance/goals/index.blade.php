@@ -80,7 +80,7 @@
                         @endif
                     </td>
                     <td>{{ $goal->cycle->name ?? '—' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @can('update', $goal)
                         <a href="{{ route('performance.goals.edit', $goal) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         @endcan

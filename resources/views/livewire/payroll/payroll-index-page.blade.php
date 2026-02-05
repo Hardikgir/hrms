@@ -57,7 +57,7 @@
                                     {{ ucfirst($payroll->status) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="action-buttons">
                                 <a href="{{ route('payroll.show', $payroll) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i> View</a>
                                 @if($payroll->status === 'draft' && auth()->user()->can('update payroll'))
                                     <form action="{{ route('payroll.lock', $payroll) }}" method="POST" class="d-inline">

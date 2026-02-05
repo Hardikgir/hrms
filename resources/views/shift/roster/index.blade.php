@@ -38,7 +38,7 @@
                     <td>{{ $r->shift->name ?? '-' }}</td>
                     <td>{{ $r->notes ?? '-' }}</td>
                     @can('delete', $r)
-                    <td>
+                    <td class="action-buttons">
                         <form action="{{ route('roster.destroy', $r) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove?');">@csrf @method('DELETE')<button type="submit" class="btn btn-sm btn-danger">Remove</button></form>
                     </td>
                     @endcan

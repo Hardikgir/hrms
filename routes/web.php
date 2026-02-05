@@ -8,6 +8,7 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
     Route::get('/dashboard', function () {
         $user = auth()->user();
         // Redirect employees to ESS dashboard
@@ -111,6 +112,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Asset Management
     Route::resource('assets', \App\Modules\Asset\Controllers\AssetController::class)->except(['show']);
+    Route::get('assets/{asset}/history', [\App\Modules\Asset\Controllers\AssetController::class, 'history'])->name('assets.history');
     Route::post('assets/{asset}/assign', [\App\Modules\Asset\Controllers\AssetController::class, 'assign'])->name('assets.assign');
     Route::post('assets/{asset}/unassign', [\App\Modules\Asset\Controllers\AssetController::class, 'unassign'])->name('assets.unassign');
     Route::post('assets/return-requests/{asset_return_request}/approve', [\App\Modules\Asset\Controllers\AssetController::class, 'approveReturn'])->name('assets.return-requests.approve');

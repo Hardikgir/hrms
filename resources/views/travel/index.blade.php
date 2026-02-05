@@ -35,7 +35,7 @@
                     <td>{{ $r->start_date->format('d M') }} – {{ $r->end_date->format('d M Y') }}</td>
                     <td>{{ $r->estimated_amount ? number_format($r->estimated_amount, 2) : '-' }}</td>
                     <td>@if($r->status === 'pending')<span class="badge badge-warning">Pending</span>@elseif($r->status === 'approved')<span class="badge badge-info">Approved</span>@elseif($r->status === 'rejected')<span class="badge badge-danger">Rejected</span>@else<span class="badge badge-success">Completed</span>@endif</td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('travel.show', $r) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                         @can('approve', $r)
                         @if($r->status === 'pending')

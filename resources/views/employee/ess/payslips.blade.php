@@ -61,7 +61,7 @@
                                             <span class="badge badge-warning">{{ ucfirst($payroll->status) }}</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="action-buttons">
                                         <a href="{{ route('ess.payslips.show', $payroll) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i> View
                                         </a>

@@ -35,7 +35,7 @@
                     <td>{{ $e->last_working_date->format('d M Y') }}</td>
                     <td>{{ $e->reason ?? '-' }}</td>
                     <td>{{ ucfirst(str_replace('_',' ',$e->status)) }}</td>
-                    <td><a href="{{ route('exit.show', $e) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
+                    <td class="action-buttons"><a href="{{ route('exit.show', $e) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a></td>
                 </tr>
                 @empty
                 <tr><td colspan="6" class="text-center">No exit requests.</td></tr>

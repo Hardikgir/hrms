@@ -48,6 +48,11 @@ class Asset extends Model
         return $this->hasMany(AssetReturnRequest::class)->latest();
     }
 
+    public function assignmentHistories(): HasMany
+    {
+        return $this->hasMany(AssetAssignmentHistory::class)->orderByDesc('assigned_at');
+    }
+
     public function pendingReturnRequest(): ?AssetReturnRequest
     {
         return $this->returnRequests()->pending()->first();

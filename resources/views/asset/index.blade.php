@@ -16,11 +16,17 @@
         </div>
     </div>
     <div class="card-body">
-        <form method="GET" class="mb-3">
-            <div class="row">
-                <div class="col-md-3"><select name="employee_id" class="form-control"><option value="">All</option>@foreach($employees as $emp)<option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->full_name }}</option>@endforeach</select></div>
-                <div class="col-md-2"><select name="status" class="form-control"><option value="">All</option><option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option><option value="assigned" {{ request('status') == 'assigned' ? 'selected' : '' }}>Assigned</option></select></div>
-                <div class="col-md-2"><button type="submit" class="btn btn-primary">Filter</button></div>
+        <form method="GET" class="mb-3 filter-form">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-2 mb-md-0">
+                    <select name="employee_id" class="form-control"><option value="">All</option>@foreach($employees as $emp)<option value="{{ $emp->id }}" {{ request('employee_id') == $emp->id ? 'selected' : '' }}>{{ $emp->full_name }}</option>@endforeach</select>
+                </div>
+                <div class="col-md-2 mb-2 mb-md-0">
+                    <select name="status" class="form-control"><option value="">All</option><option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option><option value="assigned" {{ request('status') == 'assigned' ? 'selected' : '' }}>Assigned</option></select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                </div>
             </div>
         </form>
         <table class="table table-bordered table-striped">
@@ -39,9 +45,14 @@
                             <span class="badge badge-warning ml-1">Return requested</span>
                         @endif
                     </td>
-                    <td>
+                    <td class="action-buttons">
+                        @can('view', $a)
+                        <a href="{{ route('assets.history', $a) }}" class="btn btn-sm btn-info" title="Assignment history"><i class="fas fa-history"></i></a>
+                        @endcan
                         @can('update', $a)
                         <a href="{{ route('assets.edit', $a) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
+                        @endcan
+                        @can('approveReturn', $a)
                         @if($pendingReturn)
                             <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approveModal{{ $pendingReturn->id }}">Approve</button>
                             <div class="modal fade" id="approveModal{{ $pendingReturn->id }}" tabindex="-1">
@@ -82,9 +93,12 @@
                                     </div>
                                 </div>
                             </div>
-                        @elseif($a->status === 'available')
+                        @endif
+                        @endcan
+                        @can('update', $a)
+                        @if(!$pendingReturn && $a->status === 'available')
                         <form action="{{ route('assets.assign', $a) }}" method="POST" class="d-inline">@csrf<select name="employee_id" class="form-control form-control-sm d-inline-block w-auto" required>@foreach($employees as $emp)<option value="{{ $emp->id }}">{{ $emp->full_name }}</option>@endforeach</select><button type="submit" class="btn btn-sm btn-success">Assign</button></form>
-                        @elseif($a->status === 'assigned')
+                        @elseif(!$pendingReturn && $a->status === 'assigned')
                         <form action="{{ route('assets.unassign', $a) }}" method="POST" class="d-inline" onsubmit="return confirm('Unassign?');">@csrf<button type="submit" class="btn btn-sm btn-warning">Unassign</button></form>
                         @endif
                         @endcan

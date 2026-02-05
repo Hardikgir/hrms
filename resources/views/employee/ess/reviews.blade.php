@@ -75,7 +75,7 @@
                             @endif
                         </td>
                         <td>{{ $review->overall_rating ? $review->overall_rating . '/5' : '—' }}</td>
-                        <td>
+                        <td class="action-buttons">
                             <a href="{{ route('performance.reviews.show', $review) }}" class="btn btn-sm btn-info">View</a>
                             @if($review->canSubmitSelfReview())
                                 <a href="{{ route('performance.reviews.self-review', $review) }}" class="btn btn-sm btn-warning">Self Review</a>

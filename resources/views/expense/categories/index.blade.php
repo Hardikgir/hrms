@@ -5,8 +5,8 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('expenses.index') }}">Expenses</a></li>
-    <li class="breadcrumb-item active">Categories</li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
+    <li class="breadcrumb-item active">Expense Categories</li>
 @endsection
 
 @section('content')
@@ -44,7 +44,7 @@
                             <span class="badge badge-secondary">Inactive</span>
                         @endif
                     </td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('expense-categories.edit', $cat) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         <form action="{{ route('expense-categories.destroy', $cat) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this category?');">
                             @csrf

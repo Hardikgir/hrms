@@ -68,7 +68,7 @@
                         @endif
                     </td>
                     <td>{{ $e->created_at->format('d M Y') }}</td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('expenses.show', $e) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                         @can('approve', $e)
                         @if($e->status === 'pending')

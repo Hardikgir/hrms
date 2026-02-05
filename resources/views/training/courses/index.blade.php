@@ -26,7 +26,7 @@
                     <td>{{ $c->type ?? '-' }}</td>
                     <td>{{ $c->duration_hours ?? 0 }} hrs</td>
                     <td>{{ $c->is_active ? 'Active' : 'Inactive' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @can('update', $c)
                         <a href="{{ route('training.courses.edit', $c) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         @endcan

@@ -39,13 +39,13 @@
                             @if($payroll->status === 'draft' && auth()->user()->can('update payroll'))
                                 <form action="{{ route('payroll.lock', $payroll) }}" method="POST" class="d-inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-warning mr-1"><i class="fas fa-lock"></i> Lock</button>
+                                    <button type="submit" class="btn btn-sm btn-warning"><i class="fas fa-lock"></i> Lock</button>
                                 </form>
                             @endif
                             @if(in_array($payroll->status, ['draft', 'processed']) && auth()->user()->can('update payroll'))
                                 <form action="{{ route('payroll.approve', $payroll) }}" method="POST" class="d-inline">
                                     @csrf
-                                    <button type="submit" class="btn btn-sm btn-info mr-1"><i class="fas fa-check"></i> Approve</button>
+                                    <button type="submit" class="btn btn-sm btn-info"><i class="fas fa-check"></i> Approve</button>
                                 </form>
                             @endif
                             <a href="{{ route('payroll.index') }}" class="btn btn-sm btn-secondary">

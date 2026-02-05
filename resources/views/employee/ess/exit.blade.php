@@ -24,7 +24,7 @@
                     <td>{{ $e->last_working_date->format('d M Y') }}</td>
                     <td>{{ $e->reason ?? '-' }}</td>
                     <td>{{ ucfirst(str_replace('_',' ',$e->status)) }}</td>
-                    <td><a href="{{ route('exit.show', $e) }}" class="btn btn-sm btn-info">View</a></td>
+                    <td class="action-buttons"><a href="{{ route('exit.show', $e) }}" class="btn btn-sm btn-info">View</a></td>
                 </tr>
                 @endforeach
             </tbody>

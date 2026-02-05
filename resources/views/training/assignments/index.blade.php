@@ -48,7 +48,7 @@
                     <td>{{ ucfirst(str_replace('_',' ',$a->status)) }}</td>
                     <td>{{ $a->assigned_at?->format('d M Y') ?? '-' }}</td>
                     <td>{{ $a->completed_at?->format('d M Y') ?? '-' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @if($a->status !== 'completed' && auth()->user()->can('manage training'))
                         <form action="{{ route('training.assignments.complete', $a) }}" method="POST" class="d-inline">@csrf<input type="number" name="score" min="0" max="100" placeholder="Score" class="form-control form-control-sm d-inline-block w-auto"> <button type="submit" class="btn btn-sm btn-success">Mark Complete</button></form>
                         @endif

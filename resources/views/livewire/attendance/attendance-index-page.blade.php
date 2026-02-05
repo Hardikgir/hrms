@@ -110,7 +110,7 @@
                                     {{ ucfirst($attendance->status) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="action-buttons">
                                 @if(!$attendance->check_out_time && auth()->user()->can('update attendance'))
                                     <button type="button" wire:click="checkOut({{ $attendance->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-warning">
                                         Check Out

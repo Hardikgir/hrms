@@ -5,8 +5,8 @@
 
 @section('breadcrumbs')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('expenses.index') }}">Expenses</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('expense-categories.index') }}">Categories</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('expense-categories.index') }}">Expense Categories</a></li>
     <li class="breadcrumb-item active">Edit</li>
 @endsection
 

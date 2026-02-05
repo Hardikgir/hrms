@@ -20,7 +20,7 @@
                     <td>{{ $a->assetType?->name ?? $a->type }}</td>
                     <td>{{ $a->serial_number ?? $a->asset_tag ?? '-' }}</td>
                     <td>{{ ucfirst(str_replace('_',' ',$a->status)) }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @if($pending)
                             <span class="badge badge-warning">Return pending</span>
                         @elseif($latest && $latest->isDeclined())

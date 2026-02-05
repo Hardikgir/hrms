@@ -21,12 +21,12 @@
         </div>
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ route('employees.index') }}" class="mb-3">
-            <div class="row">
-                <div class="col-md-3">
+        <form method="GET" action="{{ route('employees.index') }}" class="mb-3 filter-form">
+            <div class="row align-items-end">
+                <div class="col-md-3 mb-2 mb-md-0">
                     <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 mb-2 mb-md-0">
                     <select name="department_id" class="form-control">
                         <option value="">All Departments</option>
                         @foreach($departments as $dept)
@@ -36,7 +36,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2 mb-2 mb-md-0">
                     <select name="status" class="form-control">
                         <option value="">All Status</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
@@ -75,7 +75,7 @@
                             {{ ucfirst($employee->employment_status ?? 'inactive') }}
                         </span>
                     </td>
-                    <td>
+                    <td class="action-buttons">
                         @can('view employees')
                         <a href="{{ route('employees.show', $employee) }}" class="btn btn-sm btn-info">
                             <i class="fas fa-eye"></i>
