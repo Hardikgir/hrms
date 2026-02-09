@@ -36,6 +36,9 @@ class DatabaseSeeder extends Seeder
             'view assets', 'manage assets', 'approve asset returns', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
+            'manage roles',
+            'manage employment types', 'manage employment statuses',
+            'manage departments', 'manage designations', 'manage locations',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -57,6 +60,8 @@ class DatabaseSeeder extends Seeder
             'view assets', 'manage assets', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
+            'manage employment types', 'manage employment statuses',
+            'manage departments', 'manage designations', 'manage locations',
         ]);
         // HR Admin does NOT get 'approve asset returns' – they can see/manage assets but not approve/decline return requests
 

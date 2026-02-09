@@ -16,7 +16,13 @@ class SettingsController extends Controller
      */
     public function index(Request $request)
     {
-        if (! $request->user()->can('manage expense categories') && ! $request->user()->can('manage asset types')) {
+        if (! $request->user()->can('manage expense categories') && 
+            ! $request->user()->can('manage asset types') &&
+            ! $request->user()->can('manage departments') &&
+            ! $request->user()->can('manage designations') &&
+            ! $request->user()->can('manage locations') &&
+            ! $request->user()->can('manage employment types') &&
+            ! $request->user()->can('manage employment statuses')) {
             abort(403, 'You do not have access to settings.');
         }
 

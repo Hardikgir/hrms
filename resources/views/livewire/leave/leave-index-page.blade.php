@@ -17,6 +17,7 @@
                     <select wire:model.live="status" class="form-control">
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
+                        <option value="hr_approved">HR Approved</option>
                         <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
                     </select>
@@ -51,16 +52,32 @@
                             <td>{{ $leave->end_date->format('d M Y') }}</td>
                             <td>{{ $leave->total_days }}</td>
                             <td>
-                                <span class="badge badge-{{ $leave->status === 'approved' ? 'success' : ($leave->status === 'rejected' ? 'danger' : 'warning') }}">
-                                    {{ ucfirst($leave->status) }}
-                                </span>
+                                @if($leave->status === 'approved')
+                                    <span class="badge badge-success">Approved</span>
+                                @elseif($leave->status === 'hr_approved')
+                                    <span class="badge badge-info">HR Approved</span>
+                                @elseif($leave->status === 'rejected')
+                                    <span class="badge badge-danger">Rejected</span>
+                                @elseif($leave->status === 'cancelled')
+                                    <span class="badge badge-secondary">Cancelled</span>
+                                @else
+                                    <span class="badge badge-warning">Pending</span>
+                                @endif
                             </td>
                             <td class="action-buttons">
                                 <a href="{{ route('leaves.show', $leave) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
-                                @if($leave->status === 'pending' && auth()->user()->can('approve', $leave))
-                                    <button type="button" wire:click="approve({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Approve</button>
+                                @can('directApprove', $leave)
+                                    <button type="button" wire:click="directApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Approve</button>
                                     <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
-                                @endif
+                                @endcan
+                                @can('hrApprove', $leave)
+                                    <button type="button" wire:click="hrApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">HR Approve</button>
+                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
+                                @endcan
+                                @can('adminApprove', $leave)
+                                    <button type="button" wire:click="adminApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Final Approve</button>
+                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
+                                @endcan
                             </td>
                         </tr>
                     @empty

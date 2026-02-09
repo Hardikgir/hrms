@@ -54,40 +54,91 @@ class LeaveService
     }
 
     /**
-     * Approve a leave request.
+     * HR Admin approves a leave request (first level).
      */
-    public function approve(int $leaveId, ?int $approvedBy = null): Leave
+    public function hrApprove(int $leaveId, ?int $approvedBy = null): Leave
     {
         $leave = Leave::findOrFail($leaveId);
         if ($leave->status !== 'pending') {
-            throw new \DomainException('Only pending leaves can be approved.');
+            throw new \DomainException('Only pending leaves can be approved by HR.');
         }
         $leave->update([
-            'status' => 'approved',
-            'approved_by' => $approvedBy,
-            'approved_at' => now(),
-            'rejection_reason' => null,
-            'rejected_by' => null,
-            'rejected_at' => null,
+            'status' => 'hr_approved',
+            'hr_approved_by' => $approvedBy,
+            'hr_approved_at' => now(),
             'updated_by' => $approvedBy,
         ]);
         return $leave->fresh();
     }
 
     /**
-     * Reject a leave request.
+     * Admin approves a leave request (final approval).
+     */
+    public function adminApprove(int $leaveId, ?int $approvedBy = null): Leave
+    {
+        $leave = Leave::findOrFail($leaveId);
+        if ($leave->status !== 'hr_approved') {
+            throw new \DomainException('Only HR-approved leaves can be approved by Admin.');
+        }
+        $leave->update([
+            'status' => 'approved',
+            'approved_by' => $approvedBy,
+            'approved_at' => now(),
+            'updated_by' => $approvedBy,
+        ]);
+        return $leave->fresh();
+    }
+
+    /**
+     * Super Admin directly approves a pending leave request (bypasses HR approval).
+     */
+    public function directApprove(int $leaveId, ?int $approvedBy = null): Leave
+    {
+        $leave = Leave::findOrFail($leaveId);
+        if ($leave->status !== 'pending') {
+            throw new \DomainException('Only pending leaves can be directly approved.');
+        }
+        $leave->update([
+            'status' => 'approved',
+            'approved_by' => $approvedBy,
+            'approved_at' => now(),
+            'updated_by' => $approvedBy,
+        ]);
+        return $leave->fresh();
+    }
+
+    /**
+     * Approve a leave request (legacy method - kept for backward compatibility).
+     * This now calls hrApprove for pending leaves.
+     */
+    public function approve(int $leaveId, ?int $approvedBy = null): Leave
+    {
+        $leave = Leave::findOrFail($leaveId);
+        if ($leave->status === 'pending') {
+            return $this->hrApprove($leaveId, $approvedBy);
+        }
+        if ($leave->status === 'hr_approved') {
+            return $this->adminApprove($leaveId, $approvedBy);
+        }
+        throw new \DomainException('Leave is not in a state that can be approved.');
+    }
+
+    /**
+     * Reject a leave request (can reject at pending or hr_approved stage).
      */
     public function reject(int $leaveId, string $rejectionReason, ?int $rejectedBy = null): Leave
     {
         $leave = Leave::findOrFail($leaveId);
-        if ($leave->status !== 'pending') {
-            throw new \DomainException('Only pending leaves can be rejected.');
+        if (!in_array($leave->status, ['pending', 'hr_approved'])) {
+            throw new \DomainException('Only pending or HR-approved leaves can be rejected.');
         }
         $leave->update([
             'status' => 'rejected',
             'rejection_reason' => $rejectionReason,
             'rejected_by' => $rejectedBy,
             'rejected_at' => now(),
+            'hr_approved_by' => null,
+            'hr_approved_at' => null,
             'approved_by' => null,
             'approved_at' => null,
             'updated_by' => $rejectedBy,
@@ -96,13 +147,13 @@ class LeaveService
     }
 
     /**
-     * Cancel a leave (by employee) - only if pending.
+     * Cancel a leave (by employee) - only if pending or hr_approved.
      */
     public function cancel(int $leaveId, ?int $updatedBy = null): Leave
     {
         $leave = Leave::findOrFail($leaveId);
-        if ($leave->status !== 'pending') {
-            throw new \DomainException('Only pending leaves can be cancelled.');
+        if (!in_array($leave->status, ['pending', 'hr_approved'])) {
+            throw new \DomainException('Only pending or HR-approved leaves can be cancelled.');
         }
         $leave->update([
             'status' => 'cancelled',
@@ -168,7 +219,7 @@ class LeaveService
 
         $used = (int) Leave::where('employee_id', $employeeId)
             ->where('leave_type_id', $leaveTypeId)
-            ->where('status', 'approved')
+            ->where('status', 'approved') // Only fully approved leaves count
             ->whereYear('start_date', $year)
             ->sum('total_days');
 

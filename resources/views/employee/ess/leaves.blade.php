@@ -80,8 +80,12 @@
                                         <td>
                                             @if($leave->status === 'approved')
                                                 <span class="badge badge-success">Approved</span>
+                                            @elseif($leave->status === 'hr_approved')
+                                                <span class="badge badge-info">HR Approved</span>
                                             @elseif($leave->status === 'rejected')
                                                 <span class="badge badge-danger" title="{{ $leave->rejection_reason ?? '' }}">Rejected</span>
+                                            @elseif($leave->status === 'cancelled')
+                                                <span class="badge badge-secondary">Cancelled</span>
                                             @else
                                                 <span class="badge badge-warning">Pending</span>
                                             @endif

@@ -36,12 +36,36 @@ class LeaveIndexPage extends Component
         return Employee::orderBy('first_name')->get();
     }
 
-    public function approve(int $leaveId): void
+    public function hrApprove(int $leaveId): void
     {
         $leave = Leave::findOrFail($leaveId);
-        $this->authorize('approve', $leave);
+        $this->authorize('hrApprove', $leave);
         try {
-            app(LeaveService::class)->approve($leaveId, auth()->id());
+            app(LeaveService::class)->hrApprove($leaveId, auth()->id());
+            $this->dispatch('leave-updated');
+        } catch (\DomainException $e) {
+            $this->addError('approve', $e->getMessage());
+        }
+    }
+
+    public function adminApprove(int $leaveId): void
+    {
+        $leave = Leave::findOrFail($leaveId);
+        $this->authorize('adminApprove', $leave);
+        try {
+            app(LeaveService::class)->adminApprove($leaveId, auth()->id());
+            $this->dispatch('leave-updated');
+        } catch (\DomainException $e) {
+            $this->addError('approve', $e->getMessage());
+        }
+    }
+
+    public function directApprove(int $leaveId): void
+    {
+        $leave = Leave::findOrFail($leaveId);
+        $this->authorize('directApprove', $leave);
+        try {
+            app(LeaveService::class)->directApprove($leaveId, auth()->id());
             $this->dispatch('leave-updated');
         } catch (\DomainException $e) {
             $this->addError('approve', $e->getMessage());

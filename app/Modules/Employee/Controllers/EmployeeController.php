@@ -8,6 +8,8 @@ use App\Modules\Employee\Models\Employee;
 use App\Modules\Employee\Models\Department;
 use App\Modules\Employee\Models\Designation;
 use App\Modules\Employee\Models\Location;
+use App\Modules\Employee\Models\EmploymentType;
+use App\Modules\Employee\Models\EmploymentStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -60,8 +62,10 @@ class EmployeeController extends Controller
         $locations = Location::where('is_active', true)->get();
         $managers = Employee::where('is_active', true)->get();
         $employees = Employee::where('is_active', true)->get();
+        $employmentTypes = EmploymentType::active()->ordered()->get();
+        $employmentStatuses = EmploymentStatus::active()->ordered()->get();
 
-        return view('employee.create', compact('departments', 'designations', 'locations', 'managers', 'employees'));
+        return view('employee.create', compact('departments', 'designations', 'locations', 'managers', 'employees', 'employmentTypes', 'employmentStatuses'));
     }
 
     public function store(Request $request)
@@ -81,13 +85,17 @@ class EmployeeController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'manager_id' => 'nullable|exists:employees,id',
             'joining_date' => 'required|date',
-            'employment_type' => 'required|in:full_time,part_time,contract,intern,temporary',
+            'employment_type' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!EmploymentType::where('slug', $value)->where('is_active', true)->exists()) {
+                    $fail('The selected employment type is invalid.');
+                }
+            }],
             'ctc' => 'nullable|numeric|min:0',
         ]);
 
         $validated['uuid'] = Str::uuid();
         $validated['created_by'] = auth()->id();
-        $validated['employment_status'] = 'active';
+        $validated['employment_status'] = $validated['employment_status'] ?? 'active';
         $validated['is_active'] = true;
 
         $employee = Employee::create($validated);
@@ -140,8 +148,10 @@ class EmployeeController extends Controller
         $locations = Location::where('is_active', true)->get();
         $managers = Employee::where('is_active', true)->where('id', '!=', $employee->id)->get();
         $employees = Employee::where('is_active', true)->where('id', '!=', $employee->id)->get();
+        $employmentTypes = EmploymentType::active()->ordered()->get();
+        $employmentStatuses = EmploymentStatus::active()->ordered()->get();
 
-        return view('employee.edit', compact('employee', 'departments', 'designations', 'locations', 'managers', 'employees'));
+        return view('employee.edit', compact('employee', 'departments', 'designations', 'locations', 'managers', 'employees', 'employmentTypes', 'employmentStatuses'));
     }
 
     public function update(Request $request, Employee $employee)
@@ -161,8 +171,16 @@ class EmployeeController extends Controller
             'location_id' => 'nullable|exists:locations,id',
             'manager_id' => 'nullable|exists:employees,id',
             'joining_date' => 'required|date',
-            'employment_type' => 'required|in:full_time,part_time,contract,intern,temporary',
-            'employment_status' => 'required|in:active,inactive,terminated,resigned,on_leave',
+            'employment_type' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!EmploymentType::where('slug', $value)->where('is_active', true)->exists()) {
+                    $fail('The selected employment type is invalid.');
+                }
+            }],
+            'employment_status' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (!EmploymentStatus::where('slug', $value)->where('is_active', true)->exists()) {
+                    $fail('The selected employment status is invalid.');
+                }
+            }],
             'ctc' => 'nullable|numeric|min:0',
         ]);
 

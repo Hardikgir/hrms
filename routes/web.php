@@ -9,6 +9,14 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
+    
+    // Role Management
+    Route::middleware('can:manage roles')->group(function () {
+        Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show']);
+        Route::get('user-roles', [\App\Http\Controllers\UserRoleController::class, 'index'])->name('user-roles.index');
+        Route::get('user-roles/{user}/edit', [\App\Http\Controllers\UserRoleController::class, 'edit'])->name('user-roles.edit');
+        Route::put('user-roles/{user}', [\App\Http\Controllers\UserRoleController::class, 'update'])->name('user-roles.update');
+    });
     Route::get('/dashboard', function () {
         $user = auth()->user();
         // Redirect employees to ESS dashboard
@@ -118,6 +126,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('assets/return-requests/{asset_return_request}/approve', [\App\Modules\Asset\Controllers\AssetController::class, 'approveReturn'])->name('assets.return-requests.approve');
     Route::post('assets/return-requests/{asset_return_request}/decline', [\App\Modules\Asset\Controllers\AssetController::class, 'declineReturn'])->name('assets.return-requests.decline');
     Route::resource('asset-types', \App\Modules\Asset\Controllers\AssetTypeController::class)->except(['show'])->parameters(['asset-types' => 'asset_type'])->middleware('can:manage asset types');
+    
+    // Employment Types & Statuses Management
+    Route::resource('employment-types', \App\Modules\Employee\Controllers\EmploymentTypeController::class)->except(['show'])->parameters(['employment-types' => 'employment_type'])->middleware('can:manage employment types');
+    Route::resource('employment-statuses', \App\Modules\Employee\Controllers\EmploymentStatusController::class)->except(['show'])->parameters(['employment-statuses' => 'employment_status'])->middleware('can:manage employment statuses');
+
+    // Job Details Dropdowns (Departments, Designations, Locations)
+    Route::resource('departments', \App\Modules\Employee\Controllers\DepartmentController::class)->except(['show'])->middleware('can:manage departments');
+    Route::resource('designations', \App\Modules\Employee\Controllers\DesignationController::class)->except(['show'])->middleware('can:manage designations');
+    Route::resource('locations', \App\Modules\Employee\Controllers\LocationController::class)->except(['show'])->middleware('can:manage locations');
 
     // Travel Management
     Route::resource('travel', \App\Modules\Travel\Controllers\TravelRequestController::class)->only(['index', 'create', 'store', 'show']);

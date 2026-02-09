@@ -43,11 +43,37 @@
             <tr>
                 <th>Status</th>
                 <td>
-                    <span class="badge badge-{{ $leave->status == 'approved' ? 'success' : ($leave->status == 'rejected' ? 'danger' : 'warning') }}">
-                        {{ ucfirst($leave->status) }}
-                    </span>
+                    @if($leave->status === 'approved')
+                        <span class="badge badge-success">Approved</span>
+                    @elseif($leave->status === 'hr_approved')
+                        <span class="badge badge-info">HR Approved</span>
+                    @elseif($leave->status === 'rejected')
+                        <span class="badge badge-danger">Rejected</span>
+                    @elseif($leave->status === 'cancelled')
+                        <span class="badge badge-secondary">Cancelled</span>
+                    @else
+                        <span class="badge badge-warning">Pending</span>
+                    @endif
                 </td>
             </tr>
+            @if($leave->hr_approved_at)
+            <tr>
+                <th>HR Approved By</th>
+                <td>{{ $leave->hrApprovedBy->name ?? '-' }} on {{ $leave->hr_approved_at->format('d M Y H:i') }}</td>
+            </tr>
+            @endif
+            @if($leave->approved_at)
+            <tr>
+                <th>Final Approved By</th>
+                <td>{{ $leave->approvedBy->name ?? '-' }} on {{ $leave->approved_at->format('d M Y H:i') }}</td>
+            </tr>
+            @endif
+            @if($leave->rejected_at)
+            <tr>
+                <th>Rejected By</th>
+                <td>{{ $leave->rejectedBy->name ?? '-' }} on {{ $leave->rejected_at->format('d M Y H:i') }}</td>
+            </tr>
+            @endif
         </table>
 
         <div class="mt-3">

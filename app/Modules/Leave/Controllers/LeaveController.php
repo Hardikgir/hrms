@@ -97,7 +97,7 @@ class LeaveController extends Controller
             return redirect()->route('ess.leaves.show', $leave);
         }
 
-        $leave->load(['employee', 'leaveType']);
+        $leave->load(['employee', 'leaveType', 'hrApprovedBy', 'approvedBy', 'rejectedBy']);
         if (request()->routeIs('ess.leaves.*')) {
             return view('employee.ess.leave-show', compact('leave'));
         }

@@ -269,11 +269,12 @@
                                                 <select class="form-control @error('employment_type') is-invalid @enderror" 
                                                         id="employment_type" name="employment_type" required>
                                                     <option value="">Select Type</option>
-                                                    <option value="full_time" {{ old('employment_type', $employee->employment_type) == 'full_time' ? 'selected' : '' }}>Full Time</option>
-                                                    <option value="part_time" {{ old('employment_type', $employee->employment_type) == 'part_time' ? 'selected' : '' }}>Part Time</option>
-                                                    <option value="contract" {{ old('employment_type', $employee->employment_type) == 'contract' ? 'selected' : '' }}>Contract</option>
-                                                    <option value="intern" {{ old('employment_type', $employee->employment_type) == 'intern' ? 'selected' : '' }}>Intern</option>
-                                                    <option value="temporary" {{ old('employment_type', $employee->employment_type) == 'temporary' ? 'selected' : '' }}>Temporary</option>
+                                                    @foreach($employmentTypes as $type)
+                                                        <option value="{{ $type->slug }}" 
+                                                                {{ old('employment_type', $employee->employment_type) == $type->slug ? 'selected' : '' }}>
+                                                            {{ $type->name }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                                 @error('employment_type')
                                                     <span class="invalid-feedback">{{ $message }}</span>
@@ -287,11 +288,13 @@
                                                 <label for="employment_status">Employment Status <span class="text-danger">*</span></label>
                                                 <select class="form-control @error('employment_status') is-invalid @enderror" 
                                                         id="employment_status" name="employment_status" required>
-                                                    <option value="active" {{ old('employment_status', $employee->employment_status) == 'active' ? 'selected' : '' }}>Active</option>
-                                                    <option value="inactive" {{ old('employment_status', $employee->employment_status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                                                    <option value="terminated" {{ old('employment_status', $employee->employment_status) == 'terminated' ? 'selected' : '' }}>Terminated</option>
-                                                    <option value="resigned" {{ old('employment_status', $employee->employment_status) == 'resigned' ? 'selected' : '' }}>Resigned</option>
-                                                    <option value="on_leave" {{ old('employment_status', $employee->employment_status) == 'on_leave' ? 'selected' : '' }}>On Leave</option>
+                                                    <option value="">Select Status</option>
+                                                    @foreach($employmentStatuses as $status)
+                                                        <option value="{{ $status->slug }}" 
+                                                                {{ old('employment_status', $employee->employment_status) == $status->slug ? 'selected' : '' }}>
+                                                            {{ $status->name }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                                 @error('employment_status')
                                                     <span class="invalid-feedback">{{ $message }}</span>

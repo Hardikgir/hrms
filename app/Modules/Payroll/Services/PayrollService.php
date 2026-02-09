@@ -25,7 +25,7 @@ class PayrollService
         $workingDays = $start->daysInMonth(); // simplified: all calendar days as working days; can use config
 
         $employees = Employee::where('is_active', true)
-            ->where('employment_status', 'active')
+            ->where('employment_status', 'active') // Note: This will work with slug values
             ->get();
 
         $created = [];

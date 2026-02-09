@@ -5,6 +5,7 @@ namespace App\Modules\Employee\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Employee\Models\EmployeeTask;
 use App\Modules\Employee\Models\Employee;
+use App\Modules\Leave\Models\Leave;
 use Illuminate\Http\Request;
 
 class EmployeeTaskController extends Controller
@@ -59,6 +60,13 @@ class EmployeeTaskController extends Controller
             'action_label' => 'nullable|string|max:50',
         ]);
 
+        // Check if employee has approved leave on due_date
+        if ($validated['employee_id'] && Leave::hasApprovedLeaveOnDate($validated['employee_id'], $validated['due_date'])) {
+            return back()
+                ->withInput()
+                ->withErrors(['due_date' => 'Cannot assign task to employee on a day when they have an approved leave.']);
+        }
+
         $validated['created_by'] = auth()->id();
 
         EmployeeTask::create($validated);
@@ -89,6 +97,18 @@ class EmployeeTaskController extends Controller
             'action_route' => 'nullable|string|max:100',
             'action_label' => 'nullable|string|max:50',
         ]);
+
+        // Check if employee has approved leave on due_date (only if employee_id or due_date changed)
+        if ($validated['employee_id'] && 
+            ($employee_task->employee_id != $validated['employee_id'] || 
+             $employee_task->due_date->format('Y-m-d') != $validated['due_date'])) {
+            
+            if (Leave::hasApprovedLeaveOnDate($validated['employee_id'], $validated['due_date'])) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['due_date' => 'Cannot assign task to employee on a day when they have an approved leave.']);
+            }
+        }
 
         $employee_task->update($validated);
 

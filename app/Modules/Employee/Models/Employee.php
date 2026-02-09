@@ -91,6 +91,16 @@ class Employee extends Model
         return $this->belongsTo(Employee::class, 'manager_id');
     }
 
+    public function employmentType()
+    {
+        return $this->belongsTo(EmploymentType::class, 'employment_type', 'slug');
+    }
+
+    public function employmentStatus()
+    {
+        return $this->belongsTo(EmploymentStatus::class, 'employment_status', 'slug');
+    }
+
     public function subordinates()
     {
         return $this->hasMany(Employee::class, 'manager_id');

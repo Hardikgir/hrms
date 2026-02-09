@@ -45,4 +45,22 @@ class LeavePolicy
     {
         return $user->can('approve leaves');
     }
+
+    public function hrApprove(User $user, Leave $leave): bool
+    {
+        // HR Admin (but not Super Admin) can approve pending leaves
+        return $user->can('approve leaves') && !$user->hasRole('Super Admin') && $leave->status === 'pending';
+    }
+
+    public function adminApprove(User $user, Leave $leave): bool
+    {
+        // Super Admin can approve HR-approved leaves
+        return $user->hasRole('Super Admin') && $leave->status === 'hr_approved';
+    }
+
+    public function directApprove(User $user, Leave $leave): bool
+    {
+        // Super Admin can directly approve pending leaves (bypasses HR approval)
+        return $user->hasRole('Super Admin') && $leave->status === 'pending';
+    }
 }
