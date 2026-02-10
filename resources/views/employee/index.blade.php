@@ -21,13 +21,13 @@
         </div>
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ route('employees.index') }}" class="mb-3 filter-form">
+        <form method="GET" action="{{ route('employees.index') }}" class="mb-3 filter-form" id="employeesFilterForm">
             <div class="row align-items-end">
                 <div class="col-md-3 mb-2 mb-md-0">
-                    <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search') }}">
+                    <input type="text" name="search" class="form-control" id="employeesSearchInput" placeholder="Search..." value="{{ request('search') }}">
                 </div>
                 <div class="col-md-2 mb-2 mb-md-0">
-                    <select name="department_id" class="form-control">
+                    <select name="department_id" class="form-control" id="employeesDepartmentFilter">
                         <option value="">All Departments</option>
                         @foreach($departments as $dept)
                             <option value="{{ $dept->id }}" {{ request('department_id') == $dept->id ? 'selected' : '' }}>
@@ -37,14 +37,13 @@
                     </select>
                 </div>
                 <div class="col-md-2 mb-2 mb-md-0">
-                    <select name="status" class="form-control">
+                    <select name="status" class="form-control" id="employeesStatusFilter">
                         <option value="">All Status</option>
                         <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                         <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary">Filter</button>
                     <a href="{{ route('employees.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
             </div>
@@ -115,12 +114,72 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#employeesTable').DataTable({
-            "paging": false,
-            "searching": false,
-            "ordering": true,
-            "info": false,
+        // Auto-apply filters (no need to click Filter button)
+        var filterForm = $('#employeesFilterForm');
+        var searchInput = $('#employeesSearchInput');
+        var deptFilter = $('#employeesDepartmentFilter');
+        var statusFilter = $('#employeesStatusFilter');
+
+        var searchDebounceTimer = null;
+        var lastSearchValue = searchInput.val();
+
+        function submitFilters() {
+            // Avoid submitting if nothing changed (mainly for search debounce)
+            filterForm.trigger('submit');
+        }
+
+        deptFilter.on('change', function() {
+            submitFilters();
         });
+
+        statusFilter.on('change', function() {
+            submitFilters();
+        });
+
+        searchInput.on('input', function() {
+            var v = $(this).val();
+            if (v === lastSearchValue) return;
+            lastSearchValue = v;
+
+            if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(function() {
+                submitFilters();
+            }, 400);
+        });
+
+        searchInput.on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                submitFilters();
+            }
+        });
+
+        var table = $('#employeesTable');
+        var tbody = table.find('tbody');
+        var dataRows = tbody.find('tr').filter(function() {
+            return $(this).find('td[colspan]').length === 0;
+        });
+        
+        // Only initialize DataTable if there are actual data rows
+        if (dataRows.length > 0) {
+            // Remove empty row with colspan before initializing DataTable
+            tbody.find('tr').each(function() {
+                if ($(this).find('td[colspan]').length > 0) {
+                    $(this).remove();
+                }
+            });
+            
+            table.DataTable({
+                "paging": false,
+                "searching": false,
+                "ordering": true,
+                "info": false,
+                "autoWidth": false,
+                "columnDefs": [
+                    { "orderable": false, "targets": 6 } // Disable sorting on Actions column (index 6)
+                ]
+            });
+        }
     });
 </script>
 @endpush

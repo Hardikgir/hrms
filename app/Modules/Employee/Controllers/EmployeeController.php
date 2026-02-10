@@ -27,8 +27,9 @@ class EmployeeController extends Controller
 
         $query = Employee::with(['department', 'designation', 'location', 'manager']);
 
-        if ($request->has('search')) {
-            $search = $request->search;
+        // Use filled() so empty query params don't filter everything out
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
             $query->where(function($q) use ($search) {
                 $q->where('employee_id', 'like', "%{$search}%")
                   ->orWhere('first_name', 'like', "%{$search}%")
@@ -37,12 +38,12 @@ class EmployeeController extends Controller
             });
         }
 
-        if ($request->has('department_id')) {
-            $query->where('department_id', $request->department_id);
+        if ($request->filled('department_id')) {
+            $query->where('department_id', $request->integer('department_id'));
         }
 
-        if ($request->has('status')) {
-            $query->where('employment_status', $request->status);
+        if ($request->filled('status')) {
+            $query->where('employment_status', $request->string('status')->toString());
         }
 
         $employees = $query->latest()->paginate(20);
