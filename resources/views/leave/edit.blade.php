@@ -134,12 +134,12 @@
                                 <span class="badge badge-danger">Rejected</span>
                             @endif
                         </p>
-                        <p><strong>Total Days:</strong> {{ $leave->total_days }}</p>
+                        <p><strong>{{ __('messages.total_days') }}:</strong> {{ $leave->total_days }}</p>
                         @if($leave->approved_at)
-                            <p><strong>Approved At:</strong> {{ \Carbon\Carbon::parse($leave->approved_at)->format('d M Y H:i') }}</p>
+                            <p><strong>{{ __('messages.approved_at') }}:</strong> {{ \Carbon\Carbon::parse($leave->approved_at)->format('d M Y H:i') }}</p>
                         @endif
                         @if($leave->rejected_at)
-                            <p><strong>Rejected At:</strong> {{ \Carbon\Carbon::parse($leave->rejected_at)->format('d M Y H:i') }}</p>
+                            <p><strong>{{ __('messages.rejected_at') }}:</strong> {{ \Carbon\Carbon::parse($leave->rejected_at)->format('d M Y H:i') }}</p>
                             @if($leave->rejection_reason)
                                 <p><strong>Rejection Reason:</strong> {{ $leave->rejection_reason }}</p>
                             @endif

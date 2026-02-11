@@ -39,6 +39,7 @@ class DesignationController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'min_salary' => 'nullable|numeric|min:0',
             'max_salary' => 'nullable|numeric|min:0',
+            'sidebar_color' => 'nullable|string|max:20',
             'is_active' => 'boolean',
         ]);
         $validated['uuid'] = (string) Str::uuid();
@@ -65,7 +66,7 @@ class DesignationController extends Controller
             'department_id' => 'nullable|exists:departments,id',
             'min_salary' => 'nullable|numeric|min:0',
             'max_salary' => 'nullable|numeric|min:0',
-            'is_active' => 'boolean',
+            'sidebar_color' => 'nullable|string|max:20',
         ]);
         $validated['is_active'] = $request->boolean('is_active');
         $validated['updated_by'] = auth()->id();

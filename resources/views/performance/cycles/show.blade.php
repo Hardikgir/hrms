@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <p><strong>Period:</strong> {{ $cycle->period_start->format('d M Y') }} – {{ $cycle->period_end->format('d M Y') }}</p>
+                <p><strong>{{ __('messages.period_label') }}:</strong> {{ $cycle->period_start->format('d M Y') }} – {{ $cycle->period_end->format('d M Y') }}</p>
                 <p><strong>Status:</strong>
                     @if($cycle->status === 'draft')<span class="badge badge-secondary">Draft</span>
                     @elseif($cycle->status === 'active')<span class="badge badge-success">Active</span>

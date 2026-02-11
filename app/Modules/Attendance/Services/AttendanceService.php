@@ -113,6 +113,11 @@ class AttendanceService
         if (!empty($filters['date'])) {
             $query->whereDate('date', $filters['date']);
         }
+        if (!empty($filters['department_id'])) {
+            $query->whereHas('employee', function ($q) use ($filters) {
+                $q->where('department_id', $filters['department_id']);
+            });
+        }
         if (!empty($filters['month'])) {
             $query->whereMonth('date', $filters['month'])->whereYear('date', $filters['month_year'] ?? now()->year);
         }

@@ -1,7 +1,7 @@
-{{-- Employee Self-Service sidebar. Admin uses layouts.adminlte with sidebar-admin. --}}
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4"
+    style="{{ $sidebarColor ? 'background-color: ' . $sidebarColor . ' !important;' : '' }}">
     <a href="{{ route('ess.dashboard') }}" class="brand-link">
-        <span class="brand-text font-weight-light">Employee Portal</span>
+        <span class="brand-text font-weight-light">{{ __('messages.employee_portal') }}</span>
     </a>
 
     <div class="sidebar">
@@ -18,87 +18,101 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
                 <li class="nav-item">
-                    <a href="{{ route('ess.dashboard') }}" class="nav-link {{ request()->routeIs('ess.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('ess.dashboard') }}"
+                        class="nav-link {{ request()->routeIs('ess.dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
+                        <p>{{ __('messages.dashboard') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.profile') }}" class="nav-link {{ request()->routeIs('ess.profile*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.profile') }}"
+                        class="nav-link {{ request()->routeIs('ess.profile*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-user"></i>
-                        <p>My Profile</p>
+                        <p>{{ __('messages.my_profile') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.tasks') }}" class="nav-link {{ request()->routeIs('ess.tasks') ? 'active' : '' }}">
+                    <a href="{{ route('ess.tasks') }}"
+                        class="nav-link {{ request()->routeIs('ess.tasks') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tasks"></i>
-                        <p>Tasks</p>
+                        <p>{{ __('messages.tasks') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.attendance') }}" class="nav-link {{ request()->routeIs('ess.attendance') ? 'active' : '' }}">
+                    <a href="{{ route('ess.attendance') }}"
+                        class="nav-link {{ request()->routeIs('ess.attendance') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-check"></i>
-                        <p>Attendance</p>
+                        <p>{{ __('messages.attendance') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.leaves') }}" class="nav-link {{ request()->routeIs('ess.leaves*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.leaves') }}"
+                        class="nav-link {{ request()->routeIs('ess.leaves*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-times"></i>
-                        <p>Leaves</p>
+                        <p>{{ __('messages.leaves') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.goals') }}" class="nav-link {{ request()->routeIs('ess.goals') ? 'active' : '' }}">
+                    <a href="{{ route('ess.goals') }}"
+                        class="nav-link {{ request()->routeIs('ess.goals') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-bullseye"></i>
-                        <p>Goals (KRA/OKR)</p>
+                        <p>{{ __('messages.goals') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.reviews') }}" class="nav-link {{ request()->routeIs('ess.reviews') ? 'active' : '' }}">
+                    <a href="{{ route('ess.reviews') }}"
+                        class="nav-link {{ request()->routeIs('ess.reviews') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-chart-line"></i>
-                        <p>Performance Reviews</p>
+                        <p>{{ __('messages.performance_reviews') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.expenses') }}" class="nav-link {{ request()->routeIs('ess.expenses*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.expenses') }}"
+                        class="nav-link {{ request()->routeIs('ess.expenses*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-receipt"></i>
-                        <p>Expenses</p>
+                        <p>{{ __('messages.expenses') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.training') }}" class="nav-link {{ request()->routeIs('ess.training') ? 'active' : '' }}">
+                    <a href="{{ route('ess.training') }}"
+                        class="nav-link {{ request()->routeIs('ess.training') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-graduation-cap"></i>
-                        <p>Training</p>
+                        <p>{{ __('messages.training') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.roster') }}" class="nav-link {{ request()->routeIs('ess.roster') ? 'active' : '' }}">
+                    <a href="{{ route('ess.roster') }}"
+                        class="nav-link {{ request()->routeIs('ess.roster') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-clock"></i>
-                        <p>My Roster</p>
+                        <p>{{ __('messages.my_roster') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.assets') }}" class="nav-link {{ request()->routeIs('ess.assets') ? 'active' : '' }}">
+                    <a href="{{ route('ess.assets') }}"
+                        class="nav-link {{ request()->routeIs('ess.assets') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-laptop"></i>
-                        <p>My Assets</p>
+                        <p>{{ __('messages.my_assets') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.travel') }}" class="nav-link {{ request()->routeIs('ess.travel*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.travel') }}"
+                        class="nav-link {{ request()->routeIs('ess.travel*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-plane"></i>
-                        <p>Travel</p>
+                        <p>{{ __('messages.travel') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.exit') }}" class="nav-link {{ request()->routeIs('ess.exit*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.exit') }}"
+                        class="nav-link {{ request()->routeIs('ess.exit*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-door-open"></i>
-                        <p>Exit</p>
+                        <p>{{ __('messages.exit') }}</p>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('ess.payslips') }}" class="nav-link {{ request()->routeIs('ess.payslips*') ? 'active' : '' }}">
+                    <a href="{{ route('ess.payslips') }}"
+                        class="nav-link {{ request()->routeIs('ess.payslips*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-money-bill-wave"></i>
-                        <p>Payslips</p>
+                        <p>{{ __('messages.payslips') }}</p>
                     </a>
                 </li>
             </ul>

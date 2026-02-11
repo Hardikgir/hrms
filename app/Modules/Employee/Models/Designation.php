@@ -18,6 +18,7 @@ class Designation extends Model
         'department_id',
         'min_salary',
         'max_salary',
+        'sidebar_color',
         'is_active',
         'created_by',
         'updated_by',

@@ -1,25 +1,26 @@
 <div>
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h3 class="card-title mb-0">Leave Requests</h3>
+            <h3 class="card-title mb-0">{{ __('messages.leave_requests') }}</h3>
             @can('create leaves')
                 <a href="{{ route('leaves.create') }}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-plus"></i> Apply Leave
+                    <i class="fas fa-plus"></i> {{ __('messages.apply_leave') }}
                 </a>
             @endcan
         </div>
         <div class="card-body">
             <div class="row mb-3">
                 <div class="col-md-3">
-                    <input type="text" wire:model.live.debounce.300ms="search" class="form-control" placeholder="Search employee...">
+                    <input type="text" wire:model.live.debounce.300ms="search" class="form-control"
+                        placeholder="{{ __('messages.search_employee') }}">
                 </div>
                 <div class="col-md-2">
                     <select wire:model.live="status" class="form-control">
-                        <option value="">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="hr_approved">HR Approved</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
+                        <option value="">{{ __('messages.all_status') }}</option>
+                        <option value="pending">{{ __('messages.pending') }}</option>
+                        <option value="hr_approved">{{ __('messages.hr_approved') }}</option>
+                        <option value="approved">{{ __('messages.approved') }}</option>
+                        <option value="rejected">{{ __('messages.rejected') }}</option>
                     </select>
                 </div>
             </div>
@@ -34,13 +35,13 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Employee</th>
-                        <th>Leave Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Days</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>{{ __('messages.employee') }}</th>
+                        <th>{{ __('messages.leave_type') }}</th>
+                        <th>{{ __('messages.start_date') }}</th>
+                        <th>{{ __('messages.end_date') }}</th>
+                        <th>{{ __('messages.days') }}</th>
+                        <th>{{ __('messages.status') }}</th>
+                        <th>{{ __('messages.actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,36 +54,45 @@
                             <td>{{ $leave->total_days }}</td>
                             <td>
                                 @if($leave->status === 'approved')
-                                    <span class="badge badge-success">Approved</span>
+                                    <span class="badge badge-success">{{ __('messages.approved') }}</span>
                                 @elseif($leave->status === 'hr_approved')
-                                    <span class="badge badge-info">HR Approved</span>
+                                    <span class="badge badge-info">{{ __('messages.hr_approved') }}</span>
                                 @elseif($leave->status === 'rejected')
-                                    <span class="badge badge-danger">Rejected</span>
+                                    <span class="badge badge-danger">{{ __('messages.rejected') }}</span>
                                 @elseif($leave->status === 'cancelled')
-                                    <span class="badge badge-secondary">Cancelled</span>
+                                    <span class="badge badge-secondary">{{ __('messages.cancelled') }}</span>
                                 @else
-                                    <span class="badge badge-warning">Pending</span>
+                                    <span class="badge badge-warning">{{ __('messages.pending') }}</span>
                                 @endif
                             </td>
                             <td class="action-buttons">
-                                <a href="{{ route('leaves.show', $leave) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                <a href="{{ route('leaves.show', $leave) }}" class="btn btn-sm btn-info"><i
+                                        class="fas fa-eye"></i></a>
                                 @can('directApprove', $leave)
-                                    <button type="button" wire:click="directApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Approve</button>
-                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
+                                    <button type="button" wire:click="directApprove({{ $leave->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="btn btn-sm btn-success">{{ __('messages.approve') }}</button>
+                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})"
+                                        class="btn btn-sm btn-danger">{{ __('messages.reject') }}</button>
                                 @endcan
                                 @can('hrApprove', $leave)
-                                    <button type="button" wire:click="hrApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">HR Approve</button>
-                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
+                                    <button type="button" wire:click="hrApprove({{ $leave->id }})" wire:loading.attr="disabled"
+                                        class="btn btn-sm btn-success">{{ __('messages.hr_approve') }}</button>
+                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})"
+                                        class="btn btn-sm btn-danger">{{ __('messages.reject') }}</button>
                                 @endcan
                                 @can('adminApprove', $leave)
-                                    <button type="button" wire:click="adminApprove({{ $leave->id }})" wire:loading.attr="disabled" class="btn btn-sm btn-success">Final Approve</button>
-                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})" class="btn btn-sm btn-danger">Reject</button>
+                                    <button type="button" wire:click="adminApprove({{ $leave->id }})"
+                                        wire:loading.attr="disabled"
+                                        class="btn btn-sm btn-success">{{ __('messages.final_approve') }}</button>
+                                    <button type="button" wire:click="openRejectModal({{ $leave->id }})"
+                                        class="btn btn-sm btn-danger">{{ __('messages.reject') }}</button>
                                 @endcan
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">No leave requests found.</td>
+                            <td colspan="7" class="text-center">{{ __('messages.no_leave_requests') }}.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -99,13 +109,15 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Reject Leave Request</h5>
+                        <h5 class="modal-title">{{ __('messages.reject_leave_request') }}</h5>
                         <button type="button" class="close" wire:click="closeRejectModal">&times;</button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="rejectionReason">Rejection reason (required)</label>
-                            <textarea wire:model.blur="rejectionReason" id="rejectionReason" class="form-control @error('rejectionReason') is-invalid @enderror" rows="3" placeholder="Enter reason..."></textarea>
+                            <label for="rejectionReason">{{ __('messages.rejection_reason_required') }}</label>
+                            <textarea wire:model.blur="rejectionReason" id="rejectionReason"
+                                class="form-control @error('rejectionReason') is-invalid @enderror" rows="3"
+                                placeholder="{{ __('messages.enter_reason') }}"></textarea>
                             @error('rejectionReason')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -115,8 +127,10 @@
                         @enderror
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" wire:click="closeRejectModal">Cancel</button>
-                        <button type="button" class="btn btn-danger" wire:click="submitReject" wire:loading.attr="disabled">Reject</button>
+                        <button type="button" class="btn btn-secondary"
+                            wire:click="closeRejectModal">{{ __('messages.cancel') }}</button>
+                        <button type="button" class="btn btn-danger" wire:click="submitReject"
+                            wire:loading.attr="disabled">{{ __('messages.reject') }}</button>
                     </div>
                 </div>
             </div>

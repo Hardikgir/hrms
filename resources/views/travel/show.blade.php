@@ -24,9 +24,9 @@
     </div>
     <div class="card-body">
         <p><strong>Employee:</strong> {{ $travel->employee->full_name ?? '-' }}</p>
-        <p><strong>Purpose:</strong> {{ $travel->purpose }}</p>
-        <p><strong>Destination:</strong> {{ $travel->destination ?? '-' }}</p>
-        <p><strong>Dates:</strong> {{ $travel->start_date->format('d M Y') }} – {{ $travel->end_date->format('d M Y') }}</p>
+        <p><strong>{{ __('messages.purpose') }}:</strong> {{ $travel->purpose }}</p>
+        <p><strong>{{ __('messages.destination') }}:</strong> {{ $travel->destination ?? '-' }}</p>
+        <p><strong>{{ __('messages.dates_label') }}:</strong> {{ $travel->start_date->format('d M Y') }} – {{ $travel->end_date->format('d M Y') }}</p>
         <p><strong>Estimated:</strong> {{ $travel->estimated_amount ? number_format($travel->estimated_amount, 2) : '-' }}</p>
         <p><strong>Actual:</strong> {{ $travel->actual_amount ? number_format($travel->actual_amount, 2) : '-' }}</p>
         <p><strong>Status:</strong> @if($travel->status === 'pending')<span class="badge badge-warning">Pending</span>@elseif($travel->status === 'approved')<span class="badge badge-info">Approved</span>@elseif($travel->status === 'rejected')<span class="badge badge-danger">Rejected</span>@else<span class="badge badge-success">Completed</span>@endif</p>

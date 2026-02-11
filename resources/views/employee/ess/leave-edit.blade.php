@@ -88,7 +88,7 @@
                     @else<span class="badge badge-danger">Rejected</span>
                     @endif
                 </p>
-                <p><strong>Total Days:</strong> {{ $leave->total_days }}</p>
+                <p><strong>{{ __('messages.total_days') }}:</strong> {{ $leave->total_days }}</p>
             </div>
         </div>
     </div>

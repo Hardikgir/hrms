@@ -1,0 +1,734 @@
+Leavn Multi-Language UX Verification Skill
+
+$ npx skills add https://github.com/willsigmon/sigstack --skill Leavn Multi-Language UX Verification Skill
+SKILL.md
+Leavn Multi-Language UX Verification Skill
+Skill Metadata
+Name: leavn-language-ux-verify
+Category: Testing, Localization, UX
+Description: Comprehensive verification of Leavn app UX across 6 supported languages (English, Spanish, German, Chinese Simplified, Arabic, Hebrew)
+Author: Claude
+Version: 1.0.0
+Last Updated: 2025-10-25
+Purpose
+Systematically test language switching, localization, RTL support, and content rendering across all supported languages in the Leavn iOS app. Generates a detailed report of what works vs what doesn't.
+
+Supported Languages
+English (en) - LTR
+Spanish (es) - LTR
+German (de) - LTR
+Chinese Simplified (zh-Hans) - LTR
+Arabic (ar) - RTL
+Hebrew (he) - RTL
+Instructions
+Phase 1: Code Analysis
+Locate Localization Infrastructure
+
+Find I18n facade implementation
+Locate .lproj directories or localization files
+Check PreferencesStore for language preference storage
+Find Settings view for language selection UI
+Identify Key Screens for Testing
+
+Home screen (DailyVerseCard, quick actions, etc.)
+Bible reader (BookSelectionView, verse display, search)
+Community tab (prayer requests, groups)
+Library tab (sermons, devotionals)
+Guided tab (meditation, audio experiences)
+Onboarding flow
+Settings screen
+Check RTL Support Implementation
+
+Search for .environment(\.layoutDirection, ...) usage
+Check for hardcoded leading/trailing vs proper semantic layout
+Verify Material Design icons flip correctly for RTL
+Check text alignment attributes
+Phase 2: Test Execution Plan
+Test 1: Language Switching Mechanism
+What to verify:
+
+ Settings has language picker UI
+ All 6 languages are listed
+ Selection persists in PreferencesStore
+ App reflects change immediately or requires restart
+ No crashes or console errors on switch
+How to verify:
+
+Read Settings view implementation
+Check if language change triggers app-wide update
+Look for notification center broadcasts or observable changes
+Verify persistence mechanism
+Test 2: Tab Bar & Navigation
+What to verify:
+
+ Tab labels translate correctly
+ Navigation titles update per language
+ Back button text localizes
+ Modal/sheet titles translate
+Key files:
+
+ContentView.swift (tab bar)
+AppCoordinator.swift (navigation)
+Feature view files
+Test 3: Home Screen Content
+What to verify:
+
+ Daily verse card UI text
+ Greeting messages
+ Section headers
+ Quick action buttons
+ Date/time formatting matches locale
+Key files:
+
+Features/Home/ directory
+DailyVerseCard.swift
+Test 4: Bible Reader Experience
+What to verify:
+
+ Book names translate (Genesis, Exodus, etc.)
+ Chapter/verse labels
+ Search placeholder text
+ Empty states
+ Bible content API returns correct translation
+ Verse numbers render properly in RTL
+Key files:
+
+Features/Bible/ directory
+BookSelectionView.swift
+BibleService implementation
+Test 5: Community Features
+What to verify:
+
+ Prayer request form labels
+ Group names/descriptions
+ Messaging UI
+ Timestamp formatting per locale
+ Empty states
+Key files:
+
+Features/Community/ directory
+CloudKitCommunityClient.swift
+Test 6: Library Content
+What to verify:
+
+ Sermon list UI text
+ Devotional cards
+ Filter/sort options
+ Playback controls text
+Key files:
+
+Features/Library/ directory
+Audio playback views
+Test 7: Guided Experiences
+What to verify:
+
+ Meditation instructions
+ Audio controls
+ Timer/duration displays
+Key files:
+
+Features/Guided/ directory
+Test 8: Onboarding Flow
+What to verify:
+
+ Welcome screens
+ Permission requests (notifications, audio)
+ Skip/Continue buttons
+ Feature explanation text
+Key files:
+
+Look for Onboarding in Features/
+Check UserDefaults for onboarding completion flag
+Test 9: RTL Layout Verification (Arabic/Hebrew)
+What to verify:
+
+ UI mirrors correctly (back buttons, chevrons, etc.)
+ Text alignment flips (right-aligned for RTL)
+ Icons flip appropriately (not all should flip)
+ Navigation flows right-to-left
+ Tab bar icons stay in correct order
+ Verse references format correctly (Arabic numerals vs Eastern Arabic)
+How to verify:
+
+Check for hardcoded .leading/.trailing that should be semantic
+Look for .flipsForRightToLeftLayoutDirection() on images
+Verify no absolute positioning that breaks RTL
+Test 10: Date/Time Formatting
+What to verify:
+
+ Date formats match locale (MM/DD vs DD/MM vs YYYY-MM-DD)
+ Time formats (12h vs 24h)
+ Relative time ("2 hours ago" translates)
+ Calendar system (Gregorian vs others)
+How to verify:
+
+Search for DateFormatter usage
+Check if .locale is set properly
+Look for hardcoded date strings
+Test 11: Search Functionality
+What to verify:
+
+ Search placeholder translates
+ Search results render correctly in all languages
+ Bible search works with translated book names
+ Search suggestions localize
+Key files:
+
+UnifiedSearchService.swift
+Search UI components
+Test 12: AI-Generated Content
+What to verify:
+
+ Devotionals generate in selected language
+ AI prompts include language context
+ Generated content displays properly in RTL
+Key files:
+
+UnifiedAIService.swift
+Devotional generation logic
+Phase 3: Report Generation
+Create a structured markdown report with this format:
+
+# Leavn Multi-Language UX Verification Report
+**Generated**: [timestamp]
+**Tested By**: Claude Code
+**App Version**: [from project]
+
+## Executive Summary
+- Total Tests: X
+- Passed: Y
+- Failed: Z
+- Warnings: W
+
+## Test Results by Language
+
+### English (en)
+#### Fully Working
+- [List features that work perfectly]
+
+#### Issues Found
+- [List problems with severity: P0/P1/P2]
+
+#### Not Tested
+- [List untestable items with reason]
+
+### Spanish (es)
+[Same structure]
+
+### German (de)
+[Same structure]
+
+### Chinese Simplified (zh-Hans)
+[Same structure]
+
+### Arabic (ar)
+#### RTL-Specific Issues
+- [List RTL layout problems]
+
+[Same structure as above]
+
+### Hebrew (he)
+#### RTL-Specific Issues
+- [List RTL layout problems]
+
+[Same structure as above]
+
+## Critical Issues (P0)
+[Blockers that break UX in any language]
+
+## High Priority Issues (P1)
+[Major UX problems, workarounds exist]
+
+## Medium Priority Issues (P2)
+[Polish items, minor inconsistencies]
+
+## Recommendations
+1. [Prioritized action items]
+2. [Architecture suggestions]
+3. [Testing infrastructure needs]
+
+## Coverage Analysis
+- **Localization Files**: [% of strings covered]
+- **RTL Support**: [% of views verified]
+- **Date/Time Formatting**: [consistency score]
+- **Bible Content**: [translation availability]
+
+## Appendix: Code Locations
+- Localization system: [file paths]
+- Settings language picker: [file path]
+- RTL configuration: [file path]
+- Key issues found: [file:line references]
+Phase 4: Execution Steps
+Analyze Codebase
+
+- Glob for localization files: *.lproj, *.strings, I18n*
+- Read Settings views for language picker
+- Read PreferencesStore for persistence
+- Read key feature views
+Check Localization Coverage
+
+- Count strings in each .lproj directory
+- Compare English vs other languages
+- Find missing translations
+Verify RTL Implementation
+
+- Grep for hardcoded .leading/.trailing
+- Check for .environment(\.layoutDirection)
+- Find views that need RTL fixes
+Test Date/Time Formatting
+
+- Find all DateFormatter instances
+- Verify .locale is set
+- Check for hardcoded formats
+Analyze Bible Service
+
+- Read BibleService implementation
+- Check translation parameter handling
+- Verify API supports all languages
+Generate Report
+
+- Compile findings
+- Categorize by severity
+- Create actionable recommendations
+Output Deliverables
+Comprehensive Markdown Report (as detailed above)
+Issue List (importable to todo list or GitHub issues)
+Code Snippets showing problematic patterns
+File Path Reference for all issues found
+Success Criteria
+All 6 languages tested across 12 test categories
+RTL languages verified for layout correctness
+Critical issues clearly identified with P0/P1/P2 severity
+Actionable recommendations provided
+Code locations documented for all issues
+Notes
+This skill performs static analysis of code - it doesn't run the simulator
+For runtime testing, consider creating a complementary UI test suite
+Focus on finding architectural issues, not just missing translations
+Pay special attention to RTL - it's often the most broken area
+Check for hardcoded strings that bypass localization system
+Example Usage
+User: "Run the language UX verification skill"
+Claude: *Executes this skill, generates comprehensive report*
+Maintenance
+Update this skill when:
+
+New languages are added to Leavn
+New major features are added (new tabs, flows)
+Localization architecture changes (e.g., new I18n system)
+RTL support implementation changes
+
+
+---
+description: Review UI code for Vercel Web Interface Guidelines compliance
+argument-hint: <file-or-pattern>
+---
+
+# Web Interface Guidelines
+
+Review these files for compliance: $ARGUMENTS
+
+Read files, check against rules below. Output concise but comprehensive—sacrifice grammar for brevity. High signal-to-noise.
+
+## Rules
+
+### Accessibility
+
+- Icon-only buttons need `aria-label`
+- Form controls need `<label>` or `aria-label`
+- Interactive elements need keyboard handlers (`onKeyDown`/`onKeyUp`)
+- `<button>` for actions, `<a>`/`<Link>` for navigation (not `<div onClick>`)
+- Images need `alt` (or `alt=""` if decorative)
+- Decorative icons need `aria-hidden="true"`
+- Async updates (toasts, validation) need `aria-live="polite"`
+- Use semantic HTML (`<button>`, `<a>`, `<label>`, `<table>`) before ARIA
+- Headings hierarchical `<h1>`–`<h6>`; include skip link for main content
+- `scroll-margin-top` on heading anchors
+
+### Focus States
+
+- Interactive elements need visible focus: `focus-visible:ring-*` or equivalent
+- Never `outline-none` / `outline: none` without focus replacement
+- Use `:focus-visible` over `:focus` (avoid focus ring on click)
+- Group focus with `:focus-within` for compound controls
+
+### Forms
+
+- Inputs need `autocomplete` and meaningful `name`
+- Use correct `type` (`email`, `tel`, `url`, `number`) and `inputmode`
+- Never block paste (`onPaste` + `preventDefault`)
+- Labels clickable (`htmlFor` or wrapping control)
+- Disable spellcheck on emails, codes, usernames (`spellCheck={false}`)
+- Checkboxes/radios: label + control share single hit target (no dead zones)
+- Submit button stays enabled until request starts; spinner during request
+- Errors inline next to fields; focus first error on submit
+- Placeholders end with `…` and show example pattern
+- `autocomplete="off"` on non-auth fields to avoid password manager triggers
+- Warn before navigation with unsaved changes (`beforeunload` or router guard)
+
+### Animation
+
+- Honor `prefers-reduced-motion` (provide reduced variant or disable)
+- Animate `transform`/`opacity` only (compositor-friendly)
+- Never `transition: all`—list properties explicitly
+- Set correct `transform-origin`
+- SVG: transforms on `<g>` wrapper with `transform-box: fill-box; transform-origin: center`
+- Animations interruptible—respond to user input mid-animation
+
+### Typography
+
+- `…` not `...`
+- Curly quotes `"` `"` not straight `"`
+- Non-breaking spaces: `10&nbsp;MB`, `⌘&nbsp;K`, brand names
+- Loading states end with `…`: `"Loading…"`, `"Saving…"`
+- `font-variant-numeric: tabular-nums` for number columns/comparisons
+- Use `text-wrap: balance` or `text-pretty` on headings (prevents widows)
+
+### Content Handling
+
+- Text containers handle long content: `truncate`, `line-clamp-*`, or `break-words`
+- Flex children need `min-w-0` to allow text truncation
+- Handle empty states—don't render broken UI for empty strings/arrays
+- User-generated content: anticipate short, average, and very long inputs
+
+### Images
+
+- `<img>` needs explicit `width` and `height` (prevents CLS)
+- Below-fold images: `loading="lazy"`
+- Above-fold critical images: `priority` or `fetchpriority="high"`
+
+### Performance
+
+- Large lists (>50 items): virtualize (`virtua`, `content-visibility: auto`)
+- No layout reads in render (`getBoundingClientRect`, `offsetHeight`, `offsetWidth`, `scrollTop`)
+- Batch DOM reads/writes; avoid interleaving
+- Prefer uncontrolled inputs; controlled inputs must be cheap per keystroke
+- Add `<link rel="preconnect">` for CDN/asset domains
+- Critical fonts: `<link rel="preload" as="font">` with `font-display: swap`
+
+### Navigation & State
+
+- URL reflects state—filters, tabs, pagination, expanded panels in query params
+- Links use `<a>`/`<Link>` (Cmd/Ctrl+click, middle-click support)
+- Deep-link all stateful UI (if uses `useState`, consider URL sync via nuqs or similar)
+- Destructive actions need confirmation modal or undo window—never immediate
+
+### Touch & Interaction
+
+- `touch-action: manipulation` (prevents double-tap zoom delay)
+- `-webkit-tap-highlight-color` set intentionally
+- `overscroll-behavior: contain` in modals/drawers/sheets
+- During drag: disable text selection, `inert` on dragged elements
+- `autoFocus` sparingly—desktop only, single primary input; avoid on mobile
+
+### Safe Areas & Layout
+
+- Full-bleed layouts need `env(safe-area-inset-*)` for notches
+- Avoid unwanted scrollbars: `overflow-x-hidden` on containers, fix content overflow
+- Flex/grid over JS measurement for layout
+
+### Dark Mode & Theming
+
+- `color-scheme: dark` on `<html>` for dark themes (fixes scrollbar, inputs)
+- `<meta name="theme-color">` matches page background
+- Native `<select>`: explicit `background-color` and `color` (Windows dark mode)
+
+### Locale & i18n
+
+- Dates/times: use `Intl.DateTimeFormat` not hardcoded formats
+- Numbers/currency: use `Intl.NumberFormat` not hardcoded formats
+- Detect language via `Accept-Language` / `navigator.languages`, not IP
+
+### Hydration Safety
+
+- Inputs with `value` need `onChange` (or use `defaultValue` for uncontrolled)
+- Date/time rendering: guard against hydration mismatch (server vs client)
+- `suppressHydrationWarning` only where truly needed
+
+### Hover & Interactive States
+
+- Buttons/links need `hover:` state (visual feedback)
+- Interactive states increase contrast: hover/active/focus more prominent than rest
+
+### Content & Copy
+
+- Active voice: "Install the CLI" not "The CLI will be installed"
+- Title Case for headings/buttons (Chicago style)
+- Numerals for counts: "8 deployments" not "eight"
+- Specific button labels: "Save API Key" not "Continue"
+- Error messages include fix/next step, not just problem
+- Second person; avoid first person
+- `&` over "and" where space-constrained
+
+### Anti-patterns (flag these)
+
+- `user-scalable=no` or `maximum-scale=1` disabling zoom
+- `onPaste` with `preventDefault`
+- `transition: all`
+- `outline-none` without focus-visible replacement
+- Inline `onClick` navigation without `<a>`
+- `<div>` or `<span>` with click handlers (should be `<button>`)
+- Images without dimensions
+- Large arrays `.map()` without virtualization
+- Form inputs without labels
+- Icon buttons without `aria-label`
+- Hardcoded date/number formats (use `Intl.*`)
+- `autoFocus` without clear justification
+
+## Output Format
+
+Group by file. Use `file:line` format (VS Code clickable). Terse findings.
+
+```text
+## src/Button.tsx
+
+src/Button.tsx:42 - icon button missing aria-label
+src/Button.tsx:18 - input lacks label
+src/Button.tsx:55 - animation missing prefers-reduced-motion
+src/Button.tsx:67 - transition: all → list properties
+
+## src/Modal.tsx
+
+src/Modal.tsx:12 - missing overscroll-behavior: contain
+src/Modal.tsx:34 - "..." → "…"
+
+## src/Card.tsx
+
+✓ pass
+```
+
+State issue + location. Skip explanation unless fix non-obvious. No preamble.
+
+laravel-specialist
+
+$ npx skills add https://github.com/jeffallan/claude-skills --skill laravel-specialist
+SKILL.md
+Laravel Specialist
+Senior Laravel specialist with deep expertise in Laravel 10+, Eloquent ORM, and modern PHP 8.2+ development.
+
+Role Definition
+You are a senior PHP engineer with 10+ years of Laravel experience. You specialize in Laravel 10+ with PHP 8.2+, Eloquent ORM, API resources, queue systems, and modern Laravel patterns. You build elegant, scalable applications with powerful features.
+
+When to Use This Skill
+Building Laravel 10+ applications
+Implementing Eloquent models and relationships
+Creating RESTful APIs with API resources
+Setting up queue systems and jobs
+Building reactive interfaces with Livewire
+Implementing authentication with Sanctum
+Optimizing database queries and performance
+Writing comprehensive tests with Pest/PHPUnit
+Core Workflow
+Analyze requirements - Identify models, relationships, APIs, queue needs
+Design architecture - Plan database schema, service layers, job queues
+Implement models - Create Eloquent models with relationships, scopes, casts
+Build features - Develop controllers, services, API resources, jobs
+Test thoroughly - Write feature and unit tests with >85% coverage
+Reference Guide
+Load detailed guidance based on context:
+
+Topic	Reference	Load When
+Eloquent ORM	references/eloquent.md	Models, relationships, scopes, query optimization
+Routing & APIs	references/routing.md	Routes, controllers, middleware, API resources
+Queue System	references/queues.md	Jobs, workers, Horizon, failed jobs, batching
+Livewire	references/livewire.md	Components, wire:model, actions, real-time
+Testing	references/testing.md	Feature tests, factories, mocking, Pest PHP
+Constraints
+MUST DO
+Use PHP 8.2+ features (readonly, enums, typed properties)
+Type hint all method parameters and return types
+Use Eloquent relationships properly (avoid N+1)
+Implement API resources for transforming data
+Queue long-running tasks
+Write comprehensive tests (>85% coverage)
+Use service containers and dependency injection
+Follow PSR-12 coding standards
+MUST NOT DO
+Use raw queries without protection (SQL injection)
+Skip eager loading (causes N+1 problems)
+Store sensitive data unencrypted
+Mix business logic in controllers
+Hardcode configuration values
+Skip validation on user input
+Use deprecated Laravel features
+Ignore queue failures
+Output Templates
+When implementing Laravel features, provide:
+
+Model file (Eloquent model with relationships)
+Migration file (database schema)
+Controller/API resource (if applicable)
+Service class (business logic)
+Test file (feature/unit tests)
+Brief explanation of design decisions
+Knowledge Reference
+Laravel 10+, Eloquent ORM, PHP 8.2+, API resources, Sanctum/Passport, queues, Horizon, Livewire, Inertia, Octane, Pest/PHPUnit, Redis, broadcasting, events/listeners, notifications, task scheduling
+
+eloquent-best-practices
+
+$ npx skills add https://github.com/iserter/laravel-claude-agents --skill eloquent-best-practices
+SKILL.md
+Eloquent Best Practices
+Query Optimization
+Always Eager Load Relationships
+// ❌ N+1 Query Problem
+$posts = Post::all();
+foreach ($posts as $post) {
+    echo $post->user->name; // N additional queries
+}
+
+// ✅ Eager Loading
+$posts = Post::with('user')->get();
+foreach ($posts as $post) {
+    echo $post->user->name; // No additional queries
+}
+Select Only Needed Columns
+// ❌ Fetches all columns
+$users = User::all();
+
+// ✅ Only needed columns
+$users = User::select(['id', 'name', 'email'])->get();
+
+// ✅ With relationships
+$posts = Post::with(['user:id,name'])->select(['id', 'title', 'user_id'])->get();
+Use Query Scopes
+// ✅ Define reusable query logic
+class Post extends Model
+{
+    public function scopePublished($query)
+    {
+        return $query->where('status', 'published')
+                    ->whereNotNull('published_at');
+    }
+    
+    public function scopePopular($query, $threshold = 100)
+    {
+        return $query->where('views', '>', $threshold);
+    }
+}
+
+// Usage
+$posts = Post::published()->popular()->get();
+Relationship Best Practices
+Define Return Types
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class Post extends Model
+{
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+}
+Use withCount for Counts
+// ❌ Triggers additional queries
+foreach ($posts as $post) {
+    echo $post->comments()->count();
+}
+
+// ✅ Load counts efficiently
+$posts = Post::withCount('comments')->get();
+foreach ($posts as $post) {
+    echo $post->comments_count;
+}
+Mass Assignment Protection
+class Post extends Model
+{
+    // ✅ Whitelist fillable attributes
+    protected $fillable = ['title', 'content', 'status'];
+    
+    // Or blacklist guarded attributes
+    protected $guarded = ['id', 'user_id'];
+    
+    // ❌ Never do this
+    // protected $guarded = [];
+}
+Use Casts for Type Safety
+class Post extends Model
+{
+    protected $casts = [
+        'published_at' => 'datetime',
+        'metadata' => 'array',
+        'is_featured' => 'boolean',
+        'views' => 'integer',
+    ];
+}
+Chunking for Large Datasets
+// ✅ Process in chunks to save memory
+Post::chunk(200, function ($posts) {
+    foreach ($posts as $post) {
+        // Process each post
+    }
+});
+
+// ✅ Or use lazy collections
+Post::lazy()->each(function ($post) {
+    // Process one at a time
+});
+Database-Level Operations
+// ❌ Slow - loads into memory first
+$posts = Post::where('status', 'draft')->get();
+foreach ($posts as $post) {
+    $post->update(['status' => 'archived']);
+}
+
+// ✅ Fast - single query
+Post::where('status', 'draft')->update(['status' => 'archived']);
+
+// ✅ Increment/decrement
+Post::where('id', $id)->increment('views');
+Use Model Events Wisely
+class Post extends Model
+{
+    protected static function booted()
+    {
+        static::creating(function ($post) {
+            $post->slug = Str::slug($post->title);
+        });
+        
+        static::deleting(function ($post) {
+            $post->comments()->delete();
+        });
+    }
+}
+Common Pitfalls to Avoid
+Don't Query in Loops
+// ❌ Bad
+foreach ($userIds as $id) {
+    $user = User::find($id);
+}
+
+// ✅ Good
+$users = User::whereIn('id', $userIds)->get();
+Don't Forget Indexes
+// Migration
+Schema::create('posts', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('user_id')->constrained()->index();
+    $table->string('slug')->unique();
+    $table->string('status')->index();
+    $table->timestamp('published_at')->nullable()->index();
+    
+    // Composite index for common queries
+    $table->index(['status', 'published_at']);
+});
+Prevent Lazy Loading in Development
+// In AppServiceProvider boot method
+Model::preventLazyLoading(!app()->isProduction());
+Checklist
+ Relationships eagerly loaded where needed
+ Only selecting required columns
+ Using query scopes for reusability
+ Mass assignment protection configured
+ Appropriate casts defined
+ Indexes on foreign keys and query columns
+ Using database-level operations when possible
+ Chunking for large datasets
+ Model events used appropriately
+ Lazy loading prevented in development

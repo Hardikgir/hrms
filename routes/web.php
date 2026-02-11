@@ -8,8 +8,9 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
-    
+
     // Role Management
     Route::middleware('can:manage roles')->group(function () {
         Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show']);
@@ -33,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile/edit', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'editProfile'])->name('profile.edit');
         Route::put('/profile', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'updateProfile'])->name('profile.update');
         Route::get('/tasks', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'tasks'])->name('tasks');
+        Route::post('/tasks/{task}/complete', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'completeTask'])->name('tasks.complete');
         Route::get('/onboarding-documents', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'onboardingDocuments'])->name('onboarding-documents');
         Route::post('/onboarding-documents', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'submitOnboardingDocuments'])->name('onboarding-documents.submit');
         Route::get('/training-session', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'trainingSession'])->name('training-session');
@@ -75,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
     // Employee Tasks (Admin: create/assign tasks for ESS)
     Route::post('employee-tasks/{employee_task}/approve', [\App\Modules\Employee\Controllers\EmployeeTaskController::class, 'approve'])->name('employee-tasks.approve')->middleware('can:manage tasks');
     Route::resource('employee-tasks', \App\Modules\Employee\Controllers\EmployeeTaskController::class)->except(['show'])->middleware('can:manage tasks');
-    
+
     // Attendance Routes - Admin can view all, employees can check in/out
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [\App\Modules\Attendance\Controllers\AttendanceController::class, 'index'])->name('index')->middleware('can:view attendance');
@@ -85,7 +87,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Leave Routes - Employees can create/view their own, admins can view all
     Route::resource('leaves', \App\Modules\Leave\Controllers\LeaveController::class);
-    
+
     // Payroll Routes - Only admins can access
     Route::prefix('payroll')->name('payroll.')->middleware('can:view payroll')->group(function () {
         Route::get('/', [\App\Modules\Payroll\Controllers\PayrollController::class, 'index'])->name('index');
@@ -126,7 +128,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('assets/return-requests/{asset_return_request}/approve', [\App\Modules\Asset\Controllers\AssetController::class, 'approveReturn'])->name('assets.return-requests.approve');
     Route::post('assets/return-requests/{asset_return_request}/decline', [\App\Modules\Asset\Controllers\AssetController::class, 'declineReturn'])->name('assets.return-requests.decline');
     Route::resource('asset-types', \App\Modules\Asset\Controllers\AssetTypeController::class)->except(['show'])->parameters(['asset-types' => 'asset_type'])->middleware('can:manage asset types');
-    
+
     // Employment Types & Statuses Management
     Route::resource('employment-types', \App\Modules\Employee\Controllers\EmploymentTypeController::class)->except(['show'])->parameters(['employment-types' => 'employment_type'])->middleware('can:manage employment types');
     Route::resource('employment-statuses', \App\Modules\Employee\Controllers\EmploymentStatusController::class)->except(['show'])->parameters(['employment-statuses' => 'employment_status'])->middleware('can:manage employment statuses');
@@ -165,4 +167,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

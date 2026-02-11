@@ -68,5 +68,18 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Asset::class, AssetPolicy::class);
         Gate::policy(TravelRequest::class, TravelRequestPolicy::class);
         Gate::policy(ExitRequest::class, ExitRequestPolicy::class);
+
+        view()->composer(['layouts.partials.sidebar-admin', 'layouts.partials.sidebar-ess', 'layouts.partials.navbar'], function ($view) {
+            $sidebarColor = '#343a40';
+            if (auth()->check()) {
+                $user = auth()->user();
+                if ($user->employee && $user->employee->designation && $user->employee->designation->sidebar_color) {
+                    $sidebarColor = $user->employee->designation->sidebar_color;
+                } elseif ($user->hasRole('Super Admin')) {
+                    $sidebarColor = '#001f3f';
+                }
+            }
+            $view->with('sidebarColor', $sidebarColor);
+        });
     }
 }

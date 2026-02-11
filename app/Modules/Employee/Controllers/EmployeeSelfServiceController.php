@@ -78,7 +78,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $employee->load(['department', 'designation', 'location', 'manager']);
@@ -95,7 +95,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         return view('employee.ess.edit-profile', compact('employee'));
@@ -110,7 +110,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $validated = $request->validate([
@@ -126,7 +126,7 @@ class EmployeeSelfServiceController extends Controller
 
         $employee->update($validated);
 
-        return redirect()->route('ess.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('ess.profile')->with('success', __('messages.profile_updated'));
     }
 
     /**
@@ -138,7 +138,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $tasks = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
@@ -150,6 +150,31 @@ class EmployeeSelfServiceController extends Controller
     }
 
     /**
+     * Mark a task as completed
+     */
+    public function completeTask(\App\Modules\Employee\Models\EmployeeTask $task)
+    {
+        $user = Auth::user();
+        $employee = $user->employee;
+
+        if (!$employee) {
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
+        }
+
+        // Verify task belongs to employee
+        if ($task->employee_id && $task->employee_id !== $employee->id) {
+            abort(403, __('messages.unauthorized_access_task'));
+        }
+
+        $task->update([
+            'status' => 'completed',
+            'completed_at' => now(),
+        ]);
+
+        return redirect()->back()->with('success', __('messages.task_marked_completed'));
+    }
+
+    /**
      * Onboarding documents – list required docs and upload form
      */
     public function onboardingDocuments()
@@ -158,7 +183,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $requiredDocs = [
@@ -180,7 +205,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $rules = [
@@ -231,7 +256,7 @@ class EmployeeSelfServiceController extends Controller
         }
 
         return redirect()->route('ess.onboarding-documents')
-            ->with('success', 'Document uploaded successfully. You can upload more below.');
+            ->with('success', __('messages.document_uploaded'));
     }
 
     /**
@@ -243,7 +268,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $trainingTask = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
@@ -280,7 +305,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $task = \App\Modules\Employee\Models\EmployeeTask::forEmployee($employee->id)
@@ -289,7 +314,7 @@ class EmployeeSelfServiceController extends Controller
             ->first();
 
         if (!$task) {
-            return redirect()->route('ess.training-session')->with('error', 'No pending training session task found.');
+            return redirect()->route('ess.training-session')->with('error', __('messages.no_pending_training'));
         }
 
         $task->update([
@@ -297,7 +322,7 @@ class EmployeeSelfServiceController extends Controller
             'completed_at' => now(),
         ]);
 
-        return redirect()->route('ess.tasks')->with('success', 'Training attendance confirmed. Your manager will approve it shortly.');
+        return redirect()->route('ess.tasks')->with('success', __('messages.training_confirmed'));
     }
 
     /**
@@ -309,7 +334,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $query = Attendance::where('employee_id', $employee->id)->latest('date');
@@ -341,7 +366,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $query = Leave::where('employee_id', $employee->id)->with('leaveType')->latest();
@@ -368,7 +393,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $query = Payroll::where('employee_id', $employee->id)->latest();
@@ -413,7 +438,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $performanceService = app(\App\Modules\Performance\Services\PerformanceService::class);
@@ -430,7 +455,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         $performanceService = app(\App\Modules\Performance\Services\PerformanceService::class);
@@ -443,7 +468,7 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $expenseService = app(\App\Modules\Expense\Services\ExpenseService::class);
         $expenses = $expenseService->list($employee->id, null);
@@ -454,7 +479,7 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $trainingService = app(\App\Modules\Training\Services\TrainingService::class);
         $assignments = $trainingService->getAssignmentsForEmployee($employee->id);
@@ -465,7 +490,7 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $shiftService = app(\App\Modules\Shift\Services\ShiftService::class);
         $weekStart = request()->query('week') ? \Carbon\Carbon::parse(request()->query('week'))->startOfWeek() : now()->startOfWeek();
@@ -477,7 +502,7 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $assetService = app(\App\Modules\Asset\Services\AssetService::class);
         $assets = $assetService->list($employee->id, null);
@@ -488,10 +513,10 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         if ($asset->employee_id != $employee->id) {
-            abort(403, 'This asset is not assigned to you.');
+            abort(403, __('messages.asset_not_assigned'));
         }
         $assetService = app(\App\Modules\Asset\Services\AssetService::class);
         try {
@@ -499,14 +524,14 @@ class EmployeeSelfServiceController extends Controller
         } catch (\DomainException $e) {
             return redirect()->route('ess.assets')->with('error', $e->getMessage());
         }
-        return redirect()->route('ess.assets')->with('success', 'Return request submitted. Admin will review it.');
+        return redirect()->route('ess.assets')->with('success', __('messages.return_request_submitted'));
     }
 
     public function travel()
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $travelService = app(\App\Modules\Travel\Services\TravelService::class);
         $requests = $travelService->list($employee->id, null);
@@ -517,7 +542,7 @@ class EmployeeSelfServiceController extends Controller
     {
         $employee = Auth::user()->employee;
         if (!$employee) {
-            return redirect()->route('ess.dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('ess.dashboard')->with('error', __('messages.employee_record_not_found'));
         }
         $exitService = app(\App\Modules\Exit\Services\ExitService::class);
         $exits = $exitService->list($employee->id, null);

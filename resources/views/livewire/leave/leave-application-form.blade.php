@@ -6,9 +6,10 @@
     <form wire:submit="submit">
         @if(!auth()->user()->employee)
             <div class="form-group">
-                <label for="employee_id">Employee</label>
-                <select wire:model="employee_id" id="employee_id" class="form-control @error('employee_id') is-invalid @enderror" required>
-                    <option value="">Select Employee</option>
+                <label for="employee_id">{{ __('messages.employee') }}</label>
+                <select wire:model="employee_id" id="employee_id"
+                    class="form-control @error('employee_id') is-invalid @enderror" required>
+                    <option value="">{{ __('messages.select_employee') }}</option>
                     @foreach($this->employees as $emp)
                         <option value="{{ $emp->id }}">{{ $emp->full_name }} ({{ $emp->employee_id }})</option>
                     @endforeach
@@ -20,9 +21,10 @@
         @endif
 
         <div class="form-group">
-            <label for="leave_type_id">Leave Type</label>
-            <select wire:model="leave_type_id" id="leave_type_id" class="form-control @error('leave_type_id') is-invalid @enderror" required>
-                <option value="">Select Leave Type</option>
+            <label for="leave_type_id">{{ __('messages.leave_type') }}</label>
+            <select wire:model="leave_type_id" id="leave_type_id"
+                class="form-control @error('leave_type_id') is-invalid @enderror" required>
+                <option value="">{{ __('messages.select_leave_type') }}</option>
                 @foreach($this->leaveTypes as $type)
                     <option value="{{ $type->id }}">{{ $type->name }}</option>
                 @endforeach
@@ -35,8 +37,9 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="start_date">Start Date</label>
-                    <input type="date" wire:model="start_date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" required>
+                    <label for="start_date">{{ __('messages.start_date') }}</label>
+                    <input type="date" wire:model="start_date" id="start_date"
+                        class="form-control @error('start_date') is-invalid @enderror" required>
                     @error('start_date')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -44,8 +47,9 @@
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="end_date">End Date</label>
-                    <input type="date" wire:model="end_date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" required>
+                    <label for="end_date">{{ __('messages.end_date') }}</label>
+                    <input type="date" wire:model="end_date" id="end_date"
+                        class="form-control @error('end_date') is-invalid @enderror" required>
                     @error('end_date')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
@@ -54,12 +58,13 @@
         </div>
 
         @if($this->totalDays > 0)
-            <p class="text-muted">Total days: <strong>{{ $this->totalDays }}</strong></p>
+            <p class="text-muted">{{ __('messages.total_days') }}: <strong>{{ $this->totalDays }}</strong></p>
         @endif
 
         <div class="form-group">
-            <label for="reason">Reason</label>
-            <textarea wire:model="reason" id="reason" class="form-control @error('reason') is-invalid @enderror" rows="3" required placeholder="Reason for leave"></textarea>
+            <label for="reason">{{ __('messages.reason') }}</label>
+            <textarea wire:model="reason" id="reason" class="form-control @error('reason') is-invalid @enderror"
+                rows="3" required placeholder="{{ __('messages.reason') }}"></textarea>
             @error('reason')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror
@@ -67,13 +72,13 @@
 
         <div class="form-group">
             <button type="submit" wire:loading.attr="disabled" class="btn btn-primary">
-                <span wire:loading.remove>Submit Leave Request</span>
-                <span wire:loading>Submitting...</span>
+                <span wire:loading.remove>{{ __('messages.apply_leave') }}</span>
+                <span wire:loading>{{ __('messages.submitting') }}</span>
             </button>
             @if(auth()->user()->employee)
-                <a href="{{ route('ess.leaves') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ route('ess.leaves') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
             @else
-                <a href="{{ route('leaves.index') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ route('leaves.index') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
             @endif
         </div>
     </form>

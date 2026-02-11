@@ -86,7 +86,7 @@
                             <a href="{{ route('performance.reviews.manager-review', $review) }}" class="btn btn-sm btn-primary">Manager Review</a>
                         @endif
                         @can('delete', $review)
-                        <form action="{{ route('performance.reviews.destroy', $review) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this review?');">
+                        <form action="{{ route('performance.reviews.destroy', $review) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_review_confirm') }}');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>

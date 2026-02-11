@@ -1,22 +1,22 @@
 @extends('layouts.adminlte')
 
-@section('title', 'Edit Role')
-@section('page_title', 'Edit Role')
+@section('title', __('messages.edit_role'))
+@section('page_title', __('messages.edit_role'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('roles.index') }}">Roles</a></li>
-    <li class="breadcrumb-item active">Edit</li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">{{ __('messages.settings') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('roles.index') }}">{{ __('messages.roles') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('messages.edit') }}</li>
 @endsection
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Edit Role: {{ $role->name }}</h3>
+        <h3 class="card-title">{{ __('messages.edit_role_title', ['name' => $role->name]) }}</h3>
         @if($role->name === 'Super Admin')
             <div class="alert alert-warning mt-2">
-                <i class="fas fa-exclamation-triangle"></i> This is a protected role. The name cannot be changed.
+                <i class="fas fa-exclamation-triangle"></i> {{ __('messages.protected_role_warning') }}
             </div>
         @endif
     </div>
@@ -31,7 +31,7 @@
             @csrf
             @method('PUT')
             <div class="form-group">
-                <label for="name">Role Name <span class="text-danger">*</span></label>
+                <label for="name">{{ __('messages.role_name') }} <span class="text-danger">*</span></label>
                 <input type="text" class="form-control @error('name') is-invalid @enderror" 
                        id="name" name="name" value="{{ old('name', $role->name) }}" 
                        required maxlength="255" 
@@ -42,10 +42,10 @@
             </div>
 
             <div class="form-group">
-                <label>Permissions</label>
+                <label>{{ __('messages.permissions') }}</label>
                 <div class="mb-2">
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="selectAll()">Select All</button>
-                    <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAll()">Deselect All</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="selectAll()">{{ __('messages.select_all') }}</button>
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAll()">{{ __('messages.deselect_all') }}</button>
                 </div>
                 <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
                     @foreach($permissions as $group => $groupPermissions)
@@ -71,11 +71,11 @@
                         <hr>
                     @endforeach
                 </div>
-                <small class="text-muted">Select the permissions this role should have.</small>
+                <small class="text-muted">{{ __('messages.select_permissions_help') }}</small>
             </div>
 
-            <button type="submit" class="btn btn-primary">Update Role</button>
-            <a href="{{ route('roles.index') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">{{ __('messages.update_role') }}</button>
+            <a href="{{ route('roles.index') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
         </form>
     </div>
 </div>

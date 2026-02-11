@@ -1,25 +1,25 @@
 @extends('layouts.adminlte')
 
-@section('title', 'Roles')
-@section('page_title', 'Roles')
+@section('title', __('messages.roles'))
+@section('page_title', __('messages.roles'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
-    <li class="breadcrumb-item active">Roles</li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">{{ __('messages.settings') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('messages.roles') }}</li>
 @endsection
 
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Roles</h3>
+        <h3 class="card-title">{{ __('messages.roles') }}</h3>
         <div class="card-tools">
-            <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Role</a>
-            <a href="{{ route('user-roles.index') }}" class="btn btn-info btn-sm"><i class="fas fa-users"></i> Manage User Roles</a>
+            <a href="{{ route('roles.create') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> {{ __('messages.add_role') }}</a>
+            <a href="{{ route('user-roles.index') }}" class="btn btn-info btn-sm"><i class="fas fa-users"></i> {{ __('messages.manage_user_roles') }}</a>
         </div>
     </div>
     <div class="card-body">
-        <p class="text-muted small">Roles define what permissions users have. Assign roles to users to control access.</p>
+        <p class="text-muted small">{{ __('messages.roles_description') }}</p>
         @if(session('success'))
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -36,10 +36,10 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Name</th>
-                    <th>Users</th>
-                    <th>Permissions</th>
-                    <th>Actions</th>
+                    <th>{{ __('messages.name') }}</th>
+                    <th>{{ __('messages.user') }}</th>
+                    <th>{{ __('messages.permissions') }}</th>
+                    <th>{{ __('messages.actions') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,19 +49,19 @@
                     <td>
                         <strong>{{ $role->name }}</strong>
                         @if($role->name === 'Super Admin')
-                            <span class="badge badge-danger ml-2">Protected</span>
+                            <span class="badge badge-danger ml-2">{{ __('messages.protected') }}</span>
                         @endif
                     </td>
                     <td>
-                        <span class="badge badge-info">{{ $role->users_count }} user(s)</span>
+                        <span class="badge badge-info">{{ $role->users_count }} {{ __('messages.users_count') }}</span>
                     </td>
                     <td>
-                        <span class="badge badge-secondary">{{ $role->permissions->count() }} permission(s)</span>
+                        <span class="badge badge-secondary">{{ $role->permissions->count() }} {{ __('messages.permissions_count') }}</span>
                     </td>
                     <td class="action-buttons">
                         <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         @if($role->name !== 'Super Admin')
-                            <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this role? This action cannot be undone.');">
+                            <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_role_confirm') }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
@@ -71,7 +71,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center">No roles found. <a href="{{ route('roles.create') }}">Create one</a>.</td>
+                    <td colspan="5" class="text-center">{{ __('messages.no_roles_found') }} <a href="{{ route('roles.create') }}">{{ __('messages.create_one') }}</a>.</td>
                 </tr>
                 @endforelse
             </tbody>
