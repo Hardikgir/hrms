@@ -7,6 +7,7 @@ use App\Modules\Employee\Models\Designation;
 use App\Modules\Employee\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
 
 class DesignationController extends Controller
 {
@@ -18,7 +19,7 @@ class DesignationController extends Controller
     public function index()
     {
         $this->authorize('manage designations');
-        $designations = Designation::with('department')->withCount('employees')->orderBy('name')->paginate(20);
+        $designations = Designation::with('department')->withCount(['employees', 'permissions'])->orderBy('name')->paginate(20);
         return view('employee.designations.index', compact('designations'));
     }
 
@@ -46,14 +47,20 @@ class DesignationController extends Controller
         $validated['is_active'] = $request->boolean('is_active', true);
         $validated['created_by'] = auth()->id();
         Designation::create($validated);
-        return redirect()->route('designations.index')->with('success', 'Designation created successfully.');
+        return redirect()->route('designations.index')->with('success', __('messages.designation_created_success'));
     }
 
     public function edit(Designation $designation)
     {
         $this->authorize('manage designations');
+        $designation->load('permissions');
         $departments = Department::where('is_active', true)->orderBy('name')->get();
-        return view('employee.designations.edit', compact('designation', 'departments'));
+        $permissions = Permission::orderBy('name')->get()->groupBy(function (Permission $permission) {
+            $parts = explode(' ', $permission->name);
+            return $parts[0];
+        });
+        $designationPermissionIds = $designation->permissions->pluck('id')->toArray();
+        return view('employee.designations.edit', compact('designation', 'departments', 'permissions', 'designationPermissionIds'));
     }
 
     public function update(Request $request, Designation $designation)
@@ -67,20 +74,28 @@ class DesignationController extends Controller
             'min_salary' => 'nullable|numeric|min:0',
             'max_salary' => 'nullable|numeric|min:0',
             'sidebar_color' => 'nullable|string|max:20',
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
         $validated['is_active'] = $request->boolean('is_active');
         $validated['updated_by'] = auth()->id();
-        $designation->update($validated);
-        return redirect()->route('designations.index')->with('success', 'Designation updated successfully.');
+        $designation->update(collect($validated)->except('permissions')->all());
+        if (array_key_exists('permissions', $validated)) {
+            $permissions = Permission::whereIn('id', $validated['permissions'])->get();
+            $designation->syncPermissions($permissions);
+        } else {
+            $designation->syncPermissions([]);
+        }
+        return redirect()->route('designations.index')->with('success', __('messages.designation_updated_success'));
     }
 
     public function destroy(Designation $designation)
     {
         $this->authorize('manage designations');
         if ($designation->employees()->exists()) {
-            return redirect()->route('designations.index')->with('error', 'Cannot delete: employees are assigned to this designation.');
+            return redirect()->route('designations.index')->with('error', __('messages.designation_cannot_delete_employees'));
         }
         $designation->delete();
-        return redirect()->route('designations.index')->with('success', 'Designation deleted successfully.');
+        return redirect()->route('designations.index')->with('success', __('messages.designation_deleted_success'));
     }
 }

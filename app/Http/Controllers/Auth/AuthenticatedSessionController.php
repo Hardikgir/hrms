@@ -35,12 +35,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect based on user role
+        // Redirect based on user role/permissions
         $user = Auth::user();
-        if ($user->hasRole('Employee') && $user->employee) {
-            return redirect()->intended(route('ess.dashboard'));
+        
+        // If user has employee record and only Employee/HR Employee role (no admin access), go to ESS
+        if ($user->employee && ($user->hasRole('Employee') || $user->hasRole('HR Employee'))) {
+            if (! $user->can('view employees')) {
+                return redirect()->intended(route('ess.dashboard'));
+            }
         }
 
+        // Otherwise go to admin dashboard
         return redirect()->intended(route('dashboard'));
     }
 

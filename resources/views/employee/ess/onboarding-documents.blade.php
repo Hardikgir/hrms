@@ -87,7 +87,7 @@
                                     <div id="aadhar-fields" class="doc-type-fields" style="display: none;">
                                         <div class="form-group">
                                             <label for="aadhar_number">Aadhar Number <span class="text-danger">*</span></label>
-                                            <input type="text" name="aadhar_number" id="aadhar_number" class="form-control @error('aadhar_number') is-invalid @enderror" maxlength="12" pattern="[0-9]{12}" placeholder="12-digit Aadhar number" value="{{ old('aadhar_number', $employee->aadhar_number ?? '') }}">
+                                            <input type="text" name="aadhar_number" id="aadhar_number" class="form-control @error('aadhar_number') is-invalid @enderror" maxlength="12" pattern="[0-9]{12}" placeholder="{{ __('messages.placeholder_aadhar') }}" value="{{ old('aadhar_number', $employee->aadhar_number ?? '') }}">
                                             <small class="form-text text-muted">Enter 12-digit Aadhar number (digits only).</small>
                                             @error('aadhar_number')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                         </div>
@@ -95,7 +95,7 @@
                                     <div id="pan-fields" class="doc-type-fields" style="display: none;">
                                         <div class="form-group">
                                             <label for="pan_number">PAN Number <span class="text-danger">*</span></label>
-                                            <input type="text" name="pan_number" id="pan_number" class="form-control @error('pan_number') is-invalid @enderror" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" placeholder="e.g. ABCDE1234F" value="{{ old('pan_number', $employee->pan_number ?? '') }}">
+                                            <input type="text" name="pan_number" id="pan_number" class="form-control @error('pan_number') is-invalid @enderror" maxlength="10" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" placeholder="{{ __('messages.placeholder_pan') }}" value="{{ old('pan_number', $employee->pan_number ?? '') }}">
                                             <small class="form-text text-muted">Format: 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F).</small>
                                             @error('pan_number')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                         </div>
@@ -105,14 +105,14 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="bank_account_number">Bank Account Number <span class="text-danger">*</span></label>
-                                                    <input type="text" name="bank_account_number" id="bank_account_number" class="form-control @error('bank_account_number') is-invalid @enderror" placeholder="Account number" value="{{ old('bank_account_number', $employee->bank_account_number ?? '') }}">
+                                                    <input type="text" name="bank_account_number" id="bank_account_number" class="form-control @error('bank_account_number') is-invalid @enderror" placeholder="{{ __('messages.placeholder_account_number') }}" value="{{ old('bank_account_number', $employee->bank_account_number ?? '') }}">
                                                     @error('bank_account_number')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="bank_ifsc">IFSC Code <span class="text-danger">*</span></label>
-                                                    <input type="text" name="bank_ifsc" id="bank_ifsc" class="form-control @error('bank_ifsc') is-invalid @enderror" maxlength="11" placeholder="e.g. HDFC0001234" value="{{ old('bank_ifsc', $employee->bank_ifsc ?? '') }}">
+                                                    <input type="text" name="bank_ifsc" id="bank_ifsc" class="form-control @error('bank_ifsc') is-invalid @enderror" maxlength="11" placeholder="{{ __('messages.placeholder_bank_ifsc') }}" value="{{ old('bank_ifsc', $employee->bank_ifsc ?? '') }}">
                                                     @error('bank_ifsc')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                                 </div>
                                             </div>
@@ -121,14 +121,14 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="bank_name">Bank Name</label>
-                                                    <input type="text" name="bank_name" id="bank_name" class="form-control @error('bank_name') is-invalid @enderror" placeholder="e.g. HDFC Bank" value="{{ old('bank_name', $employee->bank_name ?? '') }}">
+                                                    <input type="text" name="bank_name" id="bank_name" class="form-control @error('bank_name') is-invalid @enderror" placeholder="{{ __('messages.placeholder_bank_name') }}" value="{{ old('bank_name', $employee->bank_name ?? '') }}">
                                                     @error('bank_name')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="bank_branch">Branch</label>
-                                                    <input type="text" name="bank_branch" id="bank_branch" class="form-control @error('bank_branch') is-invalid @enderror" placeholder="Branch name" value="{{ old('bank_branch', $employee->bank_branch ?? '') }}">
+                                                    <input type="text" name="bank_branch" id="bank_branch" class="form-control @error('bank_branch') is-invalid @enderror" placeholder="{{ __('messages.placeholder_bank_branch') }}" value="{{ old('bank_branch', $employee->bank_branch ?? '') }}">
                                                     @error('bank_branch')<span class="invalid-feedback">{{ $message }}</span>@enderror
                                                 </div>
                                             </div>

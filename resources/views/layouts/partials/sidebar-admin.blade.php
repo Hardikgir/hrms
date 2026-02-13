@@ -2,7 +2,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4"
     style="{{ $sidebarColor ? 'background-color: ' . $sidebarColor . ' !important;' : '' }}">
     <a href="{{ route('dashboard') }}" class="brand-link">
-        <span class="brand-text font-weight-light">HRMS</span>
+        <span class="brand-text font-weight-light">{{ __('messages.hrms') }}</span>
     </a>
 
     <div class="sidebar">
@@ -111,10 +111,19 @@
                         </a>
                     </li>
                 @endcan
-                @if(auth()->user()->can('manage expense categories') || auth()->user()->can('manage asset types'))
+                @if(auth()->user()->hasRole('Super Admin') || auth()->user()->can('manage roles'))
+                    <li class="nav-item">
+                        <a href="{{ route('roles.index') }}"
+                            class="nav-link {{ request()->routeIs('roles.*') || request()->routeIs('user-roles.*') ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-user-shield"></i>
+                            <p>{{ __('messages.roles') }}</p>
+                        </a>
+                    </li>
+                @endif
+                @if(auth()->user()->hasRole('Super Admin'))
                     <li class="nav-item">
                         <a href="{{ route('settings.index') }}"
-                            class="nav-link {{ request()->routeIs('settings.*') || request()->routeIs('expense-categories.*') || request()->routeIs('asset-types.*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('settings.*') || request()->routeIs('expense-categories.*') || request()->routeIs('asset-types.*') || request()->routeIs('departments.*') || request()->routeIs('designations.*') || request()->routeIs('locations.*') || request()->routeIs('employment-types.*') || request()->routeIs('employment-statuses.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-cog"></i>
                             <p>{{ __('messages.settings') }}</p>
                         </a>

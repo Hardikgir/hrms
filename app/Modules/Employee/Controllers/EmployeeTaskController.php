@@ -71,7 +71,7 @@ class EmployeeTaskController extends Controller
 
         EmployeeTask::create($validated);
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task created successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_created_success'));
     }
 
     public function edit(EmployeeTask $employee_task)
@@ -112,7 +112,7 @@ class EmployeeTaskController extends Controller
 
         $employee_task->update($validated);
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task updated successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_updated_success'));
     }
 
     public function destroy(EmployeeTask $employee_task)
@@ -121,7 +121,7 @@ class EmployeeTaskController extends Controller
 
         $employee_task->delete();
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task deleted successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_deleted_success'));
     }
 
     public function approve(EmployeeTask $employee_task)
@@ -129,7 +129,7 @@ class EmployeeTaskController extends Controller
         $this->authorize('manage tasks');
 
         if ($employee_task->status !== 'completed') {
-            return redirect()->route('employee-tasks.index')->with('error', 'Only completed tasks can be approved.');
+            return redirect()->route('employee-tasks.index')->with('error', __('messages.task_only_completed_approve'));
         }
 
         $employee_task->update([
@@ -138,6 +138,6 @@ class EmployeeTaskController extends Controller
             'approved_at' => now(),
         ]);
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task approved. It will no longer appear in the employee\'s task list.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_approved_success'));
     }
 }

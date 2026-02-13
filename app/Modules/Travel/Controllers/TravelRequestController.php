@@ -68,7 +68,7 @@ class TravelRequestController extends Controller
             auth()->id()
         );
         $redirect = auth()->user()->employee ? route('ess.travel') : route('travel.index');
-        return redirect($redirect)->with('success', 'Travel request submitted.');
+        return redirect($redirect)->with('success', __('messages.travel_request_submitted'));
     }
 
     public function show(TravelRequest $travel)
@@ -93,7 +93,7 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Request approved.');
+        return back()->with('success', __('messages.request_approved_success'));
     }
 
     public function reject(Request $request, TravelRequest $travel)
@@ -105,7 +105,7 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Request rejected.');
+        return back()->with('success', __('messages.request_rejected_success'));
     }
 
     public function complete(Request $request, TravelRequest $travel)
@@ -117,6 +117,6 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Marked as completed.');
+        return back()->with('success', __('messages.marked_completed_success'));
     }
 }

@@ -56,7 +56,7 @@ class DepartmentController extends Controller
             $department->managers()->sync($managerIds);
         }
         
-        return redirect()->route('departments.index')->with('success', 'Department created successfully.');
+        return redirect()->route('departments.index')->with('success', __('messages.department_created_success'));
     }
 
     public function edit(Department $department)
@@ -91,19 +91,19 @@ class DepartmentController extends Controller
         // Sync managers
         $department->managers()->sync($managerIds);
         
-        return redirect()->route('departments.index')->with('success', 'Department updated successfully.');
+        return redirect()->route('departments.index')->with('success', __('messages.department_updated_success'));
     }
 
     public function destroy(Department $department)
     {
         $this->authorize('manage departments');
         if ($department->employees()->exists()) {
-            return redirect()->route('departments.index')->with('error', 'Cannot delete: employees are assigned to this department.');
+            return redirect()->route('departments.index')->with('error', __('messages.department_cannot_delete_employees'));
         }
         if ($department->children()->exists()) {
-            return redirect()->route('departments.index')->with('error', 'Cannot delete: has sub-departments. Remove or reassign them first.');
+            return redirect()->route('departments.index')->with('error', __('messages.department_cannot_delete_has_children'));
         }
         $department->delete();
-        return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');
+        return redirect()->route('departments.index')->with('success', __('messages.department_deleted_success'));
     }
 }

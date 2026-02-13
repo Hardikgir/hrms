@@ -49,13 +49,13 @@ class RosterController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Shift assigned.');
+        return back()->with('success', __('messages.shift_assigned_success'));
     }
 
     public function destroy(ShiftAssignment $roster)
     {
         $this->authorize('delete', $roster);
         $this->shiftService->removeAssignment($roster);
-        return back()->with('success', 'Assignment removed.');
+        return back()->with('success', __('messages.assignment_removed_success'));
     }
 }

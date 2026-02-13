@@ -49,7 +49,7 @@ class AssetController extends Controller
             'notes' => 'nullable|string|max:2000',
         ]);
         $this->assetService->create($validated, auth()->id());
-        return redirect()->route('assets.index')->with('success', 'Asset created.');
+        return redirect()->route('assets.index')->with('success', __('messages.asset_created_success'));
     }
 
     public function edit(Asset $asset)
@@ -78,7 +78,7 @@ class AssetController extends Controller
             'notes' => 'nullable|string|max:2000',
         ]);
         $this->assetService->update($asset, $validated);
-        return redirect()->route('assets.index')->with('success', 'Asset updated.');
+        return redirect()->route('assets.index')->with('success', __('messages.asset_updated_success'));
     }
 
     public function assign(Request $request, Asset $asset)
@@ -90,14 +90,14 @@ class AssetController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Asset assigned.');
+        return back()->with('success', __('messages.asset_assigned_success'));
     }
 
     public function unassign(Asset $asset)
     {
         $this->authorize('update', $asset);
         $this->assetService->unassign($asset, auth()->id());
-        return back()->with('success', 'Asset unassigned.');
+        return back()->with('success', __('messages.asset_unassigned_success'));
     }
 
     public function approveReturn(Request $request, AssetReturnRequest $asset_return_request)
@@ -109,7 +109,7 @@ class AssetController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Return approved. Asset is now available.');
+        return back()->with('success', __('messages.asset_return_approved_success'));
     }
 
     public function history(Asset $asset)
@@ -128,6 +128,6 @@ class AssetController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Return declined. Employee can review your note and request again.');
+        return back()->with('success', __('messages.asset_return_declined_success'));
     }
 }

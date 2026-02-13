@@ -122,5 +122,21 @@
                 </div>
             </div>
         @endcan
+
+        @if(auth()->user()->hasRole('Super Admin') || auth()->user()->can('manage roles'))
+            <div class="col-md-6 col-lg-4">
+                <div class="card card-outline card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-user-shield mr-2"></i>{{ __('messages.roles') }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">{{ __('messages.roles_description') }}</p>
+                        <a href="{{ route('roles.index') }}" class="btn btn-danger">
+                            <i class="fas fa-cog"></i> {{ __('messages.manage_roles') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endsection

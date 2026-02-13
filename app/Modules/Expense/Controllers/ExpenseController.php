@@ -72,7 +72,7 @@ class ExpenseController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
         $redirect = auth()->user()->employee ? route('ess.expenses') : route('expenses.index');
-        return redirect($redirect)->with('success', 'Expense submitted.');
+        return redirect($redirect)->with('success', __('messages.expense_submitted_success'));
     }
 
     public function show(Expense $expense)
@@ -111,7 +111,7 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Expense approved.');
+        return back()->with('success', __('messages.expense_approved_success'));
     }
 
     public function reject(Request $request, Expense $expense)
@@ -123,7 +123,7 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Expense rejected.');
+        return back()->with('success', __('messages.expense_rejected_success'));
     }
 
     public function reimburse(Expense $expense)
@@ -134,6 +134,6 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Marked as reimbursed.');
+        return back()->with('success', __('messages.marked_reimbursed_success'));
     }
 }

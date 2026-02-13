@@ -52,6 +52,6 @@ class UserRoleController extends Controller
             $user->syncRoles([]);
         }
 
-        return redirect()->route('user-roles.index')->with('success', 'User roles updated successfully.');
+        return redirect()->route('user-roles.index')->with('success', __('messages.user_roles_updated_success'));
     }
 }

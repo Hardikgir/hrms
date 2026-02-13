@@ -12,18 +12,12 @@ class SettingsController extends Controller
     }
 
     /**
-     * Settings index – only for users who can access at least one settings section.
+     * Settings index – only for Super Admin.
      */
     public function index(Request $request)
     {
-        if (! $request->user()->can('manage expense categories') && 
-            ! $request->user()->can('manage asset types') &&
-            ! $request->user()->can('manage departments') &&
-            ! $request->user()->can('manage designations') &&
-            ! $request->user()->can('manage locations') &&
-            ! $request->user()->can('manage employment types') &&
-            ! $request->user()->can('manage employment statuses')) {
-            abort(403, 'You do not have access to settings.');
+        if (! $request->user()->hasRole('Super Admin')) {
+            abort(403, __('messages.settings_access_denied'));
         }
 
         return view('settings.index');

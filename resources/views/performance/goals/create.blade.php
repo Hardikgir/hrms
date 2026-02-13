@@ -69,7 +69,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="target_unit">Unit</label>
-                        <input type="text" class="form-control @error('target_unit') is-invalid @enderror" id="target_unit" name="target_unit" value="{{ old('target_unit') }}" maxlength="50" placeholder="e.g. %, count">
+                        <input type="text" class="form-control @error('target_unit') is-invalid @enderror" id="target_unit" name="target_unit" value="{{ old('target_unit') }}" maxlength="50" placeholder="{{ __('messages.placeholder_target_unit') }}">
                         @error('target_unit')<span class="invalid-feedback">{{ $message }}</span>@enderror
                     </div>
                 </div>

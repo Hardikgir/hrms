@@ -27,7 +27,7 @@
                         id="duration_hours" name="duration_hours" value="{{ old('duration_hours', 0) }}"></div>
                 <div class="form-group"><label for="type">{{ __('messages.type') }}</label><input type="text"
                         class="form-control" id="type" name="type" value="{{ old('type') }}"
-                        placeholder="e.g. onboarding, compliance"></div>
+                        placeholder="{{ __('messages.placeholder_course') }}"></div>
                 <div class="form-group"><label><input type="checkbox" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}> {{ __('messages.active') }}</label></div>
                 <button type="submit" class="btn btn-primary">{{ __('messages.create') }}</button>
                 <a href="{{ route('training.courses.index') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>

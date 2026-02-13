@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <label for="code">{{ __('messages.code') }}</label>
                             <input type="text" class="form-control @error('code') is-invalid @enderror" id="code"
-                                name="code" value="{{ old('code') }}" placeholder="e.g. HR, IT">
+                                name="code" value="{{ old('code') }}" placeholder="{{ __('messages.placeholder_code_hr_it') }}">
                             @error('code')<span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>

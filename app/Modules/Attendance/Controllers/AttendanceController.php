@@ -47,7 +47,7 @@ class AttendanceController extends Controller
                     $validated['longitude'] ?? null,
                     $user->id
                 );
-                return redirect()->back()->with('success', 'Check-in recorded successfully.');
+                return redirect()->back()->with('success', __('messages.checkin_recorded_success'));
             } catch (\DomainException $e) {
                 return redirect()->back()->with('error', $e->getMessage());
             }
@@ -67,7 +67,7 @@ class AttendanceController extends Controller
             $validated['longitude'] ?? null,
             $user->id
         );
-        return redirect()->back()->with('success', 'Check-in recorded successfully.');
+        return redirect()->back()->with('success', __('messages.checkin_recorded_success'));
     }
 
     public function checkOut(Request $request)
@@ -91,7 +91,7 @@ class AttendanceController extends Controller
                     $validated['longitude'] ?? null,
                     $user->id
                 );
-                return redirect()->back()->with('success', 'Check-out recorded successfully.');
+                return redirect()->back()->with('success', __('messages.checkout_recorded_success'));
             } catch (\DomainException|\Illuminate\Auth\Access\AuthorizationException $e) {
                 return redirect()->back()->with('error', $e->getMessage());
             }
@@ -113,6 +113,6 @@ class AttendanceController extends Controller
             $validated['longitude'] ?? null,
             $user->id
         );
-        return redirect()->back()->with('success', 'Check-out recorded successfully.');
+        return redirect()->back()->with('success', __('messages.checkout_recorded_success'));
     }
 }

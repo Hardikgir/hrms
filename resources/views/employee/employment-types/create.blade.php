@@ -18,12 +18,12 @@
             @csrf
             <div class="form-group">
                 <label for="name">Name <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required maxlength="100" placeholder="e.g. Full Time">
+                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required maxlength="100" placeholder="{{ __('messages.placeholder_full_time') }}">
                 @error('name')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
             <div class="form-group">
                 <label for="slug">Slug</label>
-                <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}" maxlength="100" placeholder="e.g. full_time (leave blank to auto-generate)">
+                <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}" maxlength="100" placeholder="{{ __('messages.placeholder_full_time_slug') }}">
                 <small class="text-muted">Unique identifier. Leave blank to generate from name.</small>
                 @error('slug')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>

@@ -20,18 +20,6 @@
         </div>
         <div class="card-body">
             <p class="text-muted small">{{ __('messages.designations_list_help') }}</p>
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{ session('error') }}
-                </div>
-            @endif
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -40,6 +28,7 @@
                         <th>{{ __('messages.code') }}</th>
                         <th>{{ __('messages.department') }}</th>
                         <th>{{ __('messages.employees_count') }}</th>
+                        <th>{{ __('messages.permissions_count_label') }}</th>
                         <th>{{ __('messages.status') }}</th>
                         <th>{{ __('messages.actions') }}</th>
                     </tr>
@@ -52,6 +41,7 @@
                             <td><code>{{ $desig->code ?? '-' }}</code></td>
                             <td>{{ $desig->department?->name ?? '-' }}</td>
                             <td><span class="badge badge-info">{{ $desig->employees_count }}</span></td>
+                            <td><span class="badge badge-secondary" title="{{ __('messages.designation_permissions_help') }}">{{ $desig->permissions_count }}</span></td>
                             <td>
                                 @if($desig->is_active)
                                     <span class="badge badge-success">{{ __('messages.active') }}</span>
@@ -72,7 +62,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">{{ __('messages.no_records_found') }} <a
+                            <td colspan="8" class="text-center">{{ __('messages.no_records_found') }} <a
                                     href="{{ route('designations.create') }}">{{ __('messages.add_one') }}</a>.</td>
                         </tr>
                     @endforelse

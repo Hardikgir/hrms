@@ -42,7 +42,7 @@ class EmploymentStatusController extends Controller
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['created_by'] = auth()->id();
         EmploymentStatus::create($validated);
-        return redirect()->route('employment-statuses.index')->with('success', 'Employment status created.');
+        return redirect()->route('employment-statuses.index')->with('success', __('messages.employment_status_created'));
     }
 
     public function edit(EmploymentStatus $employment_status)
@@ -65,16 +65,16 @@ class EmploymentStatusController extends Controller
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['updated_by'] = auth()->id();
         $employment_status->update($validated);
-        return redirect()->route('employment-statuses.index')->with('success', 'Employment status updated.');
+        return redirect()->route('employment-statuses.index')->with('success', __('messages.employment_status_updated'));
     }
 
     public function destroy(EmploymentStatus $employment_status)
     {
         $this->authorize('manage employment statuses');
         if ($employment_status->employees()->exists()) {
-            return redirect()->route('employment-statuses.index')->with('error', 'Cannot delete: employees exist with this employment status.');
+            return redirect()->route('employment-statuses.index')->with('error', __('messages.employment_status_cannot_delete'));
         }
         $employment_status->delete();
-        return redirect()->route('employment-statuses.index')->with('success', 'Employment status deleted.');
+        return redirect()->route('employment-statuses.index')->with('success', __('messages.employment_status_deleted'));
     }
 }

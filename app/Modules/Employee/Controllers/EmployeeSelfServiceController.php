@@ -29,7 +29,7 @@ class EmployeeSelfServiceController extends Controller
         $employee = $user->employee;
 
         if (!$employee) {
-            return redirect()->route('dashboard')->with('error', 'Employee record not found.');
+            return redirect()->route('dashboard')->with('error', __('messages.employee_record_not_found'));
         }
 
         // Get today's attendance

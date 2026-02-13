@@ -23,7 +23,7 @@
                         <div class="form-group">
                             <label for="name">{{ __('messages.name') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name') }}" required placeholder="e.g. Developer, Manager">
+                                name="name" value="{{ old('name') }}" required placeholder="{{ __('messages.placeholder_name_developer_manager') }}">
                             @error('name')<span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <label for="code">{{ __('messages.code') }}</label>
                             <input type="text" class="form-control @error('code') is-invalid @enderror" id="code"
-                                name="code" value="{{ old('code') }}" placeholder="e.g. DEV, MGR">
+                                name="code" value="{{ old('code') }}" placeholder="{{ __('messages.placeholder_code_dev_mgr') }}">
                             @error('code')<span class="invalid-feedback">{{ $message }}</span>@enderror
                         </div>
                     </div>

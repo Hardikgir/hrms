@@ -78,9 +78,9 @@ class LeaveController extends Controller
         }
 
         if ($employee) {
-            return redirect()->route('ess.leaves')->with('success', 'Leave request created successfully.');
+            return redirect()->route('ess.leaves')->with('success', __('messages.leave_created_success'));
         }
-        return redirect()->route('leaves.index')->with('success', 'Leave request created successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_created_success'));
     }
 
     public function show(Leave $leave)
@@ -160,15 +160,15 @@ class LeaveController extends Controller
         ]);
 
         if ($employee) {
-            return redirect()->route('ess.leaves')->with('success', 'Leave request updated successfully.');
+            return redirect()->route('ess.leaves')->with('success', __('messages.leave_updated_success'));
         }
-        return redirect()->route('leaves.index')->with('success', 'Leave request updated successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_updated_success'));
     }
 
     public function destroy(Leave $leave)
     {
         $this->authorize('delete', $leave);
         $leave->delete();
-        return redirect()->route('leaves.index')->with('success', 'Leave request deleted successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_deleted_success'));
     }
 }

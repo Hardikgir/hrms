@@ -13,6 +13,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Role Management
     Route::middleware('can:manage roles')->group(function () {
+        Route::post('roles/create-for-department', [\App\Http\Controllers\RoleController::class, 'createForDepartment'])->name('roles.create-for-department');
         Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show']);
         Route::get('user-roles', [\App\Http\Controllers\UserRoleController::class, 'index'])->name('user-roles.index');
         Route::get('user-roles/{user}/edit', [\App\Http\Controllers\UserRoleController::class, 'edit'])->name('user-roles.edit');
@@ -20,9 +21,12 @@ Route::middleware(['auth'])->group(function () {
     });
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        // Redirect employees to ESS dashboard
-        if ($user->hasRole('Employee') && $user->employee) {
-            return redirect()->route('ess.dashboard');
+        // Redirect to ESS only if user has employee record, has Employee/HR Employee role, and has no admin access.
+        // Users with designation/role like HR Admin, HR Manager (who can view employees) get the admin dashboard and sidebar.
+        if ($user->employee && ($user->hasRole('Employee') || $user->hasRole('HR Employee'))) {
+            if (! $user->can('view employees')) {
+                return redirect()->route('ess.dashboard');
+            }
         }
         return view('dashboard');
     })->name('dashboard');

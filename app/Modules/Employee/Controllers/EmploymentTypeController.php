@@ -42,7 +42,7 @@ class EmploymentTypeController extends Controller
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['created_by'] = auth()->id();
         EmploymentType::create($validated);
-        return redirect()->route('employment-types.index')->with('success', 'Employment type created.');
+        return redirect()->route('employment-types.index')->with('success', __('messages.employment_type_created'));
     }
 
     public function edit(EmploymentType $employment_type)
@@ -65,16 +65,16 @@ class EmploymentTypeController extends Controller
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $validated['updated_by'] = auth()->id();
         $employment_type->update($validated);
-        return redirect()->route('employment-types.index')->with('success', 'Employment type updated.');
+        return redirect()->route('employment-types.index')->with('success', __('messages.employment_type_updated'));
     }
 
     public function destroy(EmploymentType $employment_type)
     {
         $this->authorize('manage employment types');
         if ($employment_type->employees()->exists()) {
-            return redirect()->route('employment-types.index')->with('error', 'Cannot delete: employees exist with this employment type.');
+            return redirect()->route('employment-types.index')->with('error', __('messages.employment_type_cannot_delete'));
         }
         $employment_type->delete();
-        return redirect()->route('employment-types.index')->with('success', 'Employment type deleted.');
+        return redirect()->route('employment-types.index')->with('success', __('messages.employment_type_deleted'));
     }
 }

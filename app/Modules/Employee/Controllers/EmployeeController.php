@@ -113,7 +113,7 @@ class EmployeeController extends Controller
             $user->assignRole('Employee');
         }
 
-        return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
+        return redirect()->route('employees.index')->with('success', __('messages.employee_created_success'));
     }
 
     public function show(Employee $employee)
@@ -145,7 +145,27 @@ class EmployeeController extends Controller
         $this->authorize('update employees');
 
         $departments = Department::where('is_active', true)->get();
-        $designations = Designation::where('is_active', true)->get();
+        
+        // Filter designations by employee's department
+        // Show designations that match the employee's department OR have no department assigned
+        // Always include the current designation (if set) so it doesn't disappear when editing
+        $designations = Designation::where('is_active', true)
+            ->where(function($q) use ($employee) {
+                if ($employee->department_id) {
+                    // Show designations matching employee's department OR with no department
+                    $q->where('department_id', $employee->department_id)
+                      ->orWhereNull('department_id');
+                } else {
+                    // If employee has no department, show only designations with no department
+                    $q->whereNull('department_id');
+                }
+                // Always include current designation even if it doesn't match department
+                if ($employee->designation_id) {
+                    $q->orWhere('id', $employee->designation_id);
+                }
+            })
+            ->get();
+        
         $locations = Location::where('is_active', true)->get();
         $managers = Employee::where('is_active', true)->where('id', '!=', $employee->id)->get();
         $employees = Employee::where('is_active', true)->where('id', '!=', $employee->id)->get();
@@ -189,7 +209,7 @@ class EmployeeController extends Controller
 
         $employee->update($validated);
 
-        return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
+        return redirect()->route('employees.index')->with('success', __('messages.employee_updated_success'));
     }
 
     public function destroy(Employee $employee)
@@ -198,7 +218,7 @@ class EmployeeController extends Controller
 
         $employee->delete();
 
-        return redirect()->route('employees.index')->with('success', 'Employee deleted successfully.');
+        return redirect()->route('employees.index')->with('success', __('messages.employee_deleted_success'));
     }
 }
 

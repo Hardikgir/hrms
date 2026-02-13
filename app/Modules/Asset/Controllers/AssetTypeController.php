@@ -40,7 +40,7 @@ class AssetTypeController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         AssetType::create($validated);
-        return redirect()->route('asset-types.index')->with('success', 'Asset type created.');
+        return redirect()->route('asset-types.index')->with('success', __('messages.asset_type_created_success'));
     }
 
     public function edit(AssetType $asset_type)
@@ -61,16 +61,16 @@ class AssetTypeController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $asset_type->update($validated);
-        return redirect()->route('asset-types.index')->with('success', 'Asset type updated.');
+        return redirect()->route('asset-types.index')->with('success', __('messages.asset_type_updated_success'));
     }
 
     public function destroy(AssetType $asset_type)
     {
         $this->authorize('manage asset types');
         if ($asset_type->assets()->exists()) {
-            return redirect()->route('asset-types.index')->with('error', 'Cannot delete: assets exist with this type.');
+            return redirect()->route('asset-types.index')->with('error', __('messages.asset_type_cannot_delete'));
         }
         $asset_type->delete();
-        return redirect()->route('asset-types.index')->with('success', 'Asset type deleted.');
+        return redirect()->route('asset-types.index')->with('success', __('messages.asset_type_deleted_success'));
     }
 }

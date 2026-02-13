@@ -38,7 +38,7 @@ class ExpenseCategoryController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         ExpenseCategory::create($validated);
-        return redirect()->route('expense-categories.index')->with('success', 'Expense category created.');
+        return redirect()->route('expense-categories.index')->with('success', __('messages.expense_category_created'));
     }
 
     public function edit(ExpenseCategory $expense_category)
@@ -59,13 +59,13 @@ class ExpenseCategoryController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['sort_order'] = (int) ($validated['sort_order'] ?? 0);
         $expense_category->update($validated);
-        return redirect()->route('expense-categories.index')->with('success', 'Expense category updated.');
+        return redirect()->route('expense-categories.index')->with('success', __('messages.expense_category_updated'));
     }
 
     public function destroy(ExpenseCategory $expense_category)
     {
         $this->authorize('manage expense categories');
         $expense_category->delete();
-        return redirect()->route('expense-categories.index')->with('success', 'Expense category deleted.');
+        return redirect()->route('expense-categories.index')->with('success', __('messages.expense_category_deleted'));
     }
 }

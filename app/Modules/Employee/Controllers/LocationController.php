@@ -46,7 +46,7 @@ class LocationController extends Controller
         $validated['is_active'] = $request->boolean('is_active', true);
         $validated['created_by'] = auth()->id();
         Location::create($validated);
-        return redirect()->route('locations.index')->with('success', 'Location created successfully.');
+        return redirect()->route('locations.index')->with('success', __('messages.location_created_success'));
     }
 
     public function edit(Location $location)
@@ -73,16 +73,16 @@ class LocationController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['updated_by'] = auth()->id();
         $location->update($validated);
-        return redirect()->route('locations.index')->with('success', 'Location updated successfully.');
+        return redirect()->route('locations.index')->with('success', __('messages.location_updated_success'));
     }
 
     public function destroy(Location $location)
     {
         $this->authorize('manage locations');
         if ($location->employees()->exists()) {
-            return redirect()->route('locations.index')->with('error', 'Cannot delete: employees are assigned to this location.');
+            return redirect()->route('locations.index')->with('error', __('messages.location_cannot_delete_employees'));
         }
         $location->delete();
-        return redirect()->route('locations.index')->with('success', 'Location deleted successfully.');
+        return redirect()->route('locations.index')->with('success', __('messages.location_deleted_success'));
     }
 }

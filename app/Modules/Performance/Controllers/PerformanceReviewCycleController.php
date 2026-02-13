@@ -42,7 +42,7 @@ class PerformanceReviewCycleController extends Controller
             $validated['period_end'],
             auth()->id()
         );
-        return redirect()->route('performance.cycles.index')->with('success', 'Review cycle created.');
+        return redirect()->route('performance.cycles.index')->with('success', __('messages.cycle_created_success'));
     }
 
     public function show(PerformanceReviewCycle $cycle)
@@ -68,13 +68,13 @@ class PerformanceReviewCycleController extends Controller
             'status' => 'nullable|in:draft,active,closed',
         ]);
         $this->performanceService->updateCycle($cycle, $validated, auth()->id());
-        return redirect()->route('performance.cycles.show', $cycle)->with('success', 'Cycle updated.');
+        return redirect()->route('performance.cycles.show', $cycle)->with('success', __('messages.cycle_updated_success'));
     }
 
     public function destroy(PerformanceReviewCycle $cycle)
     {
         $this->authorize('delete', $cycle);
         $cycle->delete();
-        return redirect()->route('performance.cycles.index')->with('success', 'Cycle deleted.');
+        return redirect()->route('performance.cycles.index')->with('success', __('messages.cycle_deleted_success'));
     }
 }

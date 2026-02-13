@@ -85,9 +85,58 @@
                         <label class="custom-control-label" for="is_active">{{ __('messages.active_show_help') }}</label>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label>{{ __('messages.permissions') }}</label>
+                    <small class="d-block text-muted">{{ __('messages.designation_permissions_help') }}</small>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="selectAllPerms()">{{ __('messages.select_all') }}</button>
+                        <button type="button" class="btn btn-sm btn-secondary" onclick="deselectAllPerms()">{{ __('messages.deselect_all') }}</button>
+                    </div>
+                    <div class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                        @foreach($permissions as $group => $groupPermissions)
+                            <div class="mb-3">
+                                <h6 class="text-primary">{{ ucfirst($group) }}</h6>
+                                <div class="row">
+                                    @foreach($groupPermissions as $permission)
+                                        <div class="col-md-4 mb-2">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input designation-permission-checkbox"
+                                                    id="permission_{{ $permission->id }}"
+                                                    name="permissions[]"
+                                                    value="{{ $permission->id }}"
+                                                    {{ in_array($permission->id, old('permissions', $designationPermissionIds)) ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="permission_{{ $permission->id }}">
+                                                    {{ \Illuminate\Support\Facades\Lang::has($permKey = 'messages.permission_' . str_replace(' ', '_', $permission->name)) ? __($permKey) : ucwords(str_replace('_', ' ', $permission->name)) }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                            <hr>
+                        @endforeach
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary">{{ __('messages.update') }}</button>
                 <a href="{{ route('designations.index') }}" class="btn btn-secondary">{{ __('messages.cancel') }}</a>
             </form>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    function selectAllPerms() {
+        document.querySelectorAll('.designation-permission-checkbox').forEach(function(checkbox) {
+            checkbox.checked = true;
+        });
+    }
+    function deselectAllPerms() {
+        document.querySelectorAll('.designation-permission-checkbox').forEach(function(checkbox) {
+            checkbox.checked = false;
+        });
+    }
+</script>
+@endpush

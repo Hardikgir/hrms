@@ -93,7 +93,7 @@
                             <label for="action_route">{{ __('messages.action_route') }}</label>
                             <input type="text" class="form-control @error('action_route') is-invalid @enderror"
                                 id="action_route" name="action_route" value="{{ old('action_route', $task->action_route) }}"
-                                placeholder="e.g. ess/onboarding-documents" maxlength="100">
+                                placeholder="{{ __('messages.placeholder_task_url') }}" maxlength="100">
                             @error('action_route')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
@@ -103,7 +103,7 @@
                             <label for="action_label">{{ __('messages.action_label') }}</label>
                             <input type="text" class="form-control @error('action_label') is-invalid @enderror"
                                 id="action_label" name="action_label" value="{{ old('action_label', $task->action_label) }}"
-                                placeholder="e.g. Submit documents" maxlength="50">
+                                placeholder="{{ __('messages.placeholder_task_title') }}" maxlength="50">
                             @error('action_label')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror

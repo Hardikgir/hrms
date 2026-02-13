@@ -45,7 +45,7 @@ class PayrollController extends Controller
 
         try {
             $this->payrollService->lockPayroll($payroll->id, auth()->id());
-            return redirect()->route('payroll.show', $payroll)->with('success', 'Payroll locked successfully.');
+            return redirect()->route('payroll.show', $payroll)->with('success', __('messages.payroll_locked_success'));
         } catch (\DomainException $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -57,7 +57,7 @@ class PayrollController extends Controller
 
         try {
             $this->payrollService->approvePayroll($payroll->id, auth()->id());
-            return redirect()->route('payroll.show', $payroll)->with('success', 'Payroll approved successfully.');
+            return redirect()->route('payroll.show', $payroll)->with('success', __('messages.payroll_approved_success'));
         } catch (\DomainException $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Role;
 use App\Modules\Asset\Models\Asset;
 use App\Modules\Attendance\Models\Attendance;
 use App\Modules\Employee\Models\Employee;
@@ -32,7 +33,9 @@ use App\Policies\ShiftPolicy;
 use App\Policies\TrainingAssignmentPolicy;
 use App\Policies\TrainingCoursePolicy;
 use App\Policies\TravelRequestPolicy;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -53,6 +56,49 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrapFour();
 
+        // Sync Spatie role from designation on login: if user's employee has a designation, assign the role with the same name (if it exists).
+        // This way permissions set on the role (e.g. HR Manager) apply to users whose designation is that role name.
+        Event::listen(Login::class, function (Login $event): void {
+            $user = $event->user;
+            if (! $user->relationLoaded('employee')) {
+                $user->load('employee.designation');
+            }
+            $designation = $user->employee?->designation;
+            if (! $designation) {
+                return;
+            }
+            $role = Role::where('name', $designation->name)->where('guard_name', 'web')->first();
+            if ($role && ! $user->hasRole($role->name)) {
+                $user->assignRole($role);
+            }
+        });
+
+        // Super Admin always has access to everything
+        // Then check designation permissions: user can do something if their employee's designation has that permission
+        Gate::before(function (?object $user, string $ability) {
+            if (! $user) {
+                return null;
+            }
+            // Super Admin bypasses all permission checks
+            if (method_exists($user, 'hasRole') && $user->hasRole('Super Admin')) {
+                return true;
+            }
+            // Check designation permissions for non-Super Admin users
+            if (! method_exists($user, 'employee')) {
+                return null;
+            }
+            $employee = $user->employee;
+            if (! $employee?->designation) {
+                return null;
+            }
+            $designation = $employee->designation;
+            $designation->loadMissing('permissions');
+            if ($designation->hasPermissionTo($ability)) {
+                return true;
+            }
+            return null;
+        });
+
         Gate::policy(Employee::class, EmployeePolicy::class);
         Gate::policy(Attendance::class, AttendancePolicy::class);
         Gate::policy(Leave::class, LeavePolicy::class);
@@ -71,6 +117,9 @@ class AppServiceProvider extends ServiceProvider
 
         view()->composer(['layouts.partials.sidebar-admin', 'layouts.partials.sidebar-ess', 'layouts.partials.navbar'], function ($view) {
             $sidebarColor = '#343a40';
+            $currentPortal = null;
+            $availablePortals = [];
+            $portalService = null;
             if (auth()->check()) {
                 $user = auth()->user();
                 if ($user->employee && $user->employee->designation && $user->employee->designation->sidebar_color) {
@@ -78,8 +127,11 @@ class AppServiceProvider extends ServiceProvider
                 } elseif ($user->hasRole('Super Admin')) {
                     $sidebarColor = '#001f3f';
                 }
+                $portalService = app(\App\Services\PortalService::class);
+                $availablePortals = $portalService->getAvailablePortalsForUser($user);
+                $currentPortal = session('portal');
             }
-            $view->with('sidebarColor', $sidebarColor);
+            $view->with(compact('sidebarColor', 'currentPortal', 'availablePortals', 'portalService'));
         });
     }
 }
