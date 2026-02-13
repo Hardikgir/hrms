@@ -609,6 +609,12 @@ return [
     'create_default_roles' => 'Create default roles for department',
     'create_default_roles_help' => 'Creates Admin, Manager, and Employee roles for the selected department. Assign permissions via Edit.',
     'role_department_help' => 'Optionally link this role to a department and set role type. Permissions control which pages the role can access and what appears in the sidebar.',
+    'displayed' => 'Displayed',
+    'view_users' => 'View Users',
+    'search' => 'Search',
+    'filtered_by_role' => 'Filtered by role',
+    'clear_filter' => 'Clear Filter',
+    'filter_by_role' => 'Filter by Role',
 
     // Common strings
     'english' => 'English',

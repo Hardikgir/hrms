@@ -20,12 +20,40 @@
     </div>
     <div class="card-body">
         <p class="text-muted small">{{ __('messages.assign_roles_description') }}</p>
+        
+        @if(isset($selectedRole))
+            <div class="alert alert-info">
+                <i class="fas fa-filter"></i> {{ __('messages.filtered_by_role') }}: <strong>{{ $selectedRole->name }}</strong>
+                <a href="{{ route('user-roles.index') }}" class="btn btn-sm btn-secondary ml-2">
+                    <i class="fas fa-times"></i> {{ __('messages.clear_filter') }}
+                </a>
+            </div>
+        @endif
+        
         @if(session('success'))
             <div class="alert alert-success alert-dismissible">
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                 {{ session('success') }}
             </div>
         @endif
+        
+        {{-- Filter by Role --}}
+        <div class="mb-3">
+            <form method="GET" action="{{ route('user-roles.index') }}" class="form-inline">
+                <div class="form-group mr-2">
+                    <label class="mr-2"><i class="fas fa-filter"></i> {{ __('messages.filter_by_role') }}:</label>
+                    <select name="role" class="form-control form-control-sm" onchange="this.form.submit()">
+                        <option value="">{{ __('messages.all') }}</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role->id }}" {{ request('role') == $role->id ? 'selected' : '' }}>
+                                {{ $role->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            </form>
+        </div>
+        
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>

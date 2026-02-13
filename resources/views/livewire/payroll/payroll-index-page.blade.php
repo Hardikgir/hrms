@@ -75,7 +75,7 @@
                                     <form action="{{ route('payroll.approve', $payroll) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-success"><i class="fas fa-check"></i>
-                                            {{ __('messages.approved') }}</button>
+                                            {{ __('messages.approve') }}</button>
                                     </form>
                                 @endif
                             </td>

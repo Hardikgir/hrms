@@ -84,12 +84,12 @@
                                 @can('approve', $e)
                                     @if($e->status === 'pending')
                                         <form action="{{ route('expenses.approve', $e) }}" method="POST" class="d-inline">@csrf<button
-                                                type="submit" class="btn btn-sm btn-success">{{ __('messages.approved') }}</button>
+                                                type="submit" class="btn btn-sm btn-success">{{ __('messages.approve') }}</button>
                                         </form>
                                         <form action="{{ route('expenses.reject', $e) }}" method="POST" class="d-inline"
                                             onsubmit="return confirm('{{ __('messages.are_you_sure') }}');">@csrf<input type="text"
                                                 name="reason" placeholder="{{ __('messages.reason') }}" required><button type="submit"
-                                                class="btn btn-sm btn-danger">{{ __('messages.rejected') }}</button></form>
+                                                class="btn btn-sm btn-danger">{{ __('messages.reject') }}</button></form>
                                     @endif
                                     @if($e->status === 'approved')
                                         <form action="{{ route('expenses.reimburse', $e) }}" method="POST" class="d-inline">@csrf<button

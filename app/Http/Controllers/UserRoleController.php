@@ -13,17 +13,24 @@ class UserRoleController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('manage roles');
         
-        $users = User::with('roles', 'employee')
-            ->orderBy('name')
-            ->paginate(20);
+        $query = User::with('roles', 'employee')->orderBy('name');
         
+        // Filter by role if provided
+        if ($request->filled('role')) {
+            $query->whereHas('roles', function($q) use ($request) {
+                $q->where('roles.id', $request->role);
+            });
+        }
+        
+        $users = $query->paginate(20)->withQueryString();
         $roles = Role::orderBy('name')->get();
+        $selectedRole = $request->filled('role') ? Role::find($request->role) : null;
         
-        return view('roles.users.index', compact('users', 'roles'));
+        return view('roles.users.index', compact('users', 'roles', 'selectedRole'));
     }
 
     public function edit(User $user)

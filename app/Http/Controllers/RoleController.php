@@ -18,12 +18,31 @@ class RoleController extends Controller
     {
         $this->authorize('manage roles');
         $query = Role::with('department')->withCount(['users', 'permissions'])->orderBy('name');
+        
+        // Search by name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        
+        // Filter by department
         if ($request->filled('department_id')) {
             $query->where('department_id', $request->department_id);
         }
-        $roles = $query->get();
+        
+        // Filter by role type
+        if ($request->filled('role_type')) {
+            $query->where('role_type', $request->role_type);
+        }
+        
+        $roles = $query->paginate(20)->withQueryString();
         $departments = Department::where('is_active', true)->orderBy('name')->get();
-        return view('roles.index', compact('roles', 'departments'));
+        
+        // Statistics
+        $totalRoles = Role::count();
+        $totalUsers = \App\Models\User::has('roles')->count();
+        $totalPermissions = Permission::count();
+        
+        return view('roles.index', compact('roles', 'departments', 'totalRoles', 'totalUsers', 'totalPermissions'));
     }
 
     public function create()

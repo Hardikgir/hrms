@@ -609,6 +609,12 @@ return [
     'create_default_roles' => 'إنشاء أدوار افتراضية للقسم',
     'create_default_roles_help' => 'ينشئ أدوار Admin و Manager و Employee للقسم المحدد. قم بتعيين الصلاحيات عبر التعديل.',
     'role_department_help' => 'يمكنك ربط هذا الدور بقسم وتعيين نوع الدور. الصلاحيات تحدد الصفحات ومرئية الشريط الجانبي.',
+    'displayed' => 'معروض',
+    'view_users' => 'عرض المستخدمين',
+    'search' => 'بحث',
+    'filtered_by_role' => 'مفلتر حسب الدور',
+    'clear_filter' => 'مسح الفلتر',
+    'filter_by_role' => 'فلترة حسب الدور',
 
     // Common strings
     'english' => 'الإنجليزية',

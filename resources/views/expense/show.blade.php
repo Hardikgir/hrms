@@ -17,9 +17,9 @@
                 @can('approve', $expense)
                     @if($expense->status === 'pending')
                         <form action="{{ route('expenses.approve', $expense) }}" method="POST" class="d-inline">@csrf<button
-                                type="submit" class="btn btn-sm btn-success">{{ __('messages.approved') }}</button></form>
+                                type="submit" class="btn btn-sm btn-success">{{ __('messages.approve') }}</button></form>
                         <button type="button" class="btn btn-sm btn-danger" data-toggle="modal"
-                            data-target="#rejectModal">{{ __('messages.rejected') }}</button>
+                            data-target="#rejectModal">{{ __('messages.reject') }}</button>
                     @endif
                     @if($expense->status === 'approved')
                         <form action="{{ route('expenses.reimburse', $expense) }}" method="POST" class="d-inline">@csrf<button
@@ -70,7 +70,7 @@
                     </div>
                     <div class="modal-footer"><button type="button" class="btn btn-secondary"
                             data-dismiss="modal">{{ __('messages.cancel') }}</button><button type="submit"
-                            class="btn btn-danger">{{ __('messages.rejected') }}</button></div>
+                            class="btn btn-danger">{{ __('messages.reject') }}</button></div>
                 </form>
             </div>
         </div>
