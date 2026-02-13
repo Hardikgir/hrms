@@ -290,16 +290,27 @@
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="create_user_account" 
-                                                   name="create_user_account" value="1" {{ old('create_user_account') ? 'checked' : '' }}>
+                                                   name="create_user_account" value="1" {{ old('create_user_account', true) ? 'checked' : '' }}>
                                             <label class="custom-control-label" for="create_user_account">
                                                 {{ __('messages.create_user_account') }}
                                             </label>
                                         </div>
+                                        <small class="form-text text-muted">
+                                            <i class="fas fa-info-circle"></i> {{ __('messages.create_user_account_help') }}
+                                        </small>
                                     </div>
-                                    <div class="form-group" id="password-field" style="display: none;">
-                                        <label for="password">{{ __('messages.password') }}</label>
-                                        <input type="password" class="form-control" id="password" name="password" 
-                                               placeholder="{{ __('messages.password_help') }}">
+                                    <div class="form-group" id="password-field">
+                                        <label for="password">{{ __('messages.password') }} <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                               id="password" name="password" 
+                                               placeholder="{{ __('messages.password_help') }}"
+                                               value="{{ old('password') }}">
+                                        @error('password')
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                        <small class="form-text text-muted">
+                                            {{ __('messages.password_help') }}
+                                        </small>
                                     </div>
                                 </div>
 
@@ -402,14 +413,22 @@
             $(this).tab('show');
         });
 
-        // Show password field when create user account is checked
+        // Show/hide password field when create user account checkbox changes
         $('#create_user_account').on('change', function() {
             if ($(this).is(':checked')) {
                 $('#password-field').show();
+                $('#password').prop('required', true);
             } else {
                 $('#password-field').hide();
+                $('#password').prop('required', false);
             }
         });
+        
+        // Initialize on page load
+        if ($('#create_user_account').is(':checked')) {
+            $('#password-field').show();
+            $('#password').prop('required', true);
+        }
     });
 </script>
 @endpush

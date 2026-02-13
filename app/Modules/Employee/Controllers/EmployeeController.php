@@ -77,7 +77,18 @@ class EmployeeController extends Controller
             'employee_id' => 'required|unique:employees,employee_id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees,email',
+            'email' => [
+                'required',
+                'email',
+                'unique:employees,email',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Check if user account will be created and email already exists in users table
+                    $shouldCreateUser = $request->has('create_user_account') ? (bool)$request->create_user_account : true;
+                    if ($shouldCreateUser && \App\Models\User::where('email', $value)->exists()) {
+                        $fail('A user account with this email already exists.');
+                    }
+                },
+            ],
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|in:male,female,other',
@@ -92,6 +103,8 @@ class EmployeeController extends Controller
                 }
             }],
             'ctc' => 'nullable|numeric|min:0',
+            'create_user_account' => 'nullable|boolean',
+            'password' => 'nullable|string|min:6|required_if:create_user_account,1',
         ]);
 
         $validated['uuid'] = Str::uuid();
@@ -101,16 +114,32 @@ class EmployeeController extends Controller
 
         $employee = Employee::create($validated);
 
-        // Auto-create user account
-        if ($request->has('create_user_account') && $request->create_user_account) {
-            $user = \App\Models\User::create([
-                'name' => "{$employee->first_name} {$employee->last_name}",
-                'email' => $employee->email,
-                'password' => bcrypt($request->password ?? 'password123'),
-                'employee_id' => $employee->id,
-                'is_active' => true,
-            ]);
-            $user->assignRole('Employee');
+        // Auto-create user account (default behavior - always create unless explicitly unchecked)
+        $shouldCreateUser = $request->has('create_user_account') ? (bool)$request->create_user_account : true;
+        
+        if ($shouldCreateUser) {
+            // Check if user already exists with this email
+            $existingUser = \App\Models\User::where('email', $employee->email)->first();
+            
+            if (!$existingUser) {
+                $user = \App\Models\User::create([
+                    'name' => "{$employee->first_name} {$employee->last_name}",
+                    'email' => $employee->email,
+                    'password' => bcrypt($request->password ?? 'password123'),
+                    'employee_id' => $employee->id,
+                    'is_active' => true,
+                ]);
+                
+                // Assign Employee role if not already assigned
+                if (!$user->hasRole('Employee')) {
+                    $user->assignRole('Employee');
+                }
+            } else {
+                // Link existing user to employee if not already linked
+                if (!$existingUser->employee_id) {
+                    $existingUser->update(['employee_id' => $employee->id]);
+                }
+            }
         }
 
         return redirect()->route('employees.index')->with('success', __('messages.employee_created_success'));
