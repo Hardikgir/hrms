@@ -40,7 +40,7 @@ class TrainingCourseController extends Controller
         ]);
         $validated['is_active'] = $request->boolean('is_active', true);
         $this->trainingService->createCourse($validated, auth()->id());
-        return redirect()->route('training.courses.index')->with('success', 'Course created.');
+        return redirect()->route('training.courses.index')->with('success', __('messages.course_created_success'));
     }
 
     public function edit(TrainingCourse $course)
@@ -61,6 +61,6 @@ class TrainingCourseController extends Controller
         ]);
         $validated['is_active'] = $request->boolean('is_active', true);
         $this->trainingService->updateCourse($course, $validated);
-        return redirect()->route('training.courses.index')->with('success', 'Course updated.');
+        return redirect()->route('training.courses.index')->with('success', __('messages.course_updated_success'));
     }
 }

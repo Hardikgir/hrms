@@ -5,8 +5,11 @@ namespace App\Modules\Expense\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Employee\Models\Employee;
 use App\Modules\Expense\Models\Expense;
+use App\Modules\Expense\Models\ExpenseCategory;
 use App\Modules\Expense\Services\ExpenseService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ExpenseController extends Controller
 {
@@ -33,7 +36,14 @@ class ExpenseController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
-        return view('expense.create', compact('employee'));
+        $categories = ExpenseCategory::active()->ordered()->get();
+        if ($employee && !request()->routeIs('ess.expenses.*')) {
+            return redirect()->route('ess.expenses.create');
+        }
+        if (request()->routeIs('ess.expenses.*')) {
+            return view('employee.ess.expense-create', compact('employee', 'categories'));
+        }
+        return view('expense.create', compact('employee', 'categories'));
     }
 
     public function store(Request $request)
@@ -45,7 +55,7 @@ class ExpenseController extends Controller
         }
         $validated = $request->validate([
             'amount' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
+            'category' => ['required', 'string', 'max:100', Rule::in(ExpenseCategory::activeSlugs())],
             'description' => 'nullable|string|max:2000',
             'receipt' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
@@ -62,14 +72,35 @@ class ExpenseController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
         $redirect = auth()->user()->employee ? route('ess.expenses') : route('expenses.index');
-        return redirect($redirect)->with('success', 'Expense submitted.');
+        return redirect($redirect)->with('success', __('messages.expense_submitted_success'));
     }
 
     public function show(Expense $expense)
     {
         $this->authorize('view', $expense);
         $expense->load(['employee', 'approvedBy', 'reimbursedBy', 'rejectedBy']);
+        $user = auth()->user();
+        if ($user->employee && $expense->employee_id === $user->employee->id && !request()->routeIs('ess.expenses.*')) {
+            return redirect()->route('ess.expenses.show', $expense);
+        }
+        if (request()->routeIs('ess.expenses.*')) {
+            return view('employee.ess.expense-show', compact('expense'));
+        }
         return view('expense.show', compact('expense'));
+    }
+
+    public function downloadReceipt(Expense $expense)
+    {
+        $this->authorize('view', $expense);
+        if (!$expense->receipt_path) {
+            abort(404, 'No receipt uploaded for this expense.');
+        }
+        if (!Storage::disk('local')->exists($expense->receipt_path)) {
+            abort(404, 'Receipt file not found.');
+        }
+        $ext = pathinfo($expense->receipt_path, PATHINFO_EXTENSION) ?: 'pdf';
+        $downloadName = 'expense-' . $expense->id . '-receipt.' . $ext;
+        return Storage::disk('local')->download($expense->receipt_path, $downloadName);
     }
 
     public function approve(Expense $expense)
@@ -80,7 +111,7 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Expense approved.');
+        return back()->with('success', __('messages.expense_approved_success'));
     }
 
     public function reject(Request $request, Expense $expense)
@@ -92,7 +123,7 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Expense rejected.');
+        return back()->with('success', __('messages.expense_rejected_success'));
     }
 
     public function reimburse(Expense $expense)
@@ -103,6 +134,6 @@ class ExpenseController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Marked as reimbursed.');
+        return back()->with('success', __('messages.marked_reimbursed_success'));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Leave;
 
+use App\Modules\Leave\Models\Leave;
 use App\Modules\Leave\Services\LeaveService;
 use App\Modules\Leave\Models\LeaveType;
 use App\Modules\Employee\Models\Employee;
@@ -61,7 +62,7 @@ class LeaveApplicationForm extends Component
 
     public function submit(): void
     {
-        $this->authorize('create leaves');
+        $this->authorize('create', Leave::class);
 
         $rules = [
             'leave_type_id' => 'required|exists:leave_types,id',

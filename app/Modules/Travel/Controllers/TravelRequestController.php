@@ -33,6 +33,12 @@ class TravelRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
+        if ($employee && !request()->routeIs('ess.travel.*')) {
+            return redirect()->route('ess.travel.create');
+        }
+        if (request()->routeIs('ess.travel.*')) {
+            return view('employee.ess.travel-create', compact('employee'));
+        }
         return view('travel.create', compact('employee'));
     }
 
@@ -62,13 +68,20 @@ class TravelRequestController extends Controller
             auth()->id()
         );
         $redirect = auth()->user()->employee ? route('ess.travel') : route('travel.index');
-        return redirect($redirect)->with('success', 'Travel request submitted.');
+        return redirect($redirect)->with('success', __('messages.travel_request_submitted'));
     }
 
     public function show(TravelRequest $travel)
     {
         $this->authorize('view', $travel);
         $travel->load(['employee', 'approvedBy']);
+        $user = auth()->user();
+        if ($user->employee && $travel->employee_id === $user->employee->id && !request()->routeIs('ess.travel.*')) {
+            return redirect()->route('ess.travel.show', $travel);
+        }
+        if (request()->routeIs('ess.travel.*')) {
+            return view('employee.ess.travel-show', compact('travel'));
+        }
         return view('travel.show', compact('travel'));
     }
 
@@ -80,7 +93,7 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Request approved.');
+        return back()->with('success', __('messages.request_approved_success'));
     }
 
     public function reject(Request $request, TravelRequest $travel)
@@ -92,7 +105,7 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Request rejected.');
+        return back()->with('success', __('messages.request_rejected_success'));
     }
 
     public function complete(Request $request, TravelRequest $travel)
@@ -104,6 +117,6 @@ class TravelRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Marked as completed.');
+        return back()->with('success', __('messages.marked_completed_success'));
     }
 }

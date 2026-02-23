@@ -46,7 +46,7 @@ class ShiftController extends Controller
         $validated['is_flexible'] = $request->boolean('is_flexible', false);
         $validated['is_active'] = $request->boolean('is_active', true);
         $this->shiftService->createShift($validated, auth()->id());
-        return redirect()->route('shifts.index')->with('success', 'Shift created.');
+        return redirect()->route('shifts.index')->with('success', __('messages.shift_created_success'));
     }
 
     public function edit(Shift $shift)
@@ -70,13 +70,13 @@ class ShiftController extends Controller
         $validated['is_flexible'] = $request->boolean('is_flexible', false);
         $validated['is_active'] = $request->boolean('is_active', true);
         $this->shiftService->updateShift($shift, $validated);
-        return redirect()->route('shifts.index')->with('success', 'Shift updated.');
+        return redirect()->route('shifts.index')->with('success', __('messages.shift_updated_success'));
     }
 
     public function destroy(Shift $shift)
     {
         $this->authorize('delete', $shift);
         $shift->delete();
-        return redirect()->route('shifts.index')->with('success', 'Shift deleted.');
+        return redirect()->route('shifts.index')->with('success', __('messages.shift_deleted_success'));
     }
 }

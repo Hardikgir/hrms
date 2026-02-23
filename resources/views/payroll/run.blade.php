@@ -1,12 +1,12 @@
 @extends('layouts.adminlte')
 
-@section('title', 'Run Payroll')
-@section('page_title', 'Run Payroll')
+@section('title', __('messages.run_payroll'))
+@section('page_title', __('messages.run_payroll'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('payroll.index') }}">Payroll</a></li>
-    <li class="breadcrumb-item active">Run Payroll</li>
+    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('payroll.index') }}">{{ __('messages.payroll') }}</a></li>
+    <li class="breadcrumb-item active">{{ __('messages.run_payroll') }}</li>
 @endsection
 
 @section('content')

@@ -1,0 +1,312 @@
+You are working on an existing Laravel HRMS (Human Resource Management System) that uses Livewire for frontend interactivity.
+
+Some modules are already implemented.
+Your responsibility is to design, implement, complete, and integrate all remaining HRMS modules using Laravel + Livewire, following enterprise-level standards.
+
+This application must scale for:
+
+Multiple companies (SaaS-ready)
+
+Thousands of employees
+
+Complex compliance & payroll rules
+
+Long-term maintenance by multiple developers
+
+🧠 CORE ARCHITECTURAL RULES (MANDATORY)
+
+Root-cause fixes only
+
+Never add temporary or patch fixes
+
+Refactor poor design when discovered
+
+Livewire is NOT business logic
+
+Livewire components handle:
+
+UI state
+
+User interaction
+
+Emitting events
+
+Business logic MUST live in:
+
+Service classes
+
+Actions / Use-cases
+
+Domain layer
+
+Thin Controllers
+
+Controllers only:
+
+Route requests
+
+Handle auth
+
+Delegate to services or Livewire
+
+Livewire component structure
+
+One responsibility per component
+
+Prefer page components + child components
+
+Avoid monolithic Livewire classes
+
+Database-first design
+
+Proper normalization
+
+Foreign keys & indexes
+
+Soft deletes where applicable
+
+Audit logs for sensitive actions
+
+Security & Authorization
+
+Role-based access control (RBAC)
+
+Permission-based module access
+
+Policies & Gates (never in Livewire views)
+
+Company-level data isolation
+
+Consistency
+
+Follow existing folder & naming conventions
+
+Reuse patterns already present in the project
+
+🏗️ HRMS MODULES TO IMPLEMENT (Livewire-based)
+
+Implement or complete ALL modules below end-to-end:
+
+Employee Management
+
+Employee master data
+
+Departments, designations, reporting hierarchy
+
+Document uploads
+
+Status lifecycle (active, notice, exited)
+
+Attendance Management
+
+Livewire check-in/check-out
+
+GPS / web attendance
+
+Working hours & overtime calculation
+
+Monthly attendance views
+
+Leave Management
+
+Leave types & policies
+
+Accrual & carry-forward rules
+
+Apply / approve / reject flows
+
+Leave balance dashboards
+
+Payroll Management
+
+Salary structures
+
+Earnings & deductions
+
+PF, ESI, PT, TDS
+
+Payslip Livewire views
+
+Payroll locking & audit logs
+
+Recruitment & ATS
+
+Job postings
+
+Candidate pipeline
+
+Interview stages
+
+Resume uploads & tracking
+
+Onboarding
+
+Offer acceptance
+
+Document collection
+
+Joining checklist
+
+Auto employee creation
+
+Performance Management
+
+KRA / OKR setup
+
+Review cycles
+
+Self & manager reviews
+
+Performance summaries
+
+Expense Management
+
+Expense submission (Livewire forms)
+
+Approval workflows
+
+Reimbursement tracking
+
+Training & Development
+
+Skill matrix
+
+Training programs
+
+Assignments & completion tracking
+
+Shift & Scheduling
+
+Shift definitions
+
+Weekly rosters
+
+Overtime rules
+
+Asset Management
+
+Asset inventory
+
+Assignment & return tracking
+
+Asset history
+
+Document Management
+
+Secure uploads
+
+Expiry reminders
+
+Access control
+
+Travel Management
+
+Travel requests
+
+Approval workflow
+
+Expense linkage
+
+Exit Management
+
+Resignation workflow
+
+Clearance checklist
+
+Exit interview
+
+Final settlement
+
+ESS / MSS (Self-Service)
+
+Employee dashboards
+
+Manager approval panels
+
+Team insights
+
+Compliance Management
+
+PF, ESI, PT, TDS
+
+Statutory reports
+
+Compliance audit readiness
+
+🧩 LIVEWIRE IMPLEMENTATION EXPECTATIONS
+
+For each module, always deliver:
+
+Database migrations & schema
+
+Eloquent models & relationships
+
+Service / Action classes
+
+Livewire components (page + child)
+
+Policies & authorization checks
+
+Events & notifications
+
+Reusable Blade components
+
+Clean UI state management
+
+Integration with existing modules
+
+⚡ LIVEWIRE BEST PRACTICES (STRICT)
+
+Use mount() only for initialization
+
+Avoid heavy queries in render()
+
+Use computed properties where needed
+
+Emit events instead of tight coupling
+
+Use debouncing & pagination properly
+
+No database logic inside Blade views
+
+Validation via Form Request–style rules
+
+🔁 DEVELOPMENT FLOW
+
+Before coding:
+
+Analyze existing architecture
+
+Identify reusable services/components
+
+Refactor technical debt if found
+
+While coding:
+
+Keep components small
+
+Keep logic readable
+
+Avoid duplication
+
+After coding:
+
+Ensure backward compatibility
+
+Ensure scalability
+
+Ensure maintainability
+
+🚀 FINAL OBJECTIVE
+
+Deliver a Livewire-powered, enterprise-grade HRMS that is:
+
+Modular
+
+Secure
+
+Scalable
+
+Maintainable
+
+SaaS-ready

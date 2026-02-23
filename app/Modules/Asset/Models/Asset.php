@@ -3,9 +3,11 @@
 namespace App\Modules\Asset\Models;
 
 use App\Models\User;
+use App\Modules\Asset\Models\AssetType;
 use App\Modules\Employee\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Asset extends Model
 {
@@ -26,6 +28,11 @@ class Asset extends Model
     public const STATUS_UNDER_MAINTENANCE = 'under_maintenance';
     public const STATUS_RETIRED = 'retired';
 
+    public function assetType(): BelongsTo
+    {
+        return $this->belongsTo(AssetType::class, 'type', 'slug');
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
@@ -34,5 +41,25 @@ class Asset extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function returnRequests(): HasMany
+    {
+        return $this->hasMany(AssetReturnRequest::class)->latest();
+    }
+
+    public function assignmentHistories(): HasMany
+    {
+        return $this->hasMany(AssetAssignmentHistory::class)->orderByDesc('assigned_at');
+    }
+
+    public function pendingReturnRequest(): ?AssetReturnRequest
+    {
+        return $this->returnRequests()->pending()->first();
+    }
+
+    public function latestReturnRequest(): ?AssetReturnRequest
+    {
+        return $this->returnRequests()->first();
     }
 }

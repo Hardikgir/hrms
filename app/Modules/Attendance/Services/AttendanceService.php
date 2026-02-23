@@ -3,12 +3,14 @@
 namespace App\Modules\Attendance\Services;
 
 use App\Modules\Attendance\Models\Attendance;
+use App\Modules\Attendance\Models\AttendanceSetting;
 use Illuminate\Support\Str;
 
 class AttendanceService
 {
     /**
      * Check in an employee. Returns the created Attendance or throws.
+     * Status is set to 'late' if check-in time is after the configured max check-in time.
      */
     public function checkIn(
         int $employeeId,
@@ -26,15 +28,21 @@ class AttendanceService
             throw new \DomainException('Already checked in today.');
         }
 
+        $checkInAt = now();
+        $maxTime = AttendanceSetting::getMaxCheckInTime();
+        $status = ($maxTime !== '' && $checkInAt->format('H:i') > $maxTime)
+            ? 'late'
+            : 'present';
+
         return Attendance::create([
             'uuid' => (string) Str::uuid(),
             'employee_id' => $employeeId,
             'date' => $today,
-            'check_in_time' => now(),
+            'check_in_time' => $checkInAt,
             'check_in_method' => $method,
             'check_in_latitude' => $latitude,
             'check_in_longitude' => $longitude,
-            'status' => 'present',
+            'status' => $status,
             'created_by' => $userId,
         ]);
     }
@@ -104,6 +112,11 @@ class AttendanceService
         }
         if (!empty($filters['date'])) {
             $query->whereDate('date', $filters['date']);
+        }
+        if (!empty($filters['department_id'])) {
+            $query->whereHas('employee', function ($q) use ($filters) {
+                $q->where('department_id', $filters['department_id']);
+            });
         }
         if (!empty($filters['month'])) {
             $query->whereMonth('date', $filters['month'])->whereYear('date', $filters['month_year'] ?? now()->year);

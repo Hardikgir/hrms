@@ -15,7 +15,7 @@ class Department extends Model
         'name',
         'code',
         'description',
-        'manager_id',
+        'manager_id', // Keep for backward compatibility, but prefer managers() relationship
         'parent_id',
         'is_active',
         'created_by',
@@ -29,6 +29,12 @@ class Department extends Model
     public function manager()
     {
         return $this->belongsTo(Employee::class, 'manager_id');
+    }
+
+    public function managers()
+    {
+        return $this->belongsToMany(Employee::class, 'department_managers', 'department_id', 'employee_id')
+            ->withTimestamps();
     }
 
     public function parent()

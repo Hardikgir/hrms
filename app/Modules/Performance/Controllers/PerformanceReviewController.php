@@ -56,7 +56,7 @@ class PerformanceReviewController extends Controller
         } catch (\DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        return redirect()->route('performance.reviews.index')->with('success', 'Review created.');
+        return redirect()->route('performance.reviews.index')->with('success', __('messages.review_created_success'));
     }
 
     public function show(PerformanceReview $review)
@@ -97,9 +97,9 @@ class PerformanceReviewController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
         if (auth()->user()->employee) {
-            return redirect()->route('ess.reviews')->with('success', 'Self review submitted.');
+            return redirect()->route('ess.reviews')->with('success', __('messages.self_review_submitted_success'));
         }
-        return redirect()->route('performance.reviews.show', $review)->with('success', 'Self review submitted.');
+        return redirect()->route('performance.reviews.show', $review)->with('success', __('messages.self_review_submitted_success'));
     }
 
     public function managerReview(PerformanceReview $review)
@@ -132,13 +132,13 @@ class PerformanceReviewController extends Controller
         } catch (\DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        return redirect()->route('performance.reviews.index')->with('success', 'Manager review submitted.');
+        return redirect()->route('performance.reviews.index')->with('success', __('messages.manager_review_submitted_success'));
     }
 
     public function destroy(PerformanceReview $review)
     {
         $this->authorize('delete', $review);
         $review->delete();
-        return redirect()->route('performance.reviews.index')->with('success', 'Review deleted.');
+        return redirect()->route('performance.reviews.index')->with('success', __('messages.review_deleted_success'));
     }
 }

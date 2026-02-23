@@ -36,12 +36,36 @@ class LeaveIndexPage extends Component
         return Employee::orderBy('first_name')->get();
     }
 
-    public function approve(int $leaveId): void
+    public function hrApprove(int $leaveId): void
     {
         $leave = Leave::findOrFail($leaveId);
-        $this->authorize('approve', $leave);
+        $this->authorize('hrApprove', $leave);
         try {
-            app(LeaveService::class)->approve($leaveId, auth()->id());
+            app(LeaveService::class)->hrApprove($leaveId, auth()->id());
+            $this->dispatch('leave-updated');
+        } catch (\DomainException $e) {
+            $this->addError('approve', $e->getMessage());
+        }
+    }
+
+    public function adminApprove(int $leaveId): void
+    {
+        $leave = Leave::findOrFail($leaveId);
+        $this->authorize('adminApprove', $leave);
+        try {
+            app(LeaveService::class)->adminApprove($leaveId, auth()->id());
+            $this->dispatch('leave-updated');
+        } catch (\DomainException $e) {
+            $this->addError('approve', $e->getMessage());
+        }
+    }
+
+    public function directApprove(int $leaveId): void
+    {
+        $leave = Leave::findOrFail($leaveId);
+        $this->authorize('directApprove', $leave);
+        try {
+            app(LeaveService::class)->directApprove($leaveId, auth()->id());
             $this->dispatch('leave-updated');
         } catch (\DomainException $e) {
             $this->addError('approve', $e->getMessage());
@@ -66,12 +90,14 @@ class LeaveIndexPage extends Component
 
     public function submitReject(): void
     {
+        $this->validate(['rejectionReason' => 'required|string|min:3|max:500'], ['rejectionReason.required' => 'Rejection reason is required.']);
         $leave = Leave::findOrFail($this->rejectLeaveId);
         $this->authorize('approve', $leave);
-        $this->validate(['rejectionReason' => 'required|string|min:3|max:500'], ['rejectionReason.required' => 'Rejection reason is required.']);
+        $reason = $this->rejectionReason;
         try {
-            app(LeaveService::class)->reject($this->rejectLeaveId, $this->rejectionReason, auth()->id());
+            app(LeaveService::class)->reject($this->rejectLeaveId, $reason, auth()->id());
             $this->closeRejectModal();
+            $this->resetPage();
             $this->dispatch('leave-updated');
         } catch (\DomainException $e) {
             $this->addError('reject', $e->getMessage());

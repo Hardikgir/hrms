@@ -4,6 +4,8 @@ namespace App\Modules\Asset\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Asset\Models\Asset;
+use App\Modules\Asset\Models\AssetReturnRequest;
+use App\Modules\Asset\Models\AssetType;
 use App\Modules\Asset\Services\AssetService;
 use App\Modules\Employee\Models\Employee;
 use Illuminate\Http\Request;
@@ -28,8 +30,8 @@ class AssetController extends Controller
     public function create()
     {
         $this->authorize('create', Asset::class);
-        $employees = Employee::where('is_active', true)->orderBy('first_name')->get();
-        return view('asset.create', compact('employees'));
+        $assetTypes = AssetType::active()->ordered()->get();
+        return view('asset.create', compact('assetTypes'));
     }
 
     public function store(Request $request)
@@ -37,10 +39,9 @@ class AssetController extends Controller
         $this->authorize('create', Asset::class);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:50',
+            'type' => 'required|string|max:50|in:' . implode(',', AssetType::activeSlugs()),
             'serial_number' => 'nullable|string|max:100',
             'asset_tag' => 'nullable|string|max:50',
-            'employee_id' => 'nullable|exists:employees,id',
             'status' => 'nullable|in:available,assigned,under_maintenance,retired',
             'purchase_date' => 'nullable|date',
             'purchase_value' => 'nullable|numeric|min:0',
@@ -48,14 +49,17 @@ class AssetController extends Controller
             'notes' => 'nullable|string|max:2000',
         ]);
         $this->assetService->create($validated, auth()->id());
-        return redirect()->route('assets.index')->with('success', 'Asset created.');
+        return redirect()->route('assets.index')->with('success', __('messages.asset_created_success'));
     }
 
     public function edit(Asset $asset)
     {
         $this->authorize('update', $asset);
         $employees = Employee::where('is_active', true)->orderBy('first_name')->get();
-        return view('asset.edit', compact('asset', 'employees'));
+        $assetTypes = AssetType::ordered()->where(function ($q) use ($asset) {
+            $q->where('is_active', true)->orWhere('slug', $asset->type);
+        })->get();
+        return view('asset.edit', compact('asset', 'employees', 'assetTypes'));
     }
 
     public function update(Request $request, Asset $asset)
@@ -63,7 +67,7 @@ class AssetController extends Controller
         $this->authorize('update', $asset);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|max:50',
+            'type' => 'required|string|max:50|in:' . implode(',', AssetType::activeSlugs()),
             'serial_number' => 'nullable|string|max:100',
             'asset_tag' => 'nullable|string|max:50',
             'employee_id' => 'nullable|exists:employees,id',
@@ -74,7 +78,7 @@ class AssetController extends Controller
             'notes' => 'nullable|string|max:2000',
         ]);
         $this->assetService->update($asset, $validated);
-        return redirect()->route('assets.index')->with('success', 'Asset updated.');
+        return redirect()->route('assets.index')->with('success', __('messages.asset_updated_success'));
     }
 
     public function assign(Request $request, Asset $asset)
@@ -82,17 +86,48 @@ class AssetController extends Controller
         $this->authorize('update', $asset);
         $validated = $request->validate(['employee_id' => 'required|exists:employees,id']);
         try {
-            $this->assetService->assign($asset, (int) $validated['employee_id']);
+            $this->assetService->assign($asset, (int) $validated['employee_id'], auth()->id());
         } catch (\DomainException $e) {
             return back()->with('error', $e->getMessage());
         }
-        return back()->with('success', 'Asset assigned.');
+        return back()->with('success', __('messages.asset_assigned_success'));
     }
 
     public function unassign(Asset $asset)
     {
         $this->authorize('update', $asset);
-        $this->assetService->unassign($asset);
-        return back()->with('success', 'Asset unassigned.');
+        $this->assetService->unassign($asset, auth()->id());
+        return back()->with('success', __('messages.asset_unassigned_success'));
+    }
+
+    public function approveReturn(Request $request, AssetReturnRequest $asset_return_request)
+    {
+        $this->authorize('approveReturn', $asset_return_request->asset);
+        $note = $request->input('admin_note');
+        try {
+            $this->assetService->approveReturn($asset_return_request, auth()->id(), $note);
+        } catch (\DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+        return back()->with('success', __('messages.asset_return_approved_success'));
+    }
+
+    public function history(Asset $asset)
+    {
+        $this->authorize('view', $asset);
+        $asset->load(['assignmentHistories.employee', 'assignmentHistories.assignedByUser', 'assignmentHistories.returnedByUser', 'assetType']);
+        return view('asset.history', compact('asset'));
+    }
+
+    public function declineReturn(Request $request, AssetReturnRequest $asset_return_request)
+    {
+        $this->authorize('approveReturn', $asset_return_request->asset);
+        $validated = $request->validate(['admin_note' => 'required|string|max:2000']);
+        try {
+            $this->assetService->declineReturn($asset_return_request, $validated['admin_note'], auth()->id());
+        } catch (\DomainException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+        return back()->with('success', __('messages.asset_return_declined_success'));
     }
 }

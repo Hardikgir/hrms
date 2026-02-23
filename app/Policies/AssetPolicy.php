@@ -29,4 +29,9 @@ class AssetPolicy
     {
         return $user->can('manage assets');
     }
+
+    public function approveReturn(User $user, Asset $asset): bool
+    {
+        return $user->can('approve asset returns');
+    }
 }

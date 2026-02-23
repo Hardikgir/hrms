@@ -8,11 +8,25 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
+    Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
+
+    // Role Management
+    Route::middleware('can:manage roles')->group(function () {
+        Route::post('roles/create-for-department', [\App\Http\Controllers\RoleController::class, 'createForDepartment'])->name('roles.create-for-department');
+        Route::resource('roles', \App\Http\Controllers\RoleController::class)->except(['show']);
+        Route::get('user-roles', [\App\Http\Controllers\UserRoleController::class, 'index'])->name('user-roles.index');
+        Route::get('user-roles/{user}/edit', [\App\Http\Controllers\UserRoleController::class, 'edit'])->name('user-roles.edit');
+        Route::put('user-roles/{user}', [\App\Http\Controllers\UserRoleController::class, 'update'])->name('user-roles.update');
+    });
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        // Redirect employees to ESS dashboard
-        if ($user->hasRole('Employee') && $user->employee) {
-            return redirect()->route('ess.dashboard');
+        // Redirect to ESS only if user has employee record, has Employee/HR Employee role, and has no admin access.
+        // Users with designation/role like HR Admin, HR Manager (who can view employees) get the admin dashboard and sidebar.
+        if ($user->employee && ($user->hasRole('Employee') || $user->hasRole('HR Employee'))) {
+            if (! $user->can('view employees')) {
+                return redirect()->route('ess.dashboard');
+            }
         }
         return view('dashboard');
     })->name('dashboard');
@@ -24,24 +38,33 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profile/edit', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'editProfile'])->name('profile.edit');
         Route::put('/profile', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'updateProfile'])->name('profile.update');
         Route::get('/tasks', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'tasks'])->name('tasks');
+        Route::post('/tasks/{task}/complete', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'completeTask'])->name('tasks.complete');
         Route::get('/onboarding-documents', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'onboardingDocuments'])->name('onboarding-documents');
         Route::post('/onboarding-documents', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'submitOnboardingDocuments'])->name('onboarding-documents.submit');
         Route::get('/training-session', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'trainingSession'])->name('training-session');
         Route::post('/training-session/confirm', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'confirmTrainingAttendance'])->name('training-session.confirm');
         Route::get('/attendance', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'attendance'])->name('attendance');
         Route::get('/leaves', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'leaves'])->name('leaves');
+        Route::get('/leaves/create', [\App\Modules\Leave\Controllers\LeaveController::class, 'create'])->name('leaves.create');
+        Route::get('/leaves/{leave}', [\App\Modules\Leave\Controllers\LeaveController::class, 'show'])->name('leaves.show');
+        Route::get('/leaves/{leave}/edit', [\App\Modules\Leave\Controllers\LeaveController::class, 'edit'])->name('leaves.edit');
+        Route::put('/leaves/{leave}', [\App\Modules\Leave\Controllers\LeaveController::class, 'update'])->name('leaves.update');
+        Route::post('/leaves', [\App\Modules\Leave\Controllers\LeaveController::class, 'store'])->name('leaves.store');
         Route::get('/payslips', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'payslips'])->name('payslips');
         Route::get('/payslips/{payroll}', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'viewPayslip'])->name('payslips.show');
         Route::get('/goals', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'goals'])->name('goals');
         Route::get('/reviews', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'reviews'])->name('reviews');
         Route::get('/expenses', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'expenses'])->name('expenses');
         Route::get('/expenses/create', [\App\Modules\Expense\Controllers\ExpenseController::class, 'create'])->name('expenses.create');
+        Route::get('/expenses/{expense}', [\App\Modules\Expense\Controllers\ExpenseController::class, 'show'])->name('expenses.show');
         Route::post('/expenses', [\App\Modules\Expense\Controllers\ExpenseController::class, 'store'])->name('expenses.store');
         Route::get('/training', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'training'])->name('training');
         Route::get('/roster', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'roster'])->name('roster');
         Route::get('/assets', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'assets'])->name('assets');
+        Route::post('/assets/{asset}/request-return', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'requestAssetReturn'])->name('assets.request-return');
         Route::get('/travel', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'travel'])->name('travel');
         Route::get('/travel/create', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'create'])->name('travel.create');
+        Route::get('/travel/{travel}', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'show'])->name('travel.show');
         Route::post('/travel', [\App\Modules\Travel\Controllers\TravelRequestController::class, 'store'])->name('travel.store');
         Route::get('/exit', [\App\Modules\Employee\Controllers\EmployeeSelfServiceController::class, 'exit'])->name('exit');
         Route::get('/exit/create', [\App\Modules\Exit\Controllers\ExitRequestController::class, 'create'])->name('exit.create');
@@ -51,12 +74,14 @@ Route::middleware(['auth'])->group(function () {
     // Admin/HR Routes (only for non-employees or with permissions)
     Route::middleware(['can:view employees'])->group(function () {
         // Employee Routes
+        Route::get('employees/{employee}/documents/{document}/download', [EmployeeController::class, 'downloadDocument'])->name('employees.documents.download');
         Route::resource('employees', EmployeeController::class);
     });
 
     // Employee Tasks (Admin: create/assign tasks for ESS)
+    Route::post('employee-tasks/{employee_task}/approve', [\App\Modules\Employee\Controllers\EmployeeTaskController::class, 'approve'])->name('employee-tasks.approve')->middleware('can:manage tasks');
     Route::resource('employee-tasks', \App\Modules\Employee\Controllers\EmployeeTaskController::class)->except(['show'])->middleware('can:manage tasks');
-    
+
     // Attendance Routes - Admin can view all, employees can check in/out
     Route::prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [\App\Modules\Attendance\Controllers\AttendanceController::class, 'index'])->name('index')->middleware('can:view attendance');
@@ -66,7 +91,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Leave Routes - Employees can create/view their own, admins can view all
     Route::resource('leaves', \App\Modules\Leave\Controllers\LeaveController::class);
-    
+
     // Payroll Routes - Only admins can access
     Route::prefix('payroll')->name('payroll.')->middleware('can:view payroll')->group(function () {
         Route::get('/', [\App\Modules\Payroll\Controllers\PayrollController::class, 'index'])->name('index');
@@ -77,7 +102,9 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Expense Management
+    Route::get('expenses/{expense}/receipt', [\App\Modules\Expense\Controllers\ExpenseController::class, 'downloadReceipt'])->name('expenses.receipt');
     Route::resource('expenses', \App\Modules\Expense\Controllers\ExpenseController::class)->only(['index', 'create', 'store', 'show']);
+    Route::resource('expense-categories', \App\Modules\Expense\Controllers\ExpenseCategoryController::class)->except(['show'])->middleware('can:manage expense categories');
     Route::post('expenses/{expense}/approve', [\App\Modules\Expense\Controllers\ExpenseController::class, 'approve'])->name('expenses.approve');
     Route::post('expenses/{expense}/reject', [\App\Modules\Expense\Controllers\ExpenseController::class, 'reject'])->name('expenses.reject');
     Route::post('expenses/{expense}/reimburse', [\App\Modules\Expense\Controllers\ExpenseController::class, 'reimburse'])->name('expenses.reimburse');
@@ -99,8 +126,21 @@ Route::middleware(['auth'])->group(function () {
 
     // Asset Management
     Route::resource('assets', \App\Modules\Asset\Controllers\AssetController::class)->except(['show']);
+    Route::get('assets/{asset}/history', [\App\Modules\Asset\Controllers\AssetController::class, 'history'])->name('assets.history');
     Route::post('assets/{asset}/assign', [\App\Modules\Asset\Controllers\AssetController::class, 'assign'])->name('assets.assign');
     Route::post('assets/{asset}/unassign', [\App\Modules\Asset\Controllers\AssetController::class, 'unassign'])->name('assets.unassign');
+    Route::post('assets/return-requests/{asset_return_request}/approve', [\App\Modules\Asset\Controllers\AssetController::class, 'approveReturn'])->name('assets.return-requests.approve');
+    Route::post('assets/return-requests/{asset_return_request}/decline', [\App\Modules\Asset\Controllers\AssetController::class, 'declineReturn'])->name('assets.return-requests.decline');
+    Route::resource('asset-types', \App\Modules\Asset\Controllers\AssetTypeController::class)->except(['show'])->parameters(['asset-types' => 'asset_type'])->middleware('can:manage asset types');
+
+    // Employment Types & Statuses Management
+    Route::resource('employment-types', \App\Modules\Employee\Controllers\EmploymentTypeController::class)->except(['show'])->parameters(['employment-types' => 'employment_type'])->middleware('can:manage employment types');
+    Route::resource('employment-statuses', \App\Modules\Employee\Controllers\EmploymentStatusController::class)->except(['show'])->parameters(['employment-statuses' => 'employment_status'])->middleware('can:manage employment statuses');
+
+    // Job Details Dropdowns (Departments, Designations, Locations)
+    Route::resource('departments', \App\Modules\Employee\Controllers\DepartmentController::class)->except(['show'])->middleware('can:manage departments');
+    Route::resource('designations', \App\Modules\Employee\Controllers\DesignationController::class)->except(['show'])->middleware('can:manage designations');
+    Route::resource('locations', \App\Modules\Employee\Controllers\LocationController::class)->except(['show'])->middleware('can:manage locations');
 
     // Travel Management
     Route::resource('travel', \App\Modules\Travel\Controllers\TravelRequestController::class)->only(['index', 'create', 'store', 'show']);
@@ -131,4 +171,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

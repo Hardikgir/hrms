@@ -33,6 +33,12 @@ class ExitRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
+        if ($employee && !request()->routeIs('ess.exit.*')) {
+            return redirect()->route('ess.exit.create');
+        }
+        if (request()->routeIs('ess.exit.*')) {
+            return view('employee.ess.exit-create', compact('employee'));
+        }
         return view('exit.create', compact('employee'));
     }
 
@@ -62,7 +68,7 @@ class ExitRequestController extends Controller
             return back()->withInput()->with('error', $e->getMessage());
         }
         $redirect = auth()->user()->employee ? route('ess.exit') : route('exit.index');
-        return redirect($redirect)->with('success', 'Exit request submitted.');
+        return redirect($redirect)->with('success', __('messages.exit_request_submitted'));
     }
 
     public function show(ExitRequest $exit)
@@ -84,7 +90,7 @@ class ExitRequestController extends Controller
             $data['exit_interview_notes'] = $validated['exit_interview_notes'];
         }
         $this->exitService->updateStatus($exit, $validated['status'], $data);
-        return back()->with('success', 'Status updated.');
+        return back()->with('success', __('messages.status_updated_success'));
     }
 
     public function updateChecklist(Request $request, ExitRequest $exit)
@@ -95,14 +101,14 @@ class ExitRequestController extends Controller
             'checklist.*' => 'boolean',
         ]);
         $this->exitService->updateChecklist($exit, $validated['checklist']);
-        return back()->with('success', 'Checklist updated.');
+        return back()->with('success', __('messages.checklist_updated_success'));
     }
 
     public function completeClearance(ExitRequest $exit)
     {
         $this->authorize('update', $exit);
         $this->exitService->completeClearance($exit);
-        return back()->with('success', 'Clearance completed.');
+        return back()->with('success', __('messages.clearance_completed_success'));
     }
 
     public function recordSettlement(Request $request, ExitRequest $exit)
@@ -113,6 +119,6 @@ class ExitRequestController extends Controller
             'settlement_paid_at' => 'nullable|date',
         ]);
         $this->exitService->recordSettlement($exit, (float) $validated['settlement_amount'], $validated['settlement_paid_at'] ?? null);
-        return back()->with('success', 'Settlement recorded.');
+        return back()->with('success', __('messages.settlement_recorded_success'));
     }
 }

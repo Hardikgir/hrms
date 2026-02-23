@@ -16,10 +16,10 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Create Roles
-        $roles = ['Super Admin', 'HR Admin', 'Manager', 'Finance', 'Recruiter', 'Employee'];
+        // Create Roles (including HR department: HR Admin, HR Manager, HR Employee)
+        $roles = ['Super Admin', 'HR Admin', 'HR Manager', 'HR Employee', 'Manager', 'Finance', 'Recruiter', 'Employee'];
         foreach ($roles as $roleName) {
-            Role::firstOrCreate(['name' => $roleName]);
+            Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         }
 
         // Create Permissions
@@ -30,12 +30,15 @@ class DatabaseSeeder extends Seeder
             'view payroll', 'create payroll', 'update payroll', 'delete payroll', 'run payroll',
             'manage tasks',
             'view performance', 'manage performance',
-            'view expenses', 'approve expenses', 'process reimbursements',
+            'view expenses', 'approve expenses', 'process reimbursements', 'manage expense categories',
             'view training', 'manage training',
             'view shifts', 'manage shifts',
-            'view assets', 'manage assets',
+            'view assets', 'manage assets', 'approve asset returns', 'manage asset types',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
+            'manage roles',
+            'manage employment types', 'manage employment statuses',
+            'manage departments', 'manage designations', 'manage locations',
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
@@ -45,19 +48,45 @@ class DatabaseSeeder extends Seeder
         $superAdmin = Role::findByName('Super Admin');
         $superAdmin->givePermissionTo(Permission::all());
 
+        // HR Admin – full HR access (no manage roles, no delete employees by default; no run payroll)
         $hrAdmin = Role::findByName('HR Admin');
-        $hrAdmin->givePermissionTo([
-            'view employees', 'create employees', 'update employees',
-            'view attendance', 'view leaves', 'approve leaves',
+        $hrAdmin->syncPermissions([
+            'view employees', 'create employees', 'update employees', 'delete employees',
+            'view attendance', 'create attendance', 'update attendance',
+            'view leaves', 'create leaves', 'update leaves', 'approve leaves',
+            'manage tasks',
+            'view performance', 'manage performance',
+            'view expenses', 'approve expenses', 'process reimbursements', 'manage expense categories',
+            'view training', 'manage training',
+            'view shifts', 'manage shifts',
+            'view assets', 'manage assets', 'approve asset returns', 'manage asset types',
+            'view travel', 'approve travel',
+            'view exit', 'manage exit',
+            'view payroll', 'create payroll', 'update payroll', 'run payroll',
+            'manage employment types', 'manage employment statuses',
+            'manage departments', 'manage designations', 'manage locations',
+        ]);
+
+        // HR Manager – view & approve; no settings, no create/update/delete employees, no run payroll
+        $hrManager = Role::findByName('HR Manager');
+        $hrManager->syncPermissions([
+            'view employees',
+            'view attendance', 'create attendance', 'update attendance',
+            'view leaves', 'approve leaves',
             'manage tasks',
             'view performance', 'manage performance',
             'view expenses', 'approve expenses',
-            'view training', 'manage training',
+            'view training',
             'view shifts', 'manage shifts',
-            'view assets', 'manage assets',
+            'view assets', 'approve asset returns',
             'view travel', 'approve travel',
             'view exit', 'manage exit',
+            'view payroll',
         ]);
+
+        // HR Employee – ESS only (same as Employee; no admin panel access)
+        $hrEmployee = Role::findByName('HR Employee');
+        $hrEmployee->syncPermissions([]);
 
         // Create Super Admin User
         $admin = User::firstOrCreate(
@@ -69,6 +98,17 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $admin->assignRole('Super Admin');
+
+        // Create HR Admin User
+        $hrAdminUser = User::firstOrCreate(
+            ['email' => 'hradmin@hrms.com'],
+            [
+                'name' => 'HR Admin',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $hrAdminUser->assignRole('HR Admin');
 
         // Create Departments
         $departments = [
@@ -87,12 +127,15 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // Create Designations
+        // Create Designations (including HR department job titles)
         $designations = [
             ['name' => 'Manager', 'code' => 'MGR'],
             ['name' => 'Senior Developer', 'code' => 'SR_DEV'],
             ['name' => 'Developer', 'code' => 'DEV'],
             ['name' => 'HR Executive', 'code' => 'HR_EXEC'],
+            ['name' => 'HR Admin', 'code' => 'HR_ADMIN'],
+            ['name' => 'HR Manager', 'code' => 'HR_MGR'],
+            ['name' => 'HR Employee', 'code' => 'HR_EMP'],
         ];
 
         foreach ($designations as $desig) {

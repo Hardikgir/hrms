@@ -5,6 +5,7 @@ namespace App\Modules\Employee\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\Employee\Models\EmployeeTask;
 use App\Modules\Employee\Models\Employee;
+use App\Modules\Leave\Models\Leave;
 use Illuminate\Http\Request;
 
 class EmployeeTaskController extends Controller
@@ -18,7 +19,7 @@ class EmployeeTaskController extends Controller
     {
         $this->authorize('manage tasks');
 
-        $query = EmployeeTask::with(['employee', 'createdBy'])->latest('due_date');
+        $query = EmployeeTask::with(['employee', 'createdBy', 'approvedBy'])->latest('due_date');
 
         if ($request->filled('employee_id')) {
             $query->where(function ($q) use ($request) {
@@ -54,16 +55,23 @@ class EmployeeTaskController extends Controller
             'employee_id' => 'nullable|exists:employees,id',
             'due_date' => 'required|date',
             'priority' => 'required|in:low,medium,high',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,in_progress,completed,approved',
             'action_route' => 'nullable|string|max:100',
             'action_label' => 'nullable|string|max:50',
         ]);
+
+        // Check if employee has approved leave on due_date
+        if ($validated['employee_id'] && Leave::hasApprovedLeaveOnDate($validated['employee_id'], $validated['due_date'])) {
+            return back()
+                ->withInput()
+                ->withErrors(['due_date' => 'Cannot assign task to employee on a day when they have an approved leave.']);
+        }
 
         $validated['created_by'] = auth()->id();
 
         EmployeeTask::create($validated);
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task created successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_created_success'));
     }
 
     public function edit(EmployeeTask $employee_task)
@@ -85,14 +93,26 @@ class EmployeeTaskController extends Controller
             'employee_id' => 'nullable|exists:employees,id',
             'due_date' => 'required|date',
             'priority' => 'required|in:low,medium,high',
-            'status' => 'required|in:pending,in_progress,completed',
+            'status' => 'required|in:pending,in_progress,completed,approved',
             'action_route' => 'nullable|string|max:100',
             'action_label' => 'nullable|string|max:50',
         ]);
 
+        // Check if employee has approved leave on due_date (only if employee_id or due_date changed)
+        if ($validated['employee_id'] && 
+            ($employee_task->employee_id != $validated['employee_id'] || 
+             $employee_task->due_date->format('Y-m-d') != $validated['due_date'])) {
+            
+            if (Leave::hasApprovedLeaveOnDate($validated['employee_id'], $validated['due_date'])) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['due_date' => 'Cannot assign task to employee on a day when they have an approved leave.']);
+            }
+        }
+
         $employee_task->update($validated);
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task updated successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_updated_success'));
     }
 
     public function destroy(EmployeeTask $employee_task)
@@ -101,6 +121,23 @@ class EmployeeTaskController extends Controller
 
         $employee_task->delete();
 
-        return redirect()->route('employee-tasks.index')->with('success', 'Task deleted successfully.');
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_deleted_success'));
+    }
+
+    public function approve(EmployeeTask $employee_task)
+    {
+        $this->authorize('manage tasks');
+
+        if ($employee_task->status !== 'completed') {
+            return redirect()->route('employee-tasks.index')->with('error', __('messages.task_only_completed_approve'));
+        }
+
+        $employee_task->update([
+            'status' => 'approved',
+            'approved_by' => auth()->id(),
+            'approved_at' => now(),
+        ]);
+
+        return redirect()->route('employee-tasks.index')->with('success', __('messages.task_approved_success'));
     }
 }

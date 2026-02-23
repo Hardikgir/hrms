@@ -77,7 +77,7 @@
                         @endif
                     </td>
                     <td>{{ $review->overall_rating ? $review->overall_rating . '/5' : '—' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         <a href="{{ route('performance.reviews.show', $review) }}" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
                         @if($review->canSubmitSelfReview() && auth()->user()->employee && auth()->user()->employee->id === $review->employee_id)
                             <a href="{{ route('performance.reviews.self-review', $review) }}" class="btn btn-sm btn-warning">Self Review</a>
@@ -86,7 +86,7 @@
                             <a href="{{ route('performance.reviews.manager-review', $review) }}" class="btn btn-sm btn-primary">Manager Review</a>
                         @endif
                         @can('delete', $review)
-                        <form action="{{ route('performance.reviews.destroy', $review) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this review?');">
+                        <form action="{{ route('performance.reviews.destroy', $review) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_review_confirm') }}');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>

@@ -12,7 +12,7 @@ class PayrollRunPage extends Component
     public int $month;
     public bool $runCompleted = false;
     public int $createdCount = 0;
-    public string $message = '';
+    public string $statusMessage = '';
 
     public function mount(): void
     {
@@ -33,11 +33,11 @@ class PayrollRunPage extends Component
             $created = app(PayrollService::class)->runPayrollForMonth($this->year, $this->month, auth()->id());
             $this->createdCount = count($created);
             $this->runCompleted = true;
-            $this->message = $this->createdCount > 0
-                ? "Payroll run completed. Created {$this->createdCount} draft record(s)."
-                : 'No new records created (all employees may already have payroll for this month).';
+            $this->statusMessage = $this->createdCount > 0
+                ? __('messages.payroll_run_success', ['count' => $this->createdCount])
+                : __('messages.payroll_run_no_records');
         } catch (\Exception $e) {
-            $this->message = 'Error: ' . $e->getMessage();
+            $this->statusMessage = __('messages.error') . ': ' . $e->getMessage();
         }
     }
 

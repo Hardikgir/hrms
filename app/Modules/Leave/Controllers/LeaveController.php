@@ -33,14 +33,21 @@ class LeaveController extends Controller
 
     public function create()
     {
-        $this->authorize('create leaves');
+        $this->authorize('create', Leave::class);
 
+        $user = auth()->user();
+        if ($user->employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.create');
+        }
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-create');
+        }
         return view('leave.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorize('create leaves');
+        $this->authorize('create', Leave::class);
 
         $user = auth()->user();
         $employee = $user->employee;
@@ -71,9 +78,9 @@ class LeaveController extends Controller
         }
 
         if ($employee) {
-            return redirect()->route('ess.leaves')->with('success', 'Leave request created successfully.');
+            return redirect()->route('ess.leaves')->with('success', __('messages.leave_created_success'));
         }
-        return redirect()->route('leaves.index')->with('success', 'Leave request created successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_created_success'));
     }
 
     public function show(Leave $leave)
@@ -86,7 +93,14 @@ class LeaveController extends Controller
         }
         $this->authorize('view', $leave);
 
-        $leave->load(['employee', 'leaveType']);
+        if ($employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.show', $leave);
+        }
+
+        $leave->load(['employee', 'leaveType', 'hrApprovedBy', 'approvedBy', 'rejectedBy']);
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-show', compact('leave'));
+        }
         return view('leave.show', compact('leave'));
     }
 
@@ -103,6 +117,12 @@ class LeaveController extends Controller
         $leaveTypes = LeaveType::where('is_active', true)->get();
         $employees = $employee ? collect([$employee]) : Employee::where('is_active', true)->get();
 
+        if ($employee && !request()->routeIs('ess.leaves.*')) {
+            return redirect()->route('ess.leaves.edit', $leave);
+        }
+        if (request()->routeIs('ess.leaves.*')) {
+            return view('employee.ess.leave-edit', compact('leave', 'leaveTypes', 'employees'));
+        }
         return view('leave.edit', compact('leave', 'leaveTypes', 'employees'));
     }
 
@@ -140,15 +160,15 @@ class LeaveController extends Controller
         ]);
 
         if ($employee) {
-            return redirect()->route('ess.leaves')->with('success', 'Leave request updated successfully.');
+            return redirect()->route('ess.leaves')->with('success', __('messages.leave_updated_success'));
         }
-        return redirect()->route('leaves.index')->with('success', 'Leave request updated successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_updated_success'));
     }
 
     public function destroy(Leave $leave)
     {
         $this->authorize('delete', $leave);
         $leave->delete();
-        return redirect()->route('leaves.index')->with('success', 'Leave request deleted successfully.');
+        return redirect()->route('leaves.index')->with('success', __('messages.leave_deleted_success'));
     }
 }

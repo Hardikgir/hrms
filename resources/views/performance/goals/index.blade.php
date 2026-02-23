@@ -80,12 +80,12 @@
                         @endif
                     </td>
                     <td>{{ $goal->cycle->name ?? '—' }}</td>
-                    <td>
+                    <td class="action-buttons">
                         @can('update', $goal)
                         <a href="{{ route('performance.goals.edit', $goal) }}" class="btn btn-sm btn-primary"><i class="fas fa-edit"></i></a>
                         @endcan
                         @can('delete', $goal)
-                        <form action="{{ route('performance.goals.destroy', $goal) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this goal?');">
+                        <form action="{{ route('performance.goals.destroy', $goal) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('messages.delete_goal_confirm') }}');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>

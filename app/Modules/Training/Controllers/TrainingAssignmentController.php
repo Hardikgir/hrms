@@ -52,7 +52,7 @@ class TrainingAssignmentController extends Controller
         } catch (\DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        return redirect()->route('training.assignments.index')->with('success', 'Training assigned.');
+        return redirect()->route('training.assignments.index')->with('success', __('messages.training_assigned_success'));
     }
 
     public function complete(TrainingAssignment $training_assignment)
@@ -60,6 +60,6 @@ class TrainingAssignmentController extends Controller
         $this->authorize('update', $training_assignment);
         $validated = request()->validate(['score' => 'nullable|integer|min:0|max:100']);
         $this->trainingService->markCompleted($training_assignment->id, $validated['score'] ?? null);
-        return back()->with('success', 'Marked as completed.');
+        return back()->with('success', __('messages.training_marked_completed_success'));
     }
 }

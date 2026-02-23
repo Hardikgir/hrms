@@ -67,7 +67,7 @@ class GoalController extends Controller
             ],
             auth()->id()
         );
-        return redirect()->route('performance.goals.index')->with('success', 'Goal created.');
+        return redirect()->route('performance.goals.index')->with('success', __('messages.goal_created_success'));
     }
 
     public function edit(Goal $goal)
@@ -95,13 +95,13 @@ class GoalController extends Controller
             'achieved_value' => 'nullable|string|max:100',
         ]);
         $this->performanceService->updateGoal($goal, $validated);
-        return redirect()->route('performance.goals.index')->with('success', 'Goal updated.');
+        return redirect()->route('performance.goals.index')->with('success', __('messages.goal_updated_success'));
     }
 
     public function destroy(Goal $goal)
     {
         $this->authorize('delete', $goal);
         $goal->delete();
-        return redirect()->route('performance.goals.index')->with('success', 'Goal deleted.');
+        return redirect()->route('performance.goals.index')->with('success', __('messages.goal_deleted_success'));
     }
 }
