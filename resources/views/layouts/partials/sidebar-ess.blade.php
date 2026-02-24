@@ -59,13 +59,13 @@
                         <p>{{ __('messages.goals') }}</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('ess.reviews') }}"
                         class="nav-link {{ request()->routeIs('ess.reviews') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-chart-line"></i>
                         <p>{{ __('messages.performance_reviews') }}</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('ess.expenses') }}"
                         class="nav-link {{ request()->routeIs('ess.expenses*') ? 'active' : '' }}">
@@ -80,13 +80,13 @@
                         <p>{{ __('messages.training') }}</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('ess.roster') }}"
                         class="nav-link {{ request()->routeIs('ess.roster') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-clock"></i>
                         <p>{{ __('messages.my_roster') }}</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="{{ route('ess.assets') }}"
                         class="nav-link {{ request()->routeIs('ess.assets') ? 'active' : '' }}">

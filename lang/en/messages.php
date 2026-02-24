@@ -846,4 +846,7 @@ return [
     'placeholder_bank_branch' => 'Branch name',
     'placeholder_score' => 'Score',
     'mark_complete' => 'Mark Complete',
+
+    // Performance Cycles
+    'new_cycle' => 'New Cycle',
 ];

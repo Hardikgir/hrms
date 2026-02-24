@@ -846,4 +846,7 @@ return [
     'placeholder_bank_branch' => 'اسم الفرع',
     'placeholder_score' => 'الدرجة',
     'mark_complete' => 'تعليم كمكتمل',
+
+    // Performance Cycles
+    'new_cycle' => 'دورة جديدة',
 ];

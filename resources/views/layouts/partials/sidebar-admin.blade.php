@@ -66,7 +66,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('view performance')
+                {{-- @can('view performance')
                     <li class="nav-item">
                         <a href="{{ route('performance.cycles.index') }}"
                             class="nav-link {{ request()->routeIs('performance.*') ? 'active' : '' }}">
@@ -74,7 +74,7 @@
                             <p>{{ __('messages.performance') }}</p>
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
                 @can('view expenses')
                     <li class="nav-item">
                         <a href="{{ route('expenses.index') }}"
@@ -93,7 +93,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('view shifts')
+                {{-- @can('view shifts')
                     <li class="nav-item">
                         <a href="{{ route('shifts.index') }}"
                             class="nav-link {{ request()->routeIs('shifts.*') || request()->routeIs('roster.*') ? 'active' : '' }}">
@@ -101,7 +101,7 @@
                             <p>{{ __('messages.shifts_roster') }}</p>
                         </a>
                     </li>
-                @endcan
+                @endcan --}}
                 @can('view assets')
                     <li class="nav-item">
                         <a href="{{ route('assets.index') }}"
