@@ -1,0 +1,6 @@
+-> hide all Menu Which is not Working and we have to discussion.
+-> Data Flow Shoudl be Clear from Create Leave upto Approval.
+-> In Arabic Left to right is not Working as their official website setup this type of concepts
+-> Website is Too Slow (Should be Fast Performance)
+-> Original Password Must Be Visible for Admin Side Only
+-> Forget Password should be Enable. (Even Admin Can't Update Their Password)
