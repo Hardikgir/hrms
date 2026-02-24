@@ -1,0 +1,192 @@
+/* 
+ * HRMS RTL Stylesheet
+ * Exclusively scoped to html[dir="rtl"] to prevent any LTR leakage.
+ * Uses logical properties for layout flipping where supported.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+html[dir="rtl"] body {
+    direction: rtl;
+    text-align: start;
+    font-family: 'Cairo', sans-serif;
+}
+
+/* -----------------------------------------------------
+ * 1. AdminLTE Core Layout Reversals 
+ * ----------------------------------------------------- */
+
+/* Sidebar */
+html[dir="rtl"] .main-sidebar {
+    right: 0;
+    left: auto;
+}
+
+html[dir="rtl"] .content-wrapper,
+html[dir="rtl"] .main-footer,
+html[dir="rtl"] .main-header {
+    margin-left: 0 !important;
+    margin-right: 250px !important;
+}
+
+/* Collapsed Sidebar */
+html[dir="rtl"].sidebar-collapse .content-wrapper,
+html[dir="rtl"].sidebar-collapse .main-footer,
+html[dir="rtl"].sidebar-collapse .main-header {
+    margin-right: 4.6rem !important;
+    margin-left: 0 !important;
+}
+
+/* Mobile Sidebar & Header */
+@media (max-width: 991.98px) {
+
+    html[dir="rtl"] .content-wrapper,
+    html[dir="rtl"] .main-footer,
+    html[dir="rtl"] .main-header {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+    }
+
+    html[dir="rtl"] .main-sidebar {
+        transform: translate(250px, 0);
+    }
+
+    html[dir="rtl"].sidebar-open .main-sidebar {
+        transform: translate(0, 0);
+    }
+}
+
+/* Sidebar Nav & List Overrides (Fix browser default padding for ULs) */
+html[dir="rtl"] .nav,
+html[dir="rtl"] ul.nav-sidebar {
+    padding-right: 0 !important;
+}
+
+html[dir="rtl"] .nav-sidebar .nav-link>.nav-icon {
+    margin-right: 0.05rem !important;
+    margin-left: 0.2rem !important;
+}
+
+html[dir="rtl"] .nav-sidebar .nav-link>p>.right,
+html[dir="rtl"] .nav-sidebar .nav-link>.right {
+    right: auto !important;
+    left: 1rem !important;
+    transform: scaleX(-1);
+    /* Flips the angle icon */
+}
+
+/* -----------------------------------------------------
+ * 2. Bootstrap Utility Flips
+ * ----------------------------------------------------- */
+
+html[dir="rtl"] .ml-auto,
+html[dir="rtl"] .mx-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+html[dir="rtl"] .mr-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+html[dir="rtl"] .float-right {
+    float: left !important;
+}
+
+html[dir="rtl"] .float-left {
+    float: right !important;
+}
+
+/* -----------------------------------------------------
+ * 3. Component Alignments
+ * ----------------------------------------------------- */
+
+/* Navbar & Dropdowns */
+html[dir="rtl"] .dropdown-menu {
+    text-align: right;
+}
+
+html[dir="rtl"] .dropdown-menu-right {
+    right: auto;
+    left: 0;
+}
+
+/* Breadcrumbs */
+html[dir="rtl"] .breadcrumb.float-sm-right {
+    float: left !important;
+}
+
+html[dir="rtl"] .breadcrumb-item+.breadcrumb-item::before {
+    float: right;
+    padding-right: 0;
+    padding-left: 0.5rem;
+}
+
+/* Forms & Inputs */
+html[dir="rtl"] .form-group label {
+    text-align: right;
+    display: block;
+}
+
+html[dir="rtl"] .filter-form .form-control,
+html[dir="rtl"] .filter-form .btn {
+    text-align: right;
+}
+
+/* -----------------------------------------------------
+ * 4. HRMS Custom Spacing Flips (Reversing inline styles)
+ * ----------------------------------------------------- */
+
+html[dir="rtl"] .card-tools>*:not(:first-child) {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+html[dir="rtl"] .action-buttons .btn,
+html[dir="rtl"] .action-buttons form.d-inline,
+html[dir="rtl"] .action-buttons a.btn {
+    margin-right: 0 !important;
+    margin-left: 0.35rem !important;
+}
+
+html[dir="rtl"] .action-buttons .form-control-sm.d-inline-block {
+    margin-right: 0 !important;
+    margin-left: 0.35rem !important;
+}
+
+html[dir="rtl"] .filter-form .btn+.btn {
+    margin-left: 0 !important;
+    margin-right: 0.5rem !important;
+}
+
+/* -----------------------------------------------------
+ * 5. DataTables & Tables
+ * ----------------------------------------------------- */
+html[dir="rtl"] table.dataTable,
+html[dir="rtl"] table.table {
+    text-align: right;
+}
+
+html[dir="rtl"] div.dataTables_wrapper div.dataTables_filter {
+    text-align: left;
+}
+
+html[dir="rtl"] .pagination {
+    padding-right: 0;
+}
+
+/* -----------------------------------------------------
+ * 6. Visual Direction Icons
+ * ----------------------------------------------------- */
+html[dir="rtl"] .fa-angle-right,
+html[dir="rtl"] .fa-chevron-right,
+html[dir="rtl"] .fa-arrow-right {
+    transform: scaleX(-1);
+}
+
+html[dir="rtl"] .fa-angle-left,
+html[dir="rtl"] .fa-chevron-left,
+html[dir="rtl"] .fa-arrow-left {
+    transform: scaleX(-1);
+}
