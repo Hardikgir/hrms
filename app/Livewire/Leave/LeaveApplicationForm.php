@@ -8,14 +8,18 @@ use App\Modules\Leave\Models\LeaveType;
 use App\Modules\Employee\Models\Employee;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class LeaveApplicationForm extends Component
 {
+    use WithFileUploads;
+
     public ?string $employee_id = null;
     public string $leave_type_id = '';
     public string $start_date = '';
     public string $end_date = '';
     public string $reason = '';
+    public $attachment;
 
     public function mount(): void
     {
@@ -69,6 +73,7 @@ class LeaveApplicationForm extends Component
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string|max:2000',
+            'attachment' => 'required|file|image|mimes:jpeg,png,jpg|max:5120', // Must be an image of the physical form
         ];
         $user = auth()->user();
         $employee = $user->employee;
@@ -84,6 +89,11 @@ class LeaveApplicationForm extends Component
             return;
         }
 
+        $attachmentPath = null;
+        if ($this->attachment) {
+            $attachmentPath = $this->attachment->store('leaves/attachments', 'public');
+        }
+
         try {
             app(LeaveService::class)->apply(
                 $employeeId,
@@ -91,7 +101,8 @@ class LeaveApplicationForm extends Component
                 $this->start_date,
                 $this->end_date,
                 $this->reason,
-                $user->id
+                $user->id,
+                $attachmentPath
             );
         } catch (\DomainException|\InvalidArgumentException $e) {
             $this->addError('submit', $e->getMessage());

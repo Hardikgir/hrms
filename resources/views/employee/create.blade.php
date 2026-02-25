@@ -42,11 +42,7 @@
                                         {{ __('messages.job_details') }}
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="bank-tab" data-toggle="tab" href="#bank" role="tab">
-                                        {{ __('messages.bank_kyc') }}
-                                    </a>
-                                </li>
+
                             </ul>
                             <div class="tab-content mt-3" id="employeeTabsContent">
                                 <!-- Personal Details Tab -->
@@ -314,78 +310,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Bank & KYC Tab -->
-                                <div class="tab-pane fade" id="bank" role="tabpanel">
-                                    <h5>{{ __('messages.bank_details') }}</h5>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="bank_name">{{ __('messages.bank_name') }}</label>
-                                                <input type="text" class="form-control @error('bank_name') is-invalid @enderror" 
-                                                       id="bank_name" name="bank_name" value="{{ old('bank_name') }}">
-                                                @error('bank_name')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="bank_account_number">{{ __('messages.account_number') }}</label>
-                                                <input type="text" class="form-control @error('bank_account_number') is-invalid @enderror" 
-                                                       id="bank_account_number" name="bank_account_number" value="{{ old('bank_account_number') }}">
-                                                @error('bank_account_number')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="bank_ifsc">{{ __('messages.ifsc_code') }}</label>
-                                                <input type="text" class="form-control @error('bank_ifsc') is-invalid @enderror" 
-                                                       id="bank_ifsc" name="bank_ifsc" value="{{ old('bank_ifsc') }}">
-                                                @error('bank_ifsc')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="bank_branch">{{ __('messages.branch') }}</label>
-                                                <input type="text" class="form-control @error('bank_branch') is-invalid @enderror" 
-                                                       id="bank_branch" name="bank_branch" value="{{ old('bank_branch') }}">
-                                                @error('bank_branch')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <h5>{{ __('messages.kyc_documents') }}</h5>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="pan_number">{{ __('messages.pan_number') }}</label>
-                                                <input type="text" class="form-control @error('pan_number') is-invalid @enderror" 
-                                                       id="pan_number" name="pan_number" value="{{ old('pan_number') }}">
-                                                @error('pan_number')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="aadhar_number">{{ __('messages.aadhar_number') }}</label>
-                                                <input type="text" class="form-control @error('aadhar_number') is-invalid @enderror" 
-                                                       id="aadhar_number" name="aadhar_number" value="{{ old('aadhar_number') }}">
-                                                @error('aadhar_number')
-                                                    <span class="invalid-feedback">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                         <div class="card-footer">

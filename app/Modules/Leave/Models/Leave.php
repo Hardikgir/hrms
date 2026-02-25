@@ -5,6 +5,7 @@ namespace App\Modules\Leave\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 use App\Modules\Employee\Models\Employee;
 use App\Models\User;
 
@@ -29,6 +30,7 @@ class Leave extends Model
         'rejected_by',
         'rejected_at',
         'approval_workflow',
+        'attachment_path',
         'created_by',
         'updated_by',
     ];
@@ -42,6 +44,11 @@ class Leave extends Model
         'rejected_at' => 'datetime',
         'approval_workflow' => 'array',
     ];
+
+    public function getAttachmentUrlAttribute()
+    {
+        return $this->attachment_path ? Storage::url($this->attachment_path) : null;
+    }
 
     public function employee()
     {

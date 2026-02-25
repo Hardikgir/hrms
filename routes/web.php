@@ -75,6 +75,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['can:view employees'])->group(function () {
         // Employee Routes
         Route::get('employees/{employee}/documents/{document}/download', [EmployeeController::class, 'downloadDocument'])->name('employees.documents.download');
+        Route::get('employees/{employee}/documents/{document}/view', [EmployeeController::class, 'viewDocument'])->name('employees.documents.view');
         Route::resource('employees', EmployeeController::class);
     });
 
@@ -134,8 +135,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('asset-types', \App\Modules\Asset\Controllers\AssetTypeController::class)->except(['show'])->parameters(['asset-types' => 'asset_type'])->middleware('can:manage asset types');
 
     // Employment Types & Statuses Management
+    // Employee Management
+    Route::resource('employees', \App\Modules\Employee\Controllers\EmployeeController::class);
+    Route::get('employees/{employee}/documents/{document}/download', [\App\Modules\Employee\Controllers\EmployeeController::class, 'downloadDocument'])->name('employees.documents.download');
+    Route::get('employees/{employee}/documents/{document}/view', [\App\Modules\Employee\Controllers\EmployeeController::class, 'viewDocument'])->name('employees.documents.view');
     Route::resource('employment-types', \App\Modules\Employee\Controllers\EmploymentTypeController::class)->except(['show'])->parameters(['employment-types' => 'employment_type'])->middleware('can:manage employment types');
     Route::resource('employment-statuses', \App\Modules\Employee\Controllers\EmploymentStatusController::class)->except(['show'])->parameters(['employment-statuses' => 'employment_status'])->middleware('can:manage employment statuses');
+
+    // Leave Types Management
+    Route::resource('leave-types', \App\Modules\Leave\Controllers\LeaveTypeController::class)->except(['show']);
 
     // Job Details Dropdowns (Departments, Designations, Locations)
     Route::resource('departments', \App\Modules\Employee\Controllers\DepartmentController::class)->except(['show'])->middleware('can:manage departments');

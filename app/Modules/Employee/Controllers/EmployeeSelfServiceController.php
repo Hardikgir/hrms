@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Modules\Employee\Models\EmployeeDocument;
 
 class EmployeeSelfServiceController extends Controller
 {
@@ -187,10 +188,10 @@ class EmployeeSelfServiceController extends Controller
         }
 
         $requiredDocs = [
-            ['key' => 'aadhar', 'label' => 'Aadhar Card', 'description' => 'Front and back copy'],
-            ['key' => 'pan', 'label' => 'PAN Card', 'description' => 'Clear copy'],
-            ['key' => 'bank_passbook', 'label' => 'Bank Passbook / Cancelled cheque', 'description' => 'For salary credit'],
-            ['key' => 'photo', 'label' => 'Passport size photo', 'description' => 'Recent photograph'],
+            ['key' => 'experience_letter', 'label' => __('messages.experience_letter'), 'description' => __('messages.experience_letter_desc')],
+            ['key' => 'id_proof', 'label' => __('messages.id_proof'), 'description' => __('messages.id_proof_desc')],
+            ['key' => 'photograph', 'label' => __('messages.photograph'), 'description' => __('messages.photograph_desc')],
+            ['key' => 'resume', 'label' => __('messages.resume'), 'description' => __('messages.resume_desc')],
         ];
 
         return view('employee.ess.onboarding-documents', compact('employee', 'requiredDocs'));
@@ -209,51 +210,28 @@ class EmployeeSelfServiceController extends Controller
         }
 
         $rules = [
-            'document_type' => 'required|in:aadhar,pan,bank_passbook,photo',
+            'document_type' => 'required|in:experience_letter,id_proof,photograph,resume',
             'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ];
 
         $type = $request->input('document_type');
-        if ($type === 'aadhar') {
-            $rules['aadhar_number'] = 'required|digits:12';
-        } elseif ($type === 'pan') {
-            $rules['pan_number'] = 'required|string|size:10|regex:/^[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}$/';
-        } elseif ($type === 'bank_passbook') {
-            $rules['bank_account_number'] = 'required|string|max:50';
-            $rules['bank_ifsc'] = 'required|string|size:11|regex:/^[A-Z]{4}0[A-Z0-9]{6}$/';
-            $rules['bank_name'] = 'nullable|string|max:255';
-            $rules['bank_branch'] = 'nullable|string|max:255';
-        }
 
         $validated = $request->validate($rules);
 
         $file = $request->file('document');
         $path = $file->store(
             'onboarding/' . $employee->id,
-            'local'
+            'public'
         );
 
-        \App\Models\Document::create([
+        EmployeeDocument::create([
             'employee_id' => $employee->id,
             'document_type' => $request->document_type,
-            'path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'disk' => 'local',
+            'file_path' => $path,
+            'original_filename' => $file->getClientOriginalName(),
         ]);
 
-        // Update employee KYC/bank details from form
-        if ($type === 'aadhar' && !empty($validated['aadhar_number'])) {
-            $employee->update(['aadhar_number' => $validated['aadhar_number']]);
-        } elseif ($type === 'pan' && !empty($validated['pan_number'])) {
-            $employee->update(['pan_number' => strtoupper($validated['pan_number'])]);
-        } elseif ($type === 'bank_passbook') {
-            $employee->update([
-                'bank_account_number' => $validated['bank_account_number'],
-                'bank_ifsc' => $validated['bank_ifsc'],
-                'bank_name' => $validated['bank_name'] ?? $employee->bank_name,
-                'bank_branch' => $validated['bank_branch'] ?? $employee->bank_branch,
-            ]);
-        }
+        // Keep logic clean, just upload.
 
         return redirect()->route('ess.onboarding-documents')
             ->with('success', __('messages.document_uploaded'));

@@ -3,7 +3,7 @@
 namespace App\Modules\Employee\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\Document;
+use App\Modules\Employee\Models\EmployeeDocument;
 use App\Modules\Employee\Models\Employee;
 use App\Modules\Employee\Models\Department;
 use App\Modules\Employee\Models\Designation;
@@ -154,19 +154,31 @@ class EmployeeController extends Controller
         return view('employee.show', compact('employee'));
     }
 
-    public function downloadDocument(Employee $employee, Document $document)
+    public function downloadDocument(Employee $employee, EmployeeDocument $document)
     {
         $this->authorize('view employees');
         if ($document->employee_id !== $employee->id) {
             abort(404);
         }
-        if (!Storage::disk($document->disk)->exists($document->path)) {
+        if (!Storage::disk('public')->exists($document->file_path)) {
             abort(404, 'File not found.');
         }
-        return Storage::disk($document->disk)->download(
-            $document->path,
-            $document->original_name ?? 'document'
+        return Storage::disk('public')->download(
+            $document->file_path,
+            $document->original_filename ?? 'document'
         );
+    }
+
+    public function viewDocument(Employee $employee, EmployeeDocument $document)
+    {
+        $this->authorize('view employees');
+        if ($document->employee_id !== $employee->id) {
+            abort(404);
+        }
+        if (!Storage::disk('public')->exists($document->file_path)) {
+            abort(404, 'File not found.');
+        }
+        return Storage::disk('public')->response($document->file_path);
     }
 
     public function edit(Employee $employee)

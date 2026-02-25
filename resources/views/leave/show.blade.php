@@ -40,6 +40,16 @@
                     <th>{{ __('messages.reason') }}</th>
                     <td>{{ $leave->reason }}</td>
                 </tr>
+                @if($leave->attachment_path)
+                    <tr>
+                        <th>{{ __('messages.physical_form_photograph') }}</th>
+                        <td>
+                            <a href="{{ $leave->attachment_url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                <i class="fas fa-image mr-1"></i> {{ __('messages.view_attachment') }}
+                            </a>
+                        </td>
+                    </tr>
+                @endif
                 <tr>
                     <th>{{ __('messages.status') }}</th>
                     <td>

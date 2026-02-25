@@ -56,13 +56,8 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="bank-tab" data-toggle="tab" href="#bank" role="tab">
-                                        <i class="fas fa-university"></i> {{ __('messages.bank_details') }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="kyc-tab" data-toggle="tab" href="#kyc" role="tab">
-                                        <i class="fas fa-id-card"></i> {{ __('messages.bank_kyc') }}
+                                    <a class="nav-link" id="documents-tab" data-toggle="tab" href="#documents" role="tab">
+                                        <i class="fas fa-file-alt"></i> {{ __('messages.documents') ?? 'Documents' }}
                                     </a>
                                 </li>
                             </ul>
@@ -206,12 +201,12 @@
                                     <table class="table table-bordered">
                                         <tr>
                                             <th width="30%">{{ __('messages.ctc') }}</th>
-                                            <td>{{ __('messages.currency_symbol') }}{{ number_format($employee->ctc ?? 0, 2) }}
+                                            <td>{{ __('messages.currency_symbol') }} {{ number_format($employee->ctc ?? 0, 2) }}
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>{{ __('messages.monthly_ctc') }}</th>
-                                            <td>₹{{ number_format(($employee->ctc ?? 0) / 12, 2) }}</td>
+                                            <td>{{ __('messages.currency_symbol') }} {{ number_format(($employee->ctc ?? 0) / 12, 2) }}</td>
                                         </tr>
                                         @if($employee->salary_structure)
                                             <tr>
@@ -224,46 +219,10 @@
                                     </table>
                                 </div>
 
-                                <!-- Bank Details Tab -->
-                                <div class="tab-pane fade" id="bank" role="tabpanel">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th width="30%">{{ __('messages.bank_name') }}</th>
-                                            <td>{{ $employee->bank_name ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('messages.account_number') }}</th>
-                                            <td>{{ $employee->bank_account_number ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('messages.ifsc_code') }}</th>
-                                            <td>{{ $employee->bank_ifsc ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('messages.branch') }}</th>
-                                            <td>{{ $employee->bank_branch ?? '-' }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <!-- KYC Documents Tab -->
-                                <div class="tab-pane fade" id="kyc" role="tabpanel">
-                                    <table class="table table-bordered">
-                                        <tr>
-                                            <th width="30%">{{ __('messages.pan_number') }}</th>
-                                            <td>{{ $employee->pan_number ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('messages.aadhar_number') }}</th>
-                                            <td>{{ $employee->aadhar_number ?? '-' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>{{ __('messages.passport_number') }}</th>
-                                            <td>{{ $employee->passport_number ?? '-' }}</td>
-                                        </tr>
-                                    </table>
+                                <!-- Documents Tab -->
+                                <div class="tab-pane fade" id="documents" role="tabpanel">
                                     <h5 class="mt-4">{{ __('messages.onboarding_documents') }}</h5>
-                                    @if($employee->documents->isNotEmpty())
+                                    @if($employee->onboardingDocuments->isNotEmpty())
                                         <table class="table table-bordered table-sm">
                                             <thead>
                                                 <tr>
@@ -274,12 +233,16 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($employee->documents as $doc)
+                                                @foreach($employee->onboardingDocuments as $doc)
                                                     <tr>
-                                                        <td>{{ $doc->type_label }}</td>
-                                                        <td>{{ $doc->original_name ?? '-' }}</td>
+                                                        <td>{{ ucfirst(str_replace('_', ' ', $doc->document_type)) }}</td>
+                                                        <td>{{ $doc->original_filename ?? '-' }}</td>
                                                         <td>{{ $doc->created_at->format('d M Y H:i') }}</td>
                                                         <td>
+                                                            <a href="{{ route('employees.documents.view', [$employee, $doc]) }}"
+                                                                class="btn btn-sm btn-info" target="_blank" rel="noopener">
+                                                                <i class="fas fa-eye"></i> {{ __('messages.view') ?? 'View' }}
+                                                            </a>
                                                             <a href="{{ route('employees.documents.download', [$employee, $doc]) }}"
                                                                 class="btn btn-sm btn-primary" target="_blank" rel="noopener">
                                                                 <i class="fas fa-download"></i> {{ __('messages.download') }}

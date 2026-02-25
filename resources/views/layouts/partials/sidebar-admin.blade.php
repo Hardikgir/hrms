@@ -123,7 +123,7 @@
                 @if(auth()->user()->hasRole('Super Admin'))
                     <li class="nav-item">
                         <a href="{{ route('settings.index') }}"
-                            class="nav-link {{ request()->routeIs('settings.*') || request()->routeIs('expense-categories.*') || request()->routeIs('asset-types.*') || request()->routeIs('departments.*') || request()->routeIs('designations.*') || request()->routeIs('locations.*') || request()->routeIs('employment-types.*') || request()->routeIs('employment-statuses.*') ? 'active' : '' }}">
+                            class="nav-link {{ request()->routeIs('settings.*') || request()->routeIs('expense-categories.*') || request()->routeIs('asset-types.*') || request()->routeIs('departments.*') || request()->routeIs('designations.*') || request()->routeIs('locations.*') || request()->routeIs('employment-types.*') || request()->routeIs('employment-statuses.*') || request()->routeIs('leave-types.*') ? 'active' : '' }}">
                             <i class="nav-icon fas fa-cog"></i>
                             <p>{{ __('messages.settings') }}</p>
                         </a>

@@ -101,6 +101,11 @@ class Employee extends Model
         return $this->belongsTo(EmploymentStatus::class, 'employment_status', 'slug');
     }
 
+    public function teamMembers()
+    {
+        return $this->hasMany(Employee::class, 'reporting_to');
+    }
+
     public function subordinates()
     {
         return $this->hasMany(Employee::class, 'manager_id');
@@ -114,6 +119,11 @@ class Employee extends Model
     public function documents()
     {
         return $this->hasMany(\App\Models\Document::class);
+    }
+
+    public function onboardingDocuments()
+    {
+        return $this->hasMany(EmployeeDocument::class);
     }
 
     public function getFullNameAttribute()

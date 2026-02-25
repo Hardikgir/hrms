@@ -138,5 +138,20 @@
                 </div>
             </div>
         @endif
+        @can('manage leave types')
+            <div class="col-md-6 col-lg-4">
+                <div class="card card-outline card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-calendar-alt mr-2"></i>{{ __('messages.leave_types') }}</h3>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">{{ __('messages.leave_types_desc') }}</p>
+                        <a href="{{ route('leave-types.index') }}" class="btn btn-primary">
+                            <i class="fas fa-cog"></i> {{ __('messages.manage_leave_types') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endcan
     </div>
 @endsection

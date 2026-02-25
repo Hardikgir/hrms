@@ -71,6 +71,16 @@
         </div>
 
         <div class="form-group">
+            <label for="attachment">{{ __('messages.physical_form_photograph') }} <span class="text-danger">*</span></label>
+            <input type="file" wire:model="attachment" id="attachment" class="form-control-file @error('attachment') is-invalid @enderror" accept="image/jpeg,image/png,image/jpg" required>
+            <small class="form-text text-muted">{{ __('messages.upload_physical_form_desc') }}</small>
+            @error('attachment')
+                <span class="invalid-feedback">{{ $message }}</span>
+            @enderror
+            <div wire:loading wire:target="attachment" class="text-info mt-1">{{ __('messages.uploading') }}...</div>
+        </div>
+
+        <div class="form-group">
             <button type="submit" wire:loading.attr="disabled" class="btn btn-primary">
                 <span wire:loading.remove>{{ __('messages.apply_leave') }}</span>
                 <span wire:loading>{{ __('messages.submitting') }}</span>

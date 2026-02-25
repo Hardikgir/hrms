@@ -19,7 +19,8 @@ class LeaveService
         string $startDate,
         string $endDate,
         string $reason,
-        ?int $createdBy = null
+        ?int $createdBy = null,
+        ?string $attachmentPath = null
     ): Leave {
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
@@ -49,6 +50,7 @@ class LeaveService
             'total_days' => $totalDays,
             'reason' => $reason,
             'status' => 'pending',
+            'attachment_path' => $attachmentPath,
             'created_by' => $createdBy,
         ]);
     }
