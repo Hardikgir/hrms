@@ -4,7 +4,7 @@
 @section('page_title', 'Add Asset Type')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
     <li class="breadcrumb-item"><a href="{{ route('asset-types.index') }}">Asset Types</a></li>
     <li class="breadcrumb-item active">Add</li>

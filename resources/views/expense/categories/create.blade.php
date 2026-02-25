@@ -4,7 +4,7 @@
 @section('page_title', __('messages.add_category'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">{{ __('messages.settings') }}</a></li>
     <li class="breadcrumb-item"><a
             href="{{ route('expense-categories.index') }}">{{ __('messages.expense_categories') }}</a></li>

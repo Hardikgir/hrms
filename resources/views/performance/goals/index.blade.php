@@ -4,7 +4,7 @@
 @section('page_title', 'Goals')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('performance.cycles.index') }}">Performance</a></li>
     <li class="breadcrumb-item active">Goals</li>
 @endsection

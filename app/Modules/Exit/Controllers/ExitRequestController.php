@@ -33,7 +33,7 @@ class ExitRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
-        if ($employee && !request()->routeIs('ess.exit.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && !request()->routeIs('ess.exit.*')) {
             return redirect()->route('ess.exit.create');
         }
         if (request()->routeIs('ess.exit.*')) {
@@ -67,7 +67,7 @@ class ExitRequestController extends Controller
         } catch (\DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        $redirect = auth()->user()->employee ? route('ess.exit') : route('exit.index');
+        $redirect = session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE ? route('ess.exit') : route('exit.index');
         return redirect($redirect)->with('success', __('messages.exit_request_submitted'));
     }
 

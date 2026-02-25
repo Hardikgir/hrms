@@ -19,7 +19,7 @@ class AttendanceController extends Controller
         $user = auth()->user();
         $employee = $user->employee;
 
-        if ($employee) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE) {
             return redirect()->route('ess.attendance');
         }
 

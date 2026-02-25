@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Modules\Employee\Controllers\EmployeeController;
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    return redirect()->route('portal.select');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -20,16 +20,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('user-roles/{user}', [\App\Http\Controllers\UserRoleController::class, 'update'])->name('user-roles.update');
     });
     Route::get('/dashboard', function () {
-        $user = auth()->user();
-        // Redirect to ESS only if user has employee record, has Employee/HR Employee role, and has no admin access.
-        // Users with designation/role like HR Admin, HR Manager (who can view employees) get the admin dashboard and sidebar.
-        if ($user->employee && ($user->hasRole('Employee') || $user->hasRole('HR Employee'))) {
-            if (! $user->can('view employees')) {
-                return redirect()->route('ess.dashboard');
-            }
-        }
-        return view('dashboard');
+        return redirect()->route('portal.select');
     })->name('dashboard');
+
+    // Portal Selection
+    Route::get('/portal', [\App\Http\Controllers\PortalController::class, 'select'])->name('portal.select');
+    Route::post('/portal', [\App\Http\Controllers\PortalController::class, 'enter'])->name('portal.enter');
 
     // Employee Self Service (ESS) Routes
     Route::prefix('ess')->name('ess.')->group(function () {
@@ -73,6 +69,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Admin/HR Routes (only for non-employees or with permissions)
     Route::middleware(['can:view employees'])->group(function () {
+        Route::get('/admin/dashboard', function () {
+            return view('dashboard');
+        })->name('admin.dashboard');
+
         // Employee Routes
         Route::get('employees/{employee}/documents/{document}/download', [EmployeeController::class, 'downloadDocument'])->name('employees.documents.download');
         Route::get('employees/{employee}/documents/{document}/view', [EmployeeController::class, 'viewDocument'])->name('employees.documents.view');

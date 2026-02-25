@@ -33,7 +33,7 @@ class TravelRequestController extends Controller
         if (!$employee) {
             abort(403, 'Employee record required.');
         }
-        if ($employee && !request()->routeIs('ess.travel.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && !request()->routeIs('ess.travel.*')) {
             return redirect()->route('ess.travel.create');
         }
         if (request()->routeIs('ess.travel.*')) {
@@ -67,7 +67,7 @@ class TravelRequestController extends Controller
             $validated['notes'] ?? null,
             auth()->id()
         );
-        $redirect = auth()->user()->employee ? route('ess.travel') : route('travel.index');
+        $redirect = session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE ? route('ess.travel') : route('travel.index');
         return redirect($redirect)->with('success', __('messages.travel_request_submitted'));
     }
 
@@ -76,7 +76,7 @@ class TravelRequestController extends Controller
         $this->authorize('view', $travel);
         $travel->load(['employee', 'approvedBy']);
         $user = auth()->user();
-        if ($user->employee && $travel->employee_id === $user->employee->id && !request()->routeIs('ess.travel.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && $travel->employee_id === $user->employee->id && !request()->routeIs('ess.travel.*')) {
             return redirect()->route('ess.travel.show', $travel);
         }
         if (request()->routeIs('ess.travel.*')) {

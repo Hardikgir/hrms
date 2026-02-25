@@ -4,7 +4,7 @@
 @section('page_title', 'Add Employment Type')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('settings.index') }}">Settings</a></li>
     <li class="breadcrumb-item"><a href="{{ route('employment-types.index') }}">Employment Types</a></li>
     <li class="breadcrumb-item active">Add</li>

@@ -2,7 +2,7 @@
 @section('title', __('messages.training_courses'))
 @section('page_title', __('messages.training_courses'))
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item active">{{ __('messages.training_courses') }}</li>
 @endsection
 @section('content')

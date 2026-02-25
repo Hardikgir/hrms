@@ -1,7 +1,7 @@
 {{-- Admin sidebar only. Employees use layouts.ess with sidebar-ess. --}}
 <aside class="main-sidebar sidebar-dark-primary elevation-4"
     style="{{ $sidebarColor ? 'background-color: ' . $sidebarColor . ' !important;' : '' }}">
-    <a href="{{ route('dashboard') }}" class="brand-link">
+    <a href="{{ route('admin.dashboard') }}" class="brand-link">
         <span class="brand-text font-weight-light">{{ __('messages.hrms') }}</span>
     </a>
 
@@ -15,7 +15,7 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>{{ __('messages.dashboard') }}</p>

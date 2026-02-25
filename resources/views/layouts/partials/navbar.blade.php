@@ -32,12 +32,34 @@
                 <span class="d-none d-md-inline ml-1">{{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                @if(Auth::user()->hasRole('Employee') && Auth::user()->employee)
+                @if(Auth::user()->employee)
                     <a href="{{ route('ess.profile') }}" class="dropdown-item">
-                        <i class="fas fa-user mr-2"></i> {{ __('messages.profile') }}
+                        <i class="fas fa-user-circle mr-2"></i> {{ __('messages.profile') }}
                     </a>
+                    <div class="dropdown-divider"></div>
                 @endif
-                <div class="dropdown-divider"></div>
+                
+                @php
+                    $portalService = app(\App\Services\PortalService::class);
+                    $portals = $portalService->getAvailablePortalsForUser(Auth::user());
+                    $currentPortal = session('portal');
+                @endphp
+                
+                @if(count($portals) > 1)
+                    <h6 class="dropdown-header text-left font-weight-bold">{{ __('messages.switch_portal') ?? 'Switch Portal' }}</h6>
+                    @foreach($portals as $portal)
+                        @if($portal !== $currentPortal)
+                            <form method="POST" action="{{ route('portal.enter') }}" class="m-0">
+                                @csrf
+                                <input type="hidden" name="portal" value="{{ $portal }}">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="fas fa-exchange-alt mr-2 text-muted"></i> {{ $portalService->getPortalLabel($portal) }}
+                                </button>
+                            </form>
+                        @endif
+                    @endforeach
+                    <div class="dropdown-divider"></div>
+                @endif
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="dropdown-item">

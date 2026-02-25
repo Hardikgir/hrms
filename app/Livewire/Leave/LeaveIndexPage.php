@@ -116,13 +116,6 @@ class LeaveIndexPage extends Component
 
     public function render(LeaveService $leaveService): View
     {
-        $user = auth()->user();
-        $employee = $user->employee;
-
-        if ($employee) {
-            return $this->redirect(route('ess.leaves'), navigate: true);
-        }
-
         $this->authorize('view leaves');
 
         $leaves = $leaveService->listForAdmin([

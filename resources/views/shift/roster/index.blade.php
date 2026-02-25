@@ -2,7 +2,7 @@
 @section('title', __('messages.weekly_roster'))
 @section('page_title', __('messages.weekly_roster'))
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('shifts.index') }}">{{ __('messages.shifts') }}</a></li>
     <li class="breadcrumb-item active">{{ __('messages.weekly_roster') }}</li>
 @endsection

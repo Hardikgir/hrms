@@ -4,7 +4,7 @@
 @section('page_title', __('messages.create_task'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('employee-tasks.index') }}">{{ __('messages.employee_tasks') }}</a></li>
     <li class="breadcrumb-item active">{{ __('messages.create') }}</li>
 @endsection

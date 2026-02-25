@@ -96,7 +96,7 @@ class PerformanceReviewController extends Controller
         } catch (\DomainException $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        if (auth()->user()->employee) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE) {
             return redirect()->route('ess.reviews')->with('success', __('messages.self_review_submitted_success'));
         }
         return redirect()->route('performance.reviews.show', $review)->with('success', __('messages.self_review_submitted_success'));

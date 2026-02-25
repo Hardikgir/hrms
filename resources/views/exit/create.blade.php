@@ -2,7 +2,7 @@
 @section('title', __('messages.submit_resignation'))
 @section('page_title', __('messages.submit_resignation'))
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('exit.index') }}">{{ __('messages.exit') }}</a></li>
     <li class="breadcrumb-item active">{{ __('messages.create') }}</li>
 @endsection

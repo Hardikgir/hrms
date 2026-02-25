@@ -2,7 +2,7 @@
 @section('title', 'Training Assignments')
 @section('page_title', 'Training Assignments')
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item active">Training Assignments</li>
 @endsection
 @section('content')

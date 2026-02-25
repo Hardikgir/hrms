@@ -4,7 +4,7 @@
 @section('page_title', __('messages.edit_review_cycle'))
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('performance.cycles.index') }}">{{ __('messages.review_cycles') }}</a>
     </li>
     <li class="breadcrumb-item active">{{ __('messages.edit') }}</li>

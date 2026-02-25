@@ -2,7 +2,7 @@
 @section('title', 'Travel Request')
 @section('page_title', 'Travel Request')
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('travel.index') }}">Travel</a></li>
     <li class="breadcrumb-item active">View</li>
 @endsection

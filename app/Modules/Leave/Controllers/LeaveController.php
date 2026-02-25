@@ -22,7 +22,7 @@ class LeaveController extends Controller
         $user = auth()->user();
         $employee = $user->employee;
 
-        if ($employee) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE) {
             return redirect()->route('ess.leaves');
         }
 
@@ -36,7 +36,7 @@ class LeaveController extends Controller
         $this->authorize('create', Leave::class);
 
         $user = auth()->user();
-        if ($user->employee && !request()->routeIs('ess.leaves.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && !request()->routeIs('ess.leaves.*')) {
             return redirect()->route('ess.leaves.create');
         }
         if (request()->routeIs('ess.leaves.*')) {

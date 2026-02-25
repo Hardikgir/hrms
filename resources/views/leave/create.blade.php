@@ -4,7 +4,7 @@
 @section('page_title', 'Apply Leave')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('leaves.index') }}">Leaves</a></li>
     <li class="breadcrumb-item active">Apply Leave</li>
 @endsection

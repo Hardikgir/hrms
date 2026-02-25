@@ -4,7 +4,7 @@
 @section('page_title', 'Manager Review')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Home</a></li>
     <li class="breadcrumb-item"><a href="{{ route('performance.reviews.index') }}">Reviews</a></li>
     <li class="breadcrumb-item active">Manager Review – {{ $review->employee->full_name ?? '' }}</li>
 @endsection

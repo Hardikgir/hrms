@@ -2,7 +2,7 @@
 @section('title', __('messages.asset_history'))
 @section('page_title', __('messages.asset_assignment_history'))
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
     <li class="breadcrumb-item"><a href="{{ route('assets.index') }}">{{ __('messages.assets') }}</a></li>
     <li class="breadcrumb-item active">{{ $asset->name }} – {{ __('messages.asset_history') }}</li>
 @endsection

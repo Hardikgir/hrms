@@ -49,6 +49,11 @@ class PortalController extends Controller
         }
 
         Session::put('portal', $request->input('portal'));
+        // If the portal is Admin or Manager, direct them to the main admin dashboard view directly
+        if (in_array($request->input('portal'), [PortalService::PORTAL_ADMIN, PortalService::PORTAL_MANAGER])) {
+             return redirect()->route('admin.dashboard');
+        }
+
         return redirect()->route($portalService->getDashboardRouteForPortal($request->input('portal')));
     }
 }

@@ -63,8 +63,8 @@ class PortalService
     {
         return match ($portal) {
             self::PORTAL_EMPLOYEE => 'ess.dashboard',
-            self::PORTAL_MANAGER, self::PORTAL_ADMIN => 'dashboard',
-            default => 'dashboard',
+            self::PORTAL_MANAGER, self::PORTAL_ADMIN => 'admin.dashboard',
+            default => 'admin.dashboard',
         };
     }
 

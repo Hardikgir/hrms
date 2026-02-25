@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('messages.home') }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('messages.home') }}</a></li>
                         <li class="breadcrumb-item"><a href="{{ route('payroll.index') }}">{{ __('messages.payroll') }}</a>
                         </li>
                         <li class="breadcrumb-item active">{{ __('messages.view_payslip') }}</li>

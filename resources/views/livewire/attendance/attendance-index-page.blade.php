@@ -6,7 +6,7 @@
         </div>
     @endif
 
-    @can('view attendance')
+    @if(auth()->user()->hasRole('Super Admin'))
         <div class="card card-outline card-info mb-4">
             <div class="card-header">
                 <h3 class="card-title"><i class="fas fa-cog mr-1"></i> {{ __('messages.attendance') }}
@@ -14,7 +14,7 @@
                 </h3>
             </div>
             <div class="card-body">
-                <p class="text-muted small mb-2">{{ __('messages.password_help') }}</p>
+                <p class="text-muted small mb-2">{{ __('messages.attendance_settings_help', ['default' => 'Set the maximum check-in time. Check-ins after this time will be marked as Late.']) }}</p>
                 <div class="row align-items-end">
                     <div class="col-md-3">
                         <label class="form-label mb-0">{{ __('messages.max_check_in_time') }}</label>
@@ -33,7 +33,7 @@
                 </div>
             </div>
         </div>
-    @endcan
+    @endif
 
     <div class="card">
         <div class="card-header">

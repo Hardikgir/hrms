@@ -38,7 +38,9 @@ class AttendanceIndexPage extends Component
 
     public function saveMaxCheckInTime(): void
     {
-        $this->authorize('view attendance');
+        if (! auth()->user()->hasRole('Super Admin')) {
+            abort(403);
+        }
         $this->validate([
             'maxCheckInTime' => ['required', 'date_format:H:i'],
         ], [
@@ -263,13 +265,6 @@ class AttendanceIndexPage extends Component
 
     public function render(AttendanceService $attendanceService): View
     {
-        $user = auth()->user();
-        $employee = $user->employee;
-
-        if ($employee) {
-            return $this->redirect(route('ess.attendance'), navigate: true);
-        }
-
         $this->authorize('view attendance');
 
         $attendances = $attendanceService->listAttendance([

@@ -37,7 +37,7 @@ class ExpenseController extends Controller
             abort(403, 'Employee record required.');
         }
         $categories = ExpenseCategory::active()->ordered()->get();
-        if ($employee && !request()->routeIs('ess.expenses.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && !request()->routeIs('ess.expenses.*')) {
             return redirect()->route('ess.expenses.create');
         }
         if (request()->routeIs('ess.expenses.*')) {
@@ -71,7 +71,7 @@ class ExpenseController extends Controller
         } catch (\Exception $e) {
             return back()->withInput()->with('error', $e->getMessage());
         }
-        $redirect = auth()->user()->employee ? route('ess.expenses') : route('expenses.index');
+        $redirect = session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE ? route('ess.expenses') : route('expenses.index');
         return redirect($redirect)->with('success', __('messages.expense_submitted_success'));
     }
 
@@ -80,7 +80,7 @@ class ExpenseController extends Controller
         $this->authorize('view', $expense);
         $expense->load(['employee', 'approvedBy', 'reimbursedBy', 'rejectedBy']);
         $user = auth()->user();
-        if ($user->employee && $expense->employee_id === $user->employee->id && !request()->routeIs('ess.expenses.*')) {
+        if (session('portal') === \App\Services\PortalService::PORTAL_EMPLOYEE && $expense->employee_id === $user->employee->id && !request()->routeIs('ess.expenses.*')) {
             return redirect()->route('ess.expenses.show', $expense);
         }
         if (request()->routeIs('ess.expenses.*')) {
