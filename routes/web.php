@@ -7,8 +7,9 @@ Route::get('/', function () {
     return redirect()->route('portal.select');
 });
 
+Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('/language/{locale}', [\App\Http\Controllers\LanguageController::class, 'switch'])->name('language.switch');
     Route::get('/settings', [\App\Http\Controllers\SettingsController::class, 'index'])->name('settings.index');
 
     // Role Management

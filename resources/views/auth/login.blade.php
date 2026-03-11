@@ -17,7 +17,11 @@
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-    <div class="login-logo">
+    <div class="login-logo mt-3">
+        <div class="mb-2">
+            <a href="{{ route('language.switch', 'en') }}" class="btn btn-sm btn-outline-secondary {{ app()->getLocale() == 'en' ? 'active' : '' }}">English</a>
+            <a href="{{ route('language.switch', 'ar') }}" class="btn btn-sm btn-outline-secondary {{ app()->getLocale() == 'ar' ? 'active' : '' }}">العربية</a>
+        </div>
         <b>{{ __('messages.login_hrms') }}</b> {{ __('messages.login_title') }}
     </div>
     <!-- /.login-logo -->

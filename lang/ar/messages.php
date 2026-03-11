@@ -798,6 +798,15 @@ return [
     'settlement_recorded_success' => 'تم تسجيل التسوية.',
     'travel_request_submitted' => 'تم إرسال طلب السفر.',
     'request_approved_success' => 'تمت الموافقة على الطلب.',
+
+    // Welcome Page
+    'welcome_title' => 'لنبدأ العمل',
+    'welcome_subtitle' => 'تمتلك لارافل نظاماً بيئياً غنياً بشكل لا يصدق. <br>نقترح البدء بما يلي.',
+    'read_docs' => 'اقرأ',
+    'documentation' => 'التوثيق',
+    'watch_laracasts' => 'شاهد دروس الفيديو في',
+    'laracasts' => 'لاركاستس',
+    'deploy_now' => 'انشر الآن',
     'request_rejected_success' => 'تم رفض الطلب.',
     'marked_completed_success' => 'تم تعليمه كمكتمل.',
     'shift_assigned_success' => 'تم تعيين الوردية.',
@@ -895,4 +904,16 @@ return [
     'leave_type_deleted_success' => 'تم حذف نوع الإجازة بنجاح.',
     'cannot_delete_leave_type_in_use' => 'لا يمكن حذف نوع الإجازة هذا لأنه قيد الاستخدام حالياً.',
     'no_leave_types_found' => 'لم يتم العثور على أنواع إجازات.',
+
+    // Authentication
+    'hrms' => 'نظام إدارة الموارد البشرية',
+    'login_title' => 'تسجيل الدخول',
+    'login_hrms' => 'HRMS',
+    'sign_in_to_session' => 'قم بتسجيل الدخول لبدء جلستك',
+    'remember_me' => 'تذكرني',
+    'sign_in' => 'تسجيل الدخول',
+    'login_hint_admin' => 'المدير: admin@example.com / password',
+    'login_hint_employee' => 'الموظف: employee@example.com / password',
+    'register' => 'تسجيل',
+    'dashboard' => 'لوحة القيادة',
 ];

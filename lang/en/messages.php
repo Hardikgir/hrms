@@ -798,6 +798,15 @@ return [
     'settlement_recorded_success' => 'Settlement recorded.',
     'travel_request_submitted' => 'Travel request submitted.',
     'request_approved_success' => 'Request approved.',
+
+    // Welcome Page
+    'welcome_title' => 'Let\'s get started',
+    'welcome_subtitle' => 'Laravel has an incredibly rich ecosystem. <br>We suggest starting with the following.',
+    'read_docs' => 'Read the',
+    'documentation' => 'Documentation',
+    'watch_laracasts' => 'Watch video tutorials at',
+    'laracasts' => 'Laracasts',
+    'deploy_now' => 'Deploy now',
     'request_rejected_success' => 'Request rejected.',
     'marked_completed_success' => 'Marked as completed.',
     'shift_assigned_success' => 'Shift assigned.',
@@ -895,4 +904,16 @@ return [
     'leave_type_deleted_success' => 'Leave type deleted successfully.',
     'cannot_delete_leave_type_in_use' => 'Cannot delete this leave type because it is currently in use.',
     'no_leave_types_found' => 'No leave types found.',
+
+    // Authentication
+    'hrms' => 'HRMS',
+    'login_title' => 'Login',
+    'login_hrms' => 'HRMS',
+    'sign_in_to_session' => 'Sign in to start your session',
+    'remember_me' => 'Remember Me',
+    'sign_in' => 'Sign In',
+    'login_hint_admin' => 'Admin: admin@example.com / password',
+    'login_hint_employee' => 'Employee: employee@example.com / password',
+    'register' => 'Register',
+    'dashboard' => 'Dashboard',
 ];

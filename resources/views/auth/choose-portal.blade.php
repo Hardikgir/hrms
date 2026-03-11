@@ -21,6 +21,10 @@
     <div class="content-wrapper" style="margin-left: 0;">
         <div class="content-header">
             <div class="container">
+                <div class="float-right">
+                    <a href="{{ route('language.switch', 'en') }}" class="btn btn-sm btn-outline-secondary {{ app()->getLocale() == 'en' ? 'active' : '' }}">English</a>
+                    <a href="{{ route('language.switch', 'ar') }}" class="btn btn-sm btn-outline-secondary {{ app()->getLocale() == 'ar' ? 'active' : '' }}">العربية</a>
+                </div>
                 <h1 class="m-0">{{ __('messages.choose_portal') }}</h1>
             </div>
         </div>
