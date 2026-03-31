@@ -7,16 +7,18 @@ This file contains all test user credentials for the HRMS application.
 
 ---
 
-## Employee Login (ESS)
+## Quick Reference – All Users
 
-Use any employee email below with password **`password123`**. You will be redirected to the **Employee Self Service (ESS)** portal.
-
-| Email | Password |
-|-------|----------|
-| `rajesh.kumar@hrms.com` | `password123` |
-| `priya.sharma@hrms.com` | `password123` |
-| `amit.patel@hrms.com` | `password123` |
-| *(see full list below)* | `password123` |
+| Role | Email | Password | Portal |
+|------|-------|----------|--------|
+| Super Admin | `admin@hrms.com` | `password123` | Admin Dashboard |
+| HR Admin | `hradmin@hrms.com` | `password123` | Admin Dashboard |
+| HR Manager | `hrmanager@hrms.com` | `password123` | Admin Dashboard |
+| HR Employee | `hremployee@hrms.com` | `password123` | ESS Portal |
+| Manager | `manager@hrms.com` | `password123` | Admin Dashboard |
+| Finance | `finance@hrms.com` | `password123` | Admin Dashboard |
+| Recruiter | `recruiter@hrms.com` | `password123` | Admin Dashboard |
+| Employee | `rajesh.kumar@hrms.com` | `password123` | ESS Portal |
 
 ---
 
@@ -27,13 +29,15 @@ Use any employee email below with password **`password123`**. You will be redire
 | `admin@hrms.com` | `password123` | Super Admin | Full access to all modules and features |
 
 **Features:**
-- Access to Admin Dashboard
-- Full CRUD operations on all modules
+- Full system access – all CRUD operations on all modules
 - Employee Management
-- **Employee Tasks** – create and assign tasks for employees (onboarding, training, etc.); URL: `/employee-tasks`
+- **Employee Tasks** – create and assign tasks; URL: `/employee-tasks`
 - Attendance Management
 - Leave Management & Approval
 - Payroll Management
+- Expenses, Training, Shifts, Assets, Travel, Exit
+- Performance Management
+- Role & Permission management
 - All reports and analytics
 
 ---
@@ -42,38 +46,106 @@ Use any employee email below with password **`password123`**. You will be redire
 
 | Email | Password | Role | Access |
 |-------|----------|------|--------|
-| `hradmin@hrms.com` | `password123` | HR Admin | Admin dashboard and HR modules (no Payroll) |
+| `hradmin@hrms.com` | `password123` | HR Admin | Admin dashboard and full HR modules |
 
 **Features:**
 - Access to Admin Dashboard (same layout as Super Admin)
-- **Employees** – view, create, update (no delete)
+- **Employees** – view, create, update, delete
 - **Employee Tasks** – create and assign tasks; URL: `/employee-tasks`
-- **Attendance** – view attendance
-- **Leaves** – view, create, update, approve leave requests
-- **Expenses** – view and approve expenses; manage expense categories
-- **Training** – view and manage training
-- **Shifts & Roster** – view and manage shifts
-- **Assets** – view, create, edit, assign/unassign; manage asset types; approve/decline asset returns
-- **Travel** – view and approve travel requests
-- **Exit** – view and manage exit requests
-- **Performance** – view and manage performance
-- **No Payroll** – Payroll menu and dashboard box are hidden for HR Admin
-
-**Quick login:** `hradmin@hrms.com` / `password123` → Admin Dashboard
+- **Attendance** – view, create, update
+- **Leaves** – view, create, update, approve
+- **Payroll** – view, create, update, run payroll
+- **Expenses** – view, approve, process reimbursements; manage expense categories
+- **Training** – view and manage
+- **Shifts & Roster** – view and manage
+- **Assets** – view, create, edit, assign/unassign; manage types; approve returns
+- **Travel** – view and approve
+- **Exit** – view and manage
+- **Performance** – view and manage
+- **Settings** – manage employment types, statuses, departments, designations, locations
 
 ---
 
-## Who Creates ESS Tasks?
+## HR Manager
 
-**Employee tasks** (e.g. "Complete onboarding documents", "Attend training session") are created by **HR/Admin** users:
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `hrmanager@hrms.com` | `password123` | HR Manager | View & approve – no settings, no employee CRUD, no run payroll |
 
-| Role        | Can manage tasks? | Seeded user              |
-|------------|--------------------|---------------------------|
-| Super Admin| Yes                | `admin@hrms.com`         |
-| HR Admin   | Yes                | `hradmin@hrms.com`       |
+**Features:**
+- Access to Admin Dashboard
+- **Employees** – view only (no create/update/delete)
+- **Employee Tasks** – create and assign tasks
+- **Attendance** – view, create, update
+- **Leaves** – view and approve
+- **Expenses** – view and approve (no reimbursement processing)
+- **Training** – view only
+- **Shifts** – view and manage
+- **Assets** – approve returns only (no CRUD)
+- **Travel** – view and approve
+- **Exit** – view and manage
+- **Performance** – view and manage
+- **Payroll** – view only (cannot create or run payroll)
 
-- **Login as admin:** `admin@hrms.com` / `password123`
-- **Manage tasks:** After login, go to **Employee Tasks** (`/employee-tasks`) to create, edit, or assign tasks to employees. Tasks appear on the employee’s ESS **Tasks** page (`/ess/tasks`).
+---
+
+## HR Employee
+
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `hremployee@hrms.com` | `password123` | HR Employee | ESS Portal only (same as Employee) |
+
+**Features:**
+- Redirected to Employee Self Service (ESS) portal
+- Same access as a regular Employee
+- No admin panel access
+
+---
+
+## Manager
+
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `manager@hrms.com` | `password123` | Manager | Team oversight – view employees, approve leaves & expenses |
+
+**Features:**
+- Access to Admin Dashboard
+- **Employees** – view only
+- **Employee Tasks** – create and assign tasks
+- **Attendance** – view only
+- **Leaves** – view and approve
+- **Expenses** – view and approve
+- **Training** – view only
+- **Travel** – view and approve
+- **Performance** – view and manage
+
+---
+
+## Finance
+
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `finance@hrms.com` | `password123` | Finance | Payroll and expense management |
+
+**Features:**
+- Access to Admin Dashboard
+- **Employees** – view only
+- **Payroll** – view, create, update, run payroll
+- **Expenses** – view, approve, process reimbursements
+- **Attendance** – view only
+
+---
+
+## Recruiter
+
+| Email | Password | Role | Access |
+|-------|----------|------|--------|
+| `recruiter@hrms.com` | `password123` | Recruiter | Employee onboarding and recruitment |
+
+**Features:**
+- Access to Admin Dashboard
+- **Employees** – view, create, update (no delete)
+- **Settings** – manage departments, designations, locations
 
 ---
 
@@ -110,21 +182,39 @@ All employees are redirected to the Employee Self Service (ESS) portal after log
 
 ### For Testing Admin Features:
 1. Go to: `http://localhost/login` (or your app URL)
-2. **Super Admin:** Email: `admin@hrms.com` / Password: `password123`
-3. **HR Admin:** Email: `hradmin@hrms.com` / Password: `password123`
-4. You'll be redirected to the Admin Dashboard (Payroll menu hidden for HR Admin)
+2. **Super Admin:** `admin@hrms.com` / `password123`
+3. **HR Admin:** `hradmin@hrms.com` / `password123`
+4. **HR Manager:** `hrmanager@hrms.com` / `password123`
+5. **Manager:** `manager@hrms.com` / `password123`
+6. **Finance:** `finance@hrms.com` / `password123`
+7. **Recruiter:** `recruiter@hrms.com` / `password123`
 
 ### For Testing Employee Features:
 1. Go to: `http://localhost/login` (or your app URL)
-2. Use any employee email (e.g., `rajesh.kumar@hrms.com`)
-3. Password: `password123`
+2. **HR Employee:** `hremployee@hrms.com` / `password123`
+3. **Any Employee:** e.g., `rajesh.kumar@hrms.com` / `password123`
 4. You'll be redirected to the ESS Dashboard
+
+---
+
+## Who Creates ESS Tasks?
+
+**Employee tasks** (e.g. "Complete onboarding documents", "Attend training session") are created by these roles:
+
+| Role | Can manage tasks? | Seeded user |
+|------|-------------------|-------------|
+| Super Admin | Yes | `admin@hrms.com` |
+| HR Admin | Yes | `hradmin@hrms.com` |
+| HR Manager | Yes | `hrmanager@hrms.com` |
+| Manager | Yes | `manager@hrms.com` |
+
+Go to **Employee Tasks** (`/employee-tasks`) after login to create, edit, or assign tasks.
 
 ---
 
 ## Sample Data
 
-Each employee has:
+Each of the 10 employees has:
 - ✅ 30 days of attendance records
 - ✅ Leave requests (pending, approved, rejected)
 - ✅ 3 months of payroll records
@@ -144,24 +234,6 @@ To change a user's password, you can:
 
 ---
 
-## Role-Based Access
-
-### Super Admin
-- Full system access
-- Can manage all employees
-- Can approve/reject leaves
-- Can run payroll
-- Can view all reports
-
-### Employee
-- Limited to ESS portal
-- Can only view/edit own data
-- Can apply for leaves
-- Can check-in/check-out
-- Cannot access admin modules
-
----
-
 ## Troubleshooting
 
 ### If login fails:
@@ -170,29 +242,11 @@ To change a user's password, you can:
 3. Check `.env` file database configuration
 4. Clear cache: `php artisan cache:clear && php artisan config:clear`
 
-### If HR Admin user does not exist:
+### If a role-based user does not exist:
 1. Run: `php artisan db:seed --class=DatabaseSeeder` (uses `firstOrCreate`, safe to re-run)
-2. HR Admin login: `hradmin@hrms.com` / `password123`
+2. All role-based users will be created automatically
 
 ### If employee can't see ESS portal:
 1. Verify user has 'Employee' role: `php artisan tinker` → `User::find(1)->roles`
 2. Verify employee record exists: `User::find(1)->employee`
 3. Check routes: `php artisan route:list | grep ess`
-
----
-
-## Additional Roles (Available but not seeded)
-
-The following roles exist in the system; **HR Admin** has a seeded user (`hradmin@hrms.com`). Others do not:
-- **HR Admin** – Seeded: `hradmin@hrms.com` (see HR Admin section above)
-- **Manager** – Can view team attendance and approve leaves
-- **Finance** – Can manage payroll
-- **Recruiter** – Can manage recruitment
-
-To create users with these roles, use:
-```php
-$user = User::create([...]);
-$user->assignRole('Manager'); // or 'Finance', 'Recruiter'
-```
-
-

@@ -88,6 +88,35 @@ class DatabaseSeeder extends Seeder
         $hrEmployee = Role::findByName('HR Employee');
         $hrEmployee->syncPermissions([]);
 
+        // Manager – can view team, approve leaves, view attendance, basic oversight
+        $managerRole = Role::findByName('Manager');
+        $managerRole->syncPermissions([
+            'view employees',
+            'view attendance',
+            'view leaves', 'approve leaves',
+            'view performance', 'manage performance',
+            'view expenses', 'approve expenses',
+            'view training',
+            'view travel', 'approve travel',
+            'manage tasks',
+        ]);
+
+        // Finance – payroll and expense management
+        $financeRole = Role::findByName('Finance');
+        $financeRole->syncPermissions([
+            'view employees',
+            'view payroll', 'create payroll', 'update payroll', 'run payroll',
+            'view expenses', 'approve expenses', 'process reimbursements',
+            'view attendance',
+        ]);
+
+        // Recruiter – recruitment-focused access
+        $recruiterRole = Role::findByName('Recruiter');
+        $recruiterRole->syncPermissions([
+            'view employees', 'create employees', 'update employees',
+            'manage departments', 'manage designations', 'manage locations',
+        ]);
+
         // Create Super Admin User
         $admin = User::firstOrCreate(
             ['email' => 'admin@hrms.com'],
@@ -109,6 +138,61 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $hrAdminUser->assignRole('HR Admin');
+
+        // Create HR Manager User
+        $hrManagerUser = User::firstOrCreate(
+            ['email' => 'hrmanager@hrms.com'],
+            [
+                'name' => 'HR Manager',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $hrManagerUser->assignRole('HR Manager');
+
+        // Create HR Employee User
+        $hrEmployeeUser = User::firstOrCreate(
+            ['email' => 'hremployee@hrms.com'],
+            [
+                'name' => 'HR Employee',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $hrEmployeeUser->assignRole('HR Employee');
+
+        // Create Manager User
+        $managerUser = User::firstOrCreate(
+            ['email' => 'manager@hrms.com'],
+            [
+                'name' => 'Manager User',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $managerUser->assignRole('Manager');
+
+        // Create Finance User
+        $financeUser = User::firstOrCreate(
+            ['email' => 'finance@hrms.com'],
+            [
+                'name' => 'Finance User',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $financeUser->assignRole('Finance');
+
+        // Create Recruiter User
+        $recruiterUser = User::firstOrCreate(
+            ['email' => 'recruiter@hrms.com'],
+            [
+                'name' => 'Recruiter User',
+                'password' => bcrypt('password123'),
+                'is_active' => true,
+            ]
+        );
+        $recruiterUser->assignRole('Recruiter');
 
         // Create Departments
         $departments = [
