@@ -148,16 +148,18 @@ class LeaveController extends Controller
             abort(403, 'Unauthorized access.');
         }
 
-        $totalDays = LeaveService::calculateTotalDays($validated['start_date'], $validated['end_date']);
-        $leave->update([
-            'employee_id' => $validated['employee_id'],
-            'leave_type_id' => $validated['leave_type_id'],
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
-            'total_days' => $totalDays,
-            'reason' => $validated['reason'],
-            'updated_by' => $user->id,
-        ]);
+        try {
+            $this->leaveService->update(
+                $leave->id,
+                (int) $validated['leave_type_id'],
+                $validated['start_date'],
+                $validated['end_date'],
+                $validated['reason'],
+                $user->id
+            );
+        } catch (\DomainException|\InvalidArgumentException $e) {
+            return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
 
         if ($employee) {
             return redirect()->route('ess.leaves')->with('success', __('messages.leave_updated_success'));

@@ -20,7 +20,8 @@ class LeaveService
         string $endDate,
         string $reason,
         ?int $createdBy = null,
-        ?string $attachmentPath = null
+        ?string $attachmentPath = null,
+        array $extraDetails = []
     ): Leave {
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
@@ -41,18 +42,88 @@ class LeaveService
             throw new \DomainException("Insufficient leave balance. Available: {$balance['available']} days.");
         }
 
-        return Leave::create([
+        $lastLeave = $this->getLastApprovedLeave($employeeId);
+
+        $leave = Leave::create([
             'uuid' => (string) Str::uuid(),
             'employee_id' => $employeeId,
             'leave_type_id' => $leaveTypeId,
             'start_date' => $start->toDateString(),
             'end_date' => $end->toDateString(),
             'total_days' => $totalDays,
+            'accrued_entitlement' => $balance['available'],
+            'last_leave_type' => $lastLeave ? $lastLeave->leaveType->name : null,
+            'last_leave_from' => $lastLeave ? $lastLeave->start_date : null,
+            'last_leave_to' => $lastLeave ? $lastLeave->end_date : null,
             'reason' => $reason,
             'status' => 'pending',
             'attachment_path' => $attachmentPath,
             'created_by' => $createdBy,
         ]);
+
+        if (!empty($extraDetails)) {
+            $leave->extraDetails()->create($extraDetails);
+        }
+
+        return $leave;
+    }
+
+    /**
+     * Update an existing leave.
+     */
+    public function update(
+        int $leaveId,
+        int $leaveTypeId,
+        string $startDate,
+        string $endDate,
+        string $reason,
+        ?int $updatedBy = null,
+        ?string $attachmentPath = null,
+        array $extraDetails = []
+    ): Leave {
+        $leave = Leave::findOrFail($leaveId);
+        
+        $start = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
+        if ($end->lt($start)) {
+            throw new \InvalidArgumentException('End date must be on or after start date.');
+        }
+        $totalDays = $start->diffInDays($end) + 1;
+
+        $updateData = [
+            'leave_type_id' => $leaveTypeId,
+            'start_date' => $start->toDateString(),
+            'end_date' => $end->toDateString(),
+            'total_days' => $totalDays,
+            'reason' => $reason,
+            'updated_by' => $updatedBy,
+        ];
+
+        if ($attachmentPath) {
+            $updateData['attachment_path'] = $attachmentPath;
+        }
+
+        $leave->update($updateData);
+
+        if (!empty($extraDetails)) {
+            $leave->extraDetails()->updateOrCreate(
+                ['leave_id' => $leave->id],
+                $extraDetails
+            );
+        }
+
+        return $leave->fresh();
+    }
+
+    /**
+     * Get the last approved leave for an employee.
+     */
+    public function getLastApprovedLeave(int $employeeId): ?Leave
+    {
+        return Leave::where('employee_id', $employeeId)
+            ->where('status', 'approved')
+            ->orderByDesc('start_date')
+            ->first();
     }
 
     /**

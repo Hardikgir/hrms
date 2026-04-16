@@ -20,6 +20,10 @@ class Leave extends Model
         'start_date',
         'end_date',
         'total_days',
+        'accrued_entitlement',
+        'last_leave_type',
+        'last_leave_from',
+        'last_leave_to',
         'reason',
         'status',
         'hr_approved_by',
@@ -39,6 +43,9 @@ class Leave extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'total_days' => 'integer',
+        'accrued_entitlement' => 'integer',
+        'last_leave_from' => 'date',
+        'last_leave_to' => 'date',
         'hr_approved_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
@@ -73,6 +80,11 @@ class Leave extends Model
     public function rejectedBy()
     {
         return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function extraDetails()
+    {
+        return $this->hasOne(LeaveExtraDetail::class);
     }
 
     /**
