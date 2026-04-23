@@ -84,10 +84,6 @@
                 </div>
             </form>
 
-            <div class="mt-3 small text-muted">
-                <p class="mb-1">{{ __('messages.login_hint_admin') }}</p>
-                <p class="mb-0">{{ __('messages.login_hint_employee') }}</p>
-            </div>
         </div>
         <!-- /.login-card-body -->
     </div>
